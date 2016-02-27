@@ -9,11 +9,11 @@ namespace SC2LiquipediaStatistics.Utilities.Web
 {
     public class Downloader : IDownloader
     {
-        public string GetContent(string url)
+        public async Task<string> GetContent(string url)
         {
             using (var client = new WebClient())
             {
-                return client.DownloadString(url);
+                return await client.DownloadStringTaskAsync(url);
             }
         }
     }

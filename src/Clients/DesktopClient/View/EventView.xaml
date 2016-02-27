@@ -1,0 +1,23 @@
+﻿<UserControl x:Class="SC2LiquipediaStatistics.DesktopClient.View.EventView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:SC2LiquipediaStatistics.DesktopClient.ViewModel"
+             xmlns:common="clr-namespace:SC2LiquipediaStatistics.DesktopClient.Common"
+             mc:Ignorable="d" 
+             d:DesignHeight="337" d:DesignWidth="543"
+             common:Behaviors.LoadedMethodName="OnLoad">
+    <UserControl.DataContext>
+        <local:EventViewModel />
+    </UserControl.DataContext>
+
+    <Grid UseLayoutRounding="False">
+        <DataGrid x:Name="dataGrid" ItemsSource="{Binding Events}" AutoGenerateColumns="False">
+            <DataGrid.Columns>
+                <DataGridCheckBoxColumn Binding="{Binding Selected}"/>
+                <DataGridTextColumn IsReadOnly="True" Binding="{Binding URL}" CanUserResize="False"/>
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
+</UserControl>

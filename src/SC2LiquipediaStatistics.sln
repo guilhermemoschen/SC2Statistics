@@ -17,6 +17,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LiquipediaDomain", "Domains
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Utilities", "Utilities\Utilities\Utilities.csproj", "{C2B7E39D-3F74-42EE-9294-BC686D367CB3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DesktopClient", "Clients\DesktopClient\DesktopClient.csproj", "{45739F58-E2A1-4B96-9AD5-29D78B15B234}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{C2B7E39D-3F74-42EE-9294-BC686D367CB3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C2B7E39D-3F74-42EE-9294-BC686D367CB3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C2B7E39D-3F74-42EE-9294-BC686D367CB3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{45739F58-E2A1-4B96-9AD5-29D78B15B234}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{45739F58-E2A1-4B96-9AD5-29D78B15B234}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{45739F58-E2A1-4B96-9AD5-29D78B15B234}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{45739F58-E2A1-4B96-9AD5-29D78B15B234}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -48,5 +54,6 @@ Global
 		{5A5FB910-54C1-4BAB-8C45-BCD195A6DBAB} = {6BAB7DB4-51E5-49F5-B115-D91FCAECBC3E}
 		{1BC74F48-67F5-487F-886F-F901100803BB} = {DA538065-9356-4F8C-88AB-63588FC14F7B}
 		{C2B7E39D-3F74-42EE-9294-BC686D367CB3} = {5F75B2C5-D186-47C5-A88F-E4960A5012B3}
+		{45739F58-E2A1-4B96-9AD5-29D78B15B234} = {6BAB7DB4-51E5-49F5-B115-D91FCAECBC3E}
 	EndGlobalSection
 EndGlobal

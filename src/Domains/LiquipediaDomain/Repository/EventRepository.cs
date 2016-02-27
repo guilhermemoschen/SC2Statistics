@@ -9,7 +9,7 @@ using SC2LiquipediaStatistics.Utilities.DataBase;
 
 namespace SC2LiquipediaStatistics.LiquipediaDomain.Repository
 {
-    public class EventRepository : RepositoryBase<Event>
+    public class EventRepository : RepositoryBase<Event>, IEventRepository
     {
     }
 }

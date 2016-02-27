@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using NHibernate.Linq;
 using NHibernate.Type;
 
+using SC2LiquipediaStatistics.ImportTool.Log;
 using SC2LiquipediaStatistics.LiquipediaDomain.Model;
 using SC2LiquipediaStatistics.LiquipediaDomain.Repository;
 using SC2LiquipediaStatistics.LiquipediaDomain.Service;
@@ -35,8 +36,9 @@ namespace SC2LiquipediaStatistics.ImportTool
 
             var downloader = new Downloader();
             var parseService = new ParseService(new PlayerRespository());
+            var logger = new ConsoleLogger();
 
-            var liquipediService = new LiquipediaService(parseService, downloader);
+            var liquipediService = new LiquipediaService(parseService, downloader, logger);
 
             var events = liquipediService.GetEvents(eventsList);
 

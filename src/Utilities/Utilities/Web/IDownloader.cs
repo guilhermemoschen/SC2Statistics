@@ -1,7 +1,9 @@
-﻿namespace SC2LiquipediaStatistics.Utilities.Web
+﻿using System.Threading.Tasks;
+
+namespace SC2LiquipediaStatistics.Utilities.Web
 {
     public interface IDownloader
     {
-        string GetContent(string url);
+        Task<string> GetContent(string url);
     }
 }

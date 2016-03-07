@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 
@@ -61,21 +62,24 @@ namespace SC2LiquipediaStatistics.Utilities.DataBase
             return Configuration;
         }
 
-        private static void Initialize(NHibernate.ISessionFactory factory, Configuration config = null)
+        private static void CreateDataBase()
         {
-            SessionFactory = factory;
-
-            using (var session = factory.OpenSession())
+            using (CurrentSession)
             {
-                new SchemaExport(config ?? Configuration).Execute(false, true, false, session.Connection, null);
-                session.Flush();
+                new SchemaExport(Configuration).Execute(false, true, false, CurrentSession.Connection, null);
+                CurrentSession.Flush();
             }
         }
 
-        public static void SetupDatabase(Assembly assemblyContainingMappings, string dbname = ":memory:")
+        public static void SetupDatabase(Assembly assemblyContainingMappings, string dbFilePath)
         {
-            var cfg = BuildConfig(new Assembly[] { assemblyContainingMappings }, dbname);
-            Initialize(cfg.BuildSessionFactory());
+            var shouldCreateDataBase = !File.Exists(dbFilePath);
+            var configuration = BuildConfig(new Assembly[] { assemblyContainingMappings }, dbFilePath);
+
+            SessionFactory = configuration.BuildSessionFactory();
+
+            if (shouldCreateDataBase)
+                CreateDataBase();
         }
 
         public static ISession CurrentSession

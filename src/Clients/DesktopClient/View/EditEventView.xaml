@@ -1,0 +1,46 @@
+﻿<UserControl x:Class="SC2LiquipediaStatistics.DesktopClient.View.EditEventView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:SC2LiquipediaStatistics.DesktopClient.View"
+             xmlns:Common="clr-namespace:SC2LiquipediaStatistics.DesktopClient.Common"
+             DataContext="{Binding EditEventViewModel, Source={StaticResource Locator}}"
+             Common:Behaviors.LoadedMethodName="View_OnLoad"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300">
+    <ScrollViewer>
+        <StackPanel Style="{StaticResource Form}">
+            <TextBlock Text="Edit Event" Style="{StaticResource Heading2}" Margin="0,0,0,8" />
+            <StackPanel Orientation="Vertical">
+                <StackPanel>
+                    <Label Content="Name" Target="{Binding ElementName=TextName}"/>
+                    <TextBox x:Name="TextName" Width="150" Text="{Binding SelectedEvent.Name}" />
+                </StackPanel>
+                <StackPanel>
+                    <Label Content="Start Date" Target="{Binding ElementName=DatePickerStartDate}"/>
+                    <DatePicker x:Name="DatePickerStartDate" Width="150" SelectedDate="{Binding SelectedEvent.StartDate}" />
+                </StackPanel>
+                <StackPanel>
+                    <Label Content="End Date" Target="{Binding ElementName=DatePickerEndDate}"/>
+                    <DatePicker x:Name="DatePickerEndDate" Width="150" SelectedDate="{Binding SelectedEvent.EndDate}" />
+                </StackPanel>
+                <StackPanel>
+                    <Label Content="SC2 Expansion"/>
+                    <ComboBox SelectedItem="{Binding SelectedEvent.Expansion}" ItemsSource="{Binding Expansions}" Width="150" />
+                </StackPanel>
+                <StackPanel>
+                    <Label Content="Tier" />
+                    <ComboBox Width="150" SelectedItem="{Binding SelectedEvent.LiquipediaTier}" ItemsSource="{Binding LiquipediaTiers}" />
+                </StackPanel>
+                <StackPanel>
+                    <Label Content="Prize Pool" Target="{Binding ElementName=TextPrizePool}"/>
+                    <TextBox x:Name="TextPrizePool" Width="150" Text="{Binding SelectedEvent.PrizePool}" />
+                </StackPanel>
+                <StackPanel>
+                    <Button Command="{Binding SaveCommand}" Content="Save"/>
+                </StackPanel>
+            </StackPanel>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

@@ -1,7 +1,16 @@
-﻿using System.Windows;
+﻿using System.Configuration;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Windows;
 
-using SC2LiquipediaStatistics.LiquipediaDomain.Model;
+using NHibernate.Linq;
+
+using SC2LiquipediaStatistics.DesktopClient.Service;
+using SC2LiquipediaStatistics.DesktopClient.ViewModel;
 using SC2LiquipediaStatistics.Utilities.Unity;
+
+using SC2Statistics.SC2Domain.Model;
 
 namespace SC2LiquipediaStatistics.DesktopClient
 {
@@ -14,11 +23,12 @@ namespace SC2LiquipediaStatistics.DesktopClient
         {
             Container.Configure();
 
-            DesktopClient.UnityConfiguration.RegisterTypes(Container.Instance);
-            LiquipediaDomain.UnityConfiguration.RegisterTypes(Container.Instance);
-            StatisticDomain.UnityConfiguration.RegisterTypes(Container.Instance);
+            AutoMapperConfiguration.Configure(Container.Instance);
 
-            Utilities.DataBase.NHibernateAndSQLiteConfiguration.SetupDatabase(typeof(Player).Assembly, "SC2LiquipediaStatistics.db");
+            DesktopClient.UnityConfiguration.RegisterTypes(Container.Instance);
+            SC2Statistics.SC2Domain.UnityConfiguration.RegisterTypes(Container.Instance);
+
+            Utilities.DataBase.NHibernateAndSQLiteConfiguration.SetupDatabase(typeof(Player).Assembly, ConfigurationManager.AppSettings["DataBaseFilePath"]);
         }
     }
 }

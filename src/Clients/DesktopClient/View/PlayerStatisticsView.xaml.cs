@@ -16,11 +16,11 @@ using System.Windows.Shapes;
 namespace SC2LiquipediaStatistics.DesktopClient.View
 {
     /// <summary>
-    /// Interaction logic for UpdateDataBase.xaml
+    /// Interaction logic for PlayerSelection.xaml
     /// </summary>
-    public partial class UpdateDataBase : UserControl
+    public partial class PlayerStatisticsView : UserControl
     {
-        public UpdateDataBase()
+        public PlayerStatisticsView()
         {
             InitializeComponent();
         }

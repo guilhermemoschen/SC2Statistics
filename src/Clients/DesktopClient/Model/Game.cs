@@ -8,6 +8,5 @@ namespace SC2LiquipediaStatistics.DesktopClient.Model
         public string Map { get; set; }
         public int Number { get; set; }
         public Player Winner { get; set; }
-        public Match Match { get; set; }
     }
 }

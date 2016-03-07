@@ -1,0 +1,84 @@
+﻿<UserControl x:Class="SC2LiquipediaStatistics.DesktopClient.View.PlayerStatisticsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:SC2LiquipediaStatistics.DesktopClient.View"
+             DataContext="{Binding PlayerStatisticsViewModel, Source={StaticResource Locator}}"
+             mc:Ignorable="d" 
+             d:DesignHeight="600" d:DesignWidth="800">
+    <UserControl.Resources>
+        <Style x:Key="Box" TargetType="StackPanel">
+            <Style.Resources>
+                <Style TargetType="TextBlock">
+                    <Setter Property="TextWrapping" Value="Wrap" />
+                    <Setter Property="Margin" Value="5,5,5,5" />
+                </Style>
+                <Style TargetType="Border">
+                    <Setter Property="CornerRadius" Value="8,8,8,8"/>
+                    <Setter Property="BorderThickness" Value="1,1,1,1" />
+                    <Setter Property="Background" Value="{DynamicResource Accent}" />
+                    <Setter Property="Width" Value="300" />
+                    <Setter Property="Height" Value="100" />
+                </Style>
+            </Style.Resources>
+            <Setter Property="Orientation" Value="Horizontal" />
+            <Setter Property="Width" Value="300" />
+            <Setter Property="Height" Value="100" />
+        </Style>
+        <Style x:Key="Inline" TargetType="TextBlock">
+            <Setter Property="Margin" Value="5,0,0,0"/>
+            <Setter Property="FontWeight" Value="Bold" />
+        </Style>
+    </UserControl.Resources>
+    <Grid Style="{StaticResource ContentRoot}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="40"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+        </Grid.RowDefinitions>
+        <ComboBox DisplayMemberPath="Name" Grid.Row="0" SelectedItem="{Binding SelectedPlayer}" ItemsSource="{Binding Players}" Width="200" Height="30" HorizontalAlignment="Left" VerticalAlignment="Top" />
+        <StackPanel Grid.Row="1">
+            <StackPanel Margin="0,0,0,10" Width="{Binding ActualWidth, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type StackPanel}}}">
+                <TextBlock Text="{Binding PlayerStatistics.Player.Name}" HorizontalAlignment="Center" Style="{StaticResource Heading2}" />
+            </StackPanel>
+            <WrapPanel>
+                <StackPanel Style="{StaticResource Box}">
+                    <Border>
+                        <TextBlock>
+                            <TextBlock Style="{StaticResource Heading2}" Text="Overall" /><LineBreak/>
+                            Total Matches Played <TextBlock Text="{Binding PlayerStatistics.TotalMatchesPlayed}" Style="{StaticResource Inline}" /><LineBreak />
+                            Win Rate <TextBlock Text="{Binding PlayerStatistics.WinRate,  StringFormat=0.00%}" Style="{StaticResource Inline}" />
+                        </TextBlock>
+                    </Border>
+                </StackPanel>
+                <StackPanel Style="{StaticResource Box}">
+                    <Border>
+                        <TextBlock>
+                            <TextBlock Style="{StaticResource Heading2}" Text="VS Terran"/><LineBreak/>
+                            Total Matches Played Against Terran <TextBlock Text="{Binding PlayerStatistics.TotalMatchesPlayedAgainstTerran}" Style="{StaticResource Inline}" /><LineBreak/>
+                            Win Rate Against Terran <TextBlock Text="{Binding PlayerStatistics.WinRateXTerran,  StringFormat=0.00%}" Style="{StaticResource Inline}" />
+                        </TextBlock>
+                    </Border>
+                </StackPanel>
+                <StackPanel Style="{StaticResource Box}">
+                    <Border>
+                        <TextBlock>
+                            <TextBlock Style="{StaticResource Heading2}" Text="VS Zerg"/><LineBreak/>
+                            Total Matches Played Against Zerg <TextBlock Text="{Binding PlayerStatistics.TotalMatchesPlayedAgainstZerg}" Style="{StaticResource Inline}" /><LineBreak/>
+                            Win Rate Against Zerg <TextBlock Text="{Binding PlayerStatistics.WinRateXZerg,  StringFormat=0.00%}"  />
+                        </TextBlock>
+                    </Border>
+                </StackPanel>
+                <StackPanel Style="{StaticResource Box}">
+                    <Border>
+                        <TextBlock>
+                            <TextBlock Style="{StaticResource Heading2}" Text="VS Protoss"/><LineBreak/>
+                            Total Matches Played Against Protoss <TextBlock Text="{Binding PlayerStatistics.TotalMatchesPlayedAgainstProtoss}" Style="{StaticResource Inline}" /><LineBreak/>
+                            Win Rate Against Protoss <TextBlock Text="{Binding PlayerStatistics.WinRateXProtoss,  StringFormat=0.00%}" Style="{StaticResource Inline}" />
+                        </TextBlock>
+                    </Border>
+                </StackPanel>
+            </WrapPanel>
+        </StackPanel>
+    </Grid>
+</UserControl>

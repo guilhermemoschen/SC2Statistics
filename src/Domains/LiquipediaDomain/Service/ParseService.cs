@@ -2,31 +2,68 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
-using SC2LiquipediaStatistics.LiquipediaDomain.Model;
-using SC2LiquipediaStatistics.LiquipediaDomain.Repository;
+using SC2LiquipediaStatistics.Utilities.Log;
 
+using SC2Statistics.SC2Domain.Model;
+using SC2Statistics.SC2Domain.Repository;
+
+using Match = SC2Statistics.SC2Domain.Model.Match;
 using RegexMatch = System.Text.RegularExpressions.Match;
-using Match = SC2LiquipediaStatistics.LiquipediaDomain.Model.Match;
 
-namespace SC2LiquipediaStatistics.LiquipediaDomain.Service
+namespace SC2Statistics.SC2Domain.Service
 {
     public class ParseService : IParseService
     {
+        #region REGEX
+
+        public const string FindPrizePool = @"(?<=Prize pool:\<\/div\>\s).*?(?=\<\/)";
+
+        public const string FindLiquepediaTier = @"Liquipedia Tier:\<\/div\>[\s\S]*?\<\/";
+
+        public const string FindGameVersion = @"Game Version:\<\/div\>[\s\S]*?\<\/";
+
+        public const string FindEndDate = @"(?<=End Date:\<\/div\>)[\s\S]*?(?=\<\/)";
+
+        public const string FindStartDate = @"(?<=Start Date:\<\/div\>)[\s\S]*?(?=\<\/)";
+
+        public const string FindEventName = @"(?<=\>).*(?=\<\/h1)";
+
+        public const string FindGroupsTables = @"\<table.+matchlist[\s\S]*?<\/table\>";
+
+        public const string FindGroupsTablesRows = @"(\<tr[^>]*?\>)\s?<td([\s\S](?!<tr))*\<\/tr\>";
+
+        public const string FindIfIsVodRow = @"[Vv]od\d\.png";
+
+        public const string FindIfIsGamesRow = "<div";
+
+        public const string FindPlayersNamesFromGroupMatchRow = @"\w+(?=<\/span)";
+
+        public const string FindIfBracketMatchIsFinished = @"\<div.*?bracket-cell.*?font-weight:bold";
+
+        public const string FindIfIsGroupMatchFinished = @"\<td.*?matchlistslot.*?font-weight:bold";
+
+        public const string FindIfPlayerOneWonTheMap = @"left.*?\>.*?GreenCheck.*?right";
+
+        public const string FindMapName = @"[\s\S]*?\<div.*?href.*?\>[\s]?";
+
+
+        #endregion
+
+        public ILogger Logger { get; protected set; }
         public IPlayerRespository PlayerRespository { get; protected set; }
 
-        public ParseService(IPlayerRespository playerRespository)
+        public ParseService(IPlayerRespository playerRespository, ILogger logger)
         {
             PlayerRespository = playerRespository;
+            Logger = logger;
         }
 
         #region Event
         public Event ParseEvent(string mainEventUrl, string mainEventContent, IDictionary<string, string> subEvents = null)
         {
-            var sc2Event = new Event()
+            var sc2Event = new Event
             {
                 Name = GetEventName(mainEventContent),
                 StartDate = GetEventStartDate(mainEventContent),
@@ -34,7 +71,7 @@ namespace SC2LiquipediaStatistics.LiquipediaDomain.Service
                 Expansion = GetEventExpansion(mainEventContent),
                 LiquipediaReference = mainEventUrl,
                 LiquipediaTier = GetEventTier(mainEventContent),
-                PrizePool = GetEventPrizePool(mainEventContent),
+                PrizePool = GetEventPrizePool(mainEventContent)
             };
 
             foreach (var match in ParseMatches(mainEventUrl, mainEventContent))
@@ -56,23 +93,19 @@ namespace SC2LiquipediaStatistics.LiquipediaDomain.Service
             return sc2Event;
         }
 
-        private string GetEventPrizePool(string mainEventContent)
+        private string GetEventPrizePool(string html)
         {
-            var result = Regex.Match(mainEventContent, "Prize pool:\\<\\/div\\>[\\s\\S]*?\\<\\/");
+            var result = Regex.Match(html, FindPrizePool);
             if (!result.Success)
                 return null;
 
-            var prizePool = result.Value;
-            prizePool = Regex.Replace(prizePool, "[\\s\\S]*?\\\"\\>", string.Empty);
-            prizePool = prizePool.Replace("</", string.Empty);
-            prizePool = prizePool.Trim();
-
+            var prizePool = Regex.Replace(result.Value, @"\<.*?\>", string.Empty);
             return string.IsNullOrEmpty(prizePool) ? null : prizePool;
         }
 
-        private LiquipediaTier GetEventTier(string mainEventContent)
+        private LiquipediaTier GetEventTier(string html)
         {
-            var result = Regex.Match(mainEventContent, "Liquipedia Tier:\\<\\/div\\>[\\s\\S]*?\\<\\/");
+            var result = Regex.Match(html, FindLiquepediaTier);
             if (!result.Success)
                 return LiquipediaTier.Undefined;
 
@@ -106,9 +139,9 @@ namespace SC2LiquipediaStatistics.LiquipediaDomain.Service
             return LiquipediaTier.Undefined;
         }
 
-        private Expansion GetEventExpansion(string mainEventContent)
+        private Expansion GetEventExpansion(string html)
         {
-            var result = Regex.Match(mainEventContent, "Game Version:\\<\\/div\\>[\\s\\S]*?\\<\\/");
+            var result = Regex.Match(html, FindGameVersion);
             if (!result.Success)
                 return Expansion.Undefined;
 
@@ -124,15 +157,13 @@ namespace SC2LiquipediaStatistics.LiquipediaDomain.Service
             return Expansion.Undefined;
         }
 
-        private DateTime? GetEventEndDate(string mainEventContent)
+        private DateTime? GetEventEndDate(string html)
         {
-            var result = Regex.Match(mainEventContent, "End Date:\\<\\/div\\>[\\s\\S]*?\\<\\/");
+            var result = Regex.Match(html, FindEndDate);
             if (!result.Success)
                 return null;
 
-            var endDate = result.Value;
-            endDate = Regex.Replace(endDate, "[\\s\\S]*?\\\"\\>", string.Empty);
-            endDate = endDate.Replace("</", string.Empty);
+            var endDate = Regex.Match(result.Value, @"\d{4}-\d{2}-\d{2}").Value;
 
             DateTime date;
             if (DateTime.TryParseExact(endDate, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out date))
@@ -142,15 +173,13 @@ namespace SC2LiquipediaStatistics.LiquipediaDomain.Service
             return null;
         }
 
-        private DateTime? GetEventStartDate(string mainEventContent)
+        private DateTime? GetEventStartDate(string html)
         {
-            var result = Regex.Match(mainEventContent, "Start Date:\\<\\/div\\>[\\s\\S]*?\\<\\/");
+            var result = Regex.Match(html, FindStartDate);
             if (!result.Success)
                 return null;
 
-            var startDate = result.Value;
-            startDate = Regex.Replace(startDate, "[\\s\\S]*?\\\"\\>", string.Empty);
-            startDate = startDate.Replace("</", string.Empty);
+            var startDate = Regex.Match(result.Value, @"\d{4}-\d{2}-\d{2}").Value;
 
             DateTime date;
             if (DateTime.TryParseExact(startDate, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out date))
@@ -160,12 +189,11 @@ namespace SC2LiquipediaStatistics.LiquipediaDomain.Service
             return null;
         }
 
-        private string GetEventName(string mainEventContent)
+        private string GetEventName(string html)
         {
-            var name = Regex.Match(mainEventContent, "\\<h1.*?h1>").Value;
-            name = name.Replace("</h1>", string.Empty);
-            return Regex.Replace(name, ".*?\\>", string.Empty);
+            return Regex.Match(html, FindEventName).Value;
         }
+
         #endregion
 
         #region Matches
@@ -206,7 +234,7 @@ namespace SC2LiquipediaStatistics.LiquipediaDomain.Service
             var player1Row = rows[1];
             var player2Row = rows[2];
 
-            if (!IsMatchFinished(player1Row, player2Row))
+            if (!IsBracketMatchFinished(bracketGameHtml))
                 return null;
 
             var player1Name = Regex.Replace(player1Row, "[\\s\\S]*?bracket-player[\\s\\S]*?\\<span[\\s\\S]*?\\>", string.Empty);
@@ -286,8 +314,7 @@ namespace SC2LiquipediaStatistics.LiquipediaDomain.Service
 
         private IEnumerable<string> GetGroupsTables(string html)
         {
-            var regex = new Regex("\\<table class\\=\\\"matchlist.*\\>[\\s\\S]*?<\\/table\\>");
-            var result = regex.Matches(html);
+            var result = Regex.Matches(html, FindGroupsTables);
             return result.Cast<RegexMatch>().Select(x => x.Value);
         }
 
@@ -296,61 +323,77 @@ namespace SC2LiquipediaStatistics.LiquipediaDomain.Service
             if (groupTable == null)
                 return new Match[0];
 
-            var rows = Regex.Split(groupTable.Substring(groupTable.IndexOf("</th>")), "\\<tr.*?\\>");
+            var rows = Regex.Matches(groupTable, FindGroupsTablesRows);
 
-            if (rows.Any())
+            var matches = new List<Match>();
+
+            for (var i = 0; i < rows.Count; i++)
             {
-                var matches = new List<Match>();
+                var matchRow = rows[i].Value;
+                string gamesRow = null;
+                string vodsRow = null;
 
-                for (var i = 1; i < rows.Length; i++)
+                for (var j = i + 1; j < rows.Count; j++)
                 {
-                    var matchRow = rows[i];
-                    string gamesRow = null;
-
-                    if (i + 1 < rows.Length)
+                    var nextRow = rows[j].Value;
+                    if (IsGamesRow(nextRow))
                     {
-                        if (rows[i + 1].Contains("<div"))
-                        {
-                            gamesRow = rows[i + 1];
-                            i++;
-                        }
+                        gamesRow = nextRow;
                     }
-
-                    var match = ConvertMatchRow(matchRow, gamesRow);
-                    if (match != null)
-                        matches.Add(match);
+                    else if (IsVodRow(nextRow))
+                    {
+                        vodsRow = nextRow;
+                    }
+                    else
+                    {
+                        break;
+                    }
                 }
 
-                return matches;
+                var match = ConvertGroupGameToMatch(matchRow, gamesRow, vodsRow);
+                if (match != null)
+                    matches.Add(match);
             }
 
-            return new Match[0];
+            return matches;
         }
 
-        private Match ConvertMatchRow(string matchRow, string mapsRown = null)
+        private bool IsVodRow(string row)
         {
-            if (matchRow == null)
+            return Regex.IsMatch(row, FindIfIsVodRow);
+        }
+
+        private bool IsGamesRow(string html)
+        {
+            return html.Contains(FindIfIsGamesRow);
+        }
+
+        private Match ConvertGroupGameToMatch(string matchHtml, string gamesHtml, string vodsHtml)
+        {
+            if (matchHtml == null)
                 return null;
 
-            var cells = Regex.Split(matchRow, "\\<\\/td\\>");
-            var player1Name = cells[0];
-            var player1Score = cells[1];
-            var player2Score = cells[2];
-            var player2Name = cells[3];
-
-            if (!IsMatchFinished(player1Name, player2Name))
+            if (!IsGroupMatchFinished(matchHtml))
                 return null;
 
-            player1Name = Regex.Replace(player1Name, "\\n*\\<td.*?\\<span.*?\\>", string.Empty);
-            player1Name = Regex.Replace(player1Name, "<.*", string.Empty);
+            var names = Regex.Matches(matchHtml, FindPlayersNamesFromGroupMatchRow);
+            if (names.Count != 2)
+            {
+                Logger.Info("Could not parse the players names in a match row");
+                return null;
+            }
 
-            player1Score = Regex.Replace(player1Score, "\\n*\\<.*?\\>", string.Empty);
+            var scores = Regex.Matches(matchHtml, @"\w+(?=<\/td)");
+            if (scores.Count != 2)
+            {
+                Logger.Info("Could not parse the scores in a match row");
+                return null;
+            }
 
-            player2Score = Regex.Replace(player2Score, "\\n*\\<.*?\\>", string.Empty);
-
-            player2Name = Regex.Replace(player2Name, "\\n*\\<td.*?\\<span.*?\\>", string.Empty);
-            player2Name = Regex.Replace(player2Name, "<.*", string.Empty);
-
+            var player1Name = names[0].Value;
+            var player1Score = scores[0].Value;
+            var player2Score = scores[1].Value;
+            var player2Name = names[1].Value;
 
             if (string.IsNullOrEmpty(player1Name) || string.IsNullOrEmpty(player2Name))
                 return null;
@@ -360,54 +403,70 @@ namespace SC2LiquipediaStatistics.LiquipediaDomain.Service
                 null,
                 PlayerRespository.FindOrCreate(player1Name),
                 player1Score,
-                ConvertToRace(cells[0]),
+                GetPlayer1Race(matchHtml),
                 PlayerRespository.FindOrCreate(player2Name),
                 player2Score,
-                ConvertToRace(cells[3])
+                GetPlayer2Race(matchHtml)
             );
 
             if (match.Winner == null)
                 return null;
 
-            if (mapsRown != null)
+            if (gamesHtml != null)
             {
-                match.Games = ConvertGamesRow(mapsRown, match);
+                match.Games = ConvertGamesRow(gamesHtml, match);
+            }
+
+            if (vodsHtml != null)
+            {
+                // TODO
             }
 
             return match;
         }
 
-        private bool IsMatchFinished(string player1Html, string player2Html)
+        private bool IsBracketMatchFinished(string matchHtml)
         {
-            if (player1Html.Contains("font-weight:bold"))
-                return true;
+            return Regex.IsMatch(matchHtml, FindIfBracketMatchIsFinished);
+        }
 
-            if (player2Html.Contains("font-weight:bold"))
-                return true;
-
-            return false;
+        private bool IsGroupMatchFinished(string matchHtml)
+        {
+            return Regex.IsMatch(matchHtml, FindIfIsGroupMatchFinished);
         }
 
         private IList<Game> ConvertGamesRow(string gamesRow, Match match)
         {
             var games = new List<Game>();
 
-            var mapsRows = Regex.Split(gamesRow, "\\<\\/a\\>");
-            for (var i = 0; i < mapsRows.Length - 1; i++)
-            {
-                var mapName = Regex.Replace(mapsRows[i], "[\\s\\S]*?\\<div.*?href.*?\\>", string.Empty);
-                mapName = Regex.Replace(mapName, "\\n", string.Empty);
+            var mapsRows = Regex.Split(gamesRow, @"\<\/a\>");
 
-                games.Add(new Game()
+            foreach (var mapRow in mapsRows.Take(mapsRows.Length - 1))
+            {
+                var mapName = Regex.Replace(mapRow, FindMapName, string.Empty);
+
+                games.Add(new Game
                 {
                     Map = mapName,
-                    Number = i + 1,
-                    Winner = Regex.IsMatch(mapsRows[i], "left.*?\\>.*?GreenCheck.*?right") ? match.Player1 : match.Player2,
-                    Match = match,
+                    Number = games.Count + 1,
+                    Winner = Regex.IsMatch(mapRow, FindIfPlayerOneWonTheMap) ? match.Player1 : match.Player2,
+                    Match = match
                 });
             }
 
             return games;
+        }
+
+        private Race GetPlayer1Race(string matchRow)
+        {
+            var tds = Regex.Split(matchRow, "<td");
+            return ConvertToRace(tds.Skip(1).First());
+        }
+
+        private Race GetPlayer2Race(string matchRow)
+        {
+            var tds = Regex.Split(matchRow, "<td");
+            return ConvertToRace(tds.Last());
         }
 
         private Race ConvertToRace(string input)
@@ -431,14 +490,14 @@ namespace SC2LiquipediaStatistics.LiquipediaDomain.Service
         {
             var subPagesUrls = new List<string>();
 
-            var mainPagePath = Regex.Replace(pageUrl, ".*?\\/starcraft2\\/", string.Empty);
-            var pattern = string.Format("\\<a href=\\\"\\/starcraft2\\/{0}\\/.*?\\\"", mainPagePath);
+            var mainPagePath = Regex.Replace(pageUrl, @".*?\/starcraft2\/", string.Empty);
+            var pattern = string.Format(@"\<a href=.\/starcraft2\/{0}\/.*?" + "\"", mainPagePath);
             var urls = Regex.Matches(pageContent, pattern).Cast<RegexMatch>().Select(x => x.Value);
 
             foreach (var url in urls)
             {
-                var cleanUrl = Regex.Replace(url, ".*?\\\"\\/", string.Empty);
-                cleanUrl = string.Format("http://wiki.teamliquid.net/{0}", cleanUrl.Replace("\"", string.Empty));
+                var cleanUrl = Regex.Replace(url, ".*?\\\"\\/", string.Empty).Replace("\"", string.Empty);
+                cleanUrl = string.Format("http://wiki.teamliquid.net/{0}", cleanUrl);
 
                 if (!subPagesUrls.Contains(cleanUrl))
                     subPagesUrls.Add(cleanUrl);

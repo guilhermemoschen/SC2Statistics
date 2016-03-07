@@ -16,11 +16,11 @@ using System.Windows.Shapes;
 namespace SC2LiquipediaStatistics.DesktopClient.View
 {
     /// <summary>
-    /// Interaction logic for MenuView.xaml
+    /// Interaction logic for ListEventsView.xaml
     /// </summary>
-    public partial class MenuView : UserControl
+    public partial class ListEventsView : UserControl
     {
-        public MenuView()
+        public ListEventsView()
         {
             InitializeComponent();
         }

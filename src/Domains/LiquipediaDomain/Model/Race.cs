@@ -1,4 +1,4 @@
-﻿namespace SC2LiquipediaStatistics.LiquipediaDomain.Model
+﻿namespace SC2Statistics.SC2Domain.Model
 {
     public enum Race
     {

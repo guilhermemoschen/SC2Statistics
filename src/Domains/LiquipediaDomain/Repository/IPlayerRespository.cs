@@ -1,8 +1,12 @@
-using SC2LiquipediaStatistics.LiquipediaDomain.Model;
+using System.Collections.Generic;
 
-namespace SC2LiquipediaStatistics.LiquipediaDomain.Repository
+using SC2LiquipediaStatistics.Utilities.DataBase;
+
+using SC2Statistics.SC2Domain.Model;
+
+namespace SC2Statistics.SC2Domain.Repository
 {
-    public interface IPlayerRespository
+    public interface IPlayerRespository : IRepositoryBase<Player>
     {
         Player FindOrCreate(string playerName);
     }

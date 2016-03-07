@@ -36,12 +36,20 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="AutoMapper, Version=4.2.1.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\AutoMapper.4.2.1\lib\net45\AutoMapper.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\..\packages\EntityFramework.6.0.0\lib\net45\EntityFramework.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\..\packages\EntityFramework.6.0.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="FirstFloor.ModernUI, Version=1.0.8.0, Culture=neutral, PublicKeyToken=bc9b0c37bf06c6a9, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\ModernUI.WPF.1.0.8\lib\net45\FirstFloor.ModernUI.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="GalaSoft.MvvmLight, Version=5.2.0.37222, Culture=neutral, PublicKeyToken=e7570ab207bcb616, processorArchitecture=MSIL">
@@ -97,7 +105,6 @@
       <HintPath>..\..\packages\System.Data.SQLite.Linq.1.0.99.0\lib\net45\System.Data.SQLite.Linq.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="System.Globalization" />
     <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\..\packages\MvvmLightLibs.5.2.0.0\lib\net45\System.Windows.Interactivity.dll</HintPath>
       <Private>True</Private>
@@ -144,32 +151,65 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="AutoMapperConfiguration.cs" />
     <Compile Include="Common\Behaviors.cs" />
     <Compile Include="Common\LogMessage.cs" />
     <Compile Include="Common\MessageLogger.cs" />
     <Compile Include="Model\EventItem.cs" />
+    <Compile Include="Model\PlayerStatistics.cs" />
+    <Compile Include="Model\Translator\SC2DomainProfile.cs" />
     <Compile Include="Service\EventsListService.cs" />
     <Compile Include="Service\IEventsListService.cs" />
+    <Compile Include="Service\IModernNavigationService.cs" />
+    <Compile Include="Service\NavigationService.cs" />
     <Compile Include="UnityConfiguration.cs" />
     <Compile Include="Model\Event.cs" />
     <Compile Include="Model\Game.cs" />
     <Compile Include="Model\Match.cs" />
     <Compile Include="Model\Player.cs" />
-    <Compile Include="ViewModel\EventViewModel.cs" />
-    <Compile Include="ViewModel\MenuViewModel.cs" />
+    <Compile Include="ViewModel\AddEventViewModel.cs" />
+    <Compile Include="ViewModel\EditEventViewModel.cs" />
+    <Compile Include="ViewModel\ListEventsViewModel.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
-    <Compile Include="ViewModel\UpdateDataBaseViewModel.cs" />
+    <Compile Include="ViewModel\PlayerStatisticsViewModel.cs" />
     <Compile Include="ViewModel\ViewModelLocator.cs" />
-    <Compile Include="View\EventView.xaml.cs">
-      <DependentUpon>EventView.xaml</DependentUpon>
+    <Compile Include="View\AddEventView.xaml.cs">
+      <DependentUpon>AddEventView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\MenuView.xaml.cs">
-      <DependentUpon>MenuView.xaml</DependentUpon>
+    <Compile Include="View\EditEventView.xaml.cs">
+      <DependentUpon>EditEventView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\UpdateDataBase.xaml.cs">
-      <DependentUpon>UpdateDataBase.xaml</DependentUpon>
+    <Compile Include="View\IntroductionView.xaml.cs">
+      <DependentUpon>IntroductionView.xaml</DependentUpon>
     </Compile>
-    <Page Include="MainWindow.xaml">
+    <Compile Include="View\ListEventsView.xaml.cs">
+      <DependentUpon>ListEventsView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\PlayerStatisticsView.xaml.cs">
+      <DependentUpon>PlayerStatisticsView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\ViewLocator.cs" />
+    <Page Include="Content\ResourceDictionary\Main.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\AddEventView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\EditEventView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\IntroductionView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\ListEventsView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -177,19 +217,11 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="MainWindow.xaml.cs">
+    <Compile Include="View\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="View\EventView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="View\MenuView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="View\UpdateDataBase.xaml">
+    <Page Include="View\PlayerStatisticsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -223,27 +255,16 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Domains\LiquipediaDomain\LiquipediaDomain.csproj">
+    <ProjectReference Include="..\..\Domains\LiquipediaDomain\SC2Domain.csproj">
       <Project>{1BC74F48-67F5-487F-886F-F901100803BB}</Project>
-      <Name>LiquipediaDomain</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Domains\StatisticDomain\StatisticDomain.csproj">
-      <Project>{daf86126-9901-4448-b9b7-842e708df031}</Project>
-      <Name>StatisticDomain</Name>
+      <Name>SC2Domain</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Utilities\Utilities\Utilities.csproj">
       <Project>{C2B7E39D-3F74-42EE-9294-BC686D367CB3}</Project>
       <Name>Utilities</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Model\Translators\" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="events.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\..\packages\System.Data.SQLite.Core.1.0.99.0\build\net45\System.Data.SQLite.Core.targets" Condition="Exists('..\..\packages\System.Data.SQLite.Core.1.0.99.0\build\net45\System.Data.SQLite.Core.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

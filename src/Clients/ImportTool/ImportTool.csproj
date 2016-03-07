@@ -85,13 +85,9 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Domains\LiquipediaDomain\LiquipediaDomain.csproj">
+    <ProjectReference Include="..\..\Domains\LiquipediaDomain\SC2Domain.csproj">
       <Project>{1BC74F48-67F5-487F-886F-F901100803BB}</Project>
-      <Name>LiquipediaDomain</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Domains\StatisticDomain\StatisticDomain.csproj">
-      <Project>{DAF86126-9901-4448-B9B7-842E708DF031}</Project>
-      <Name>StatisticDomain</Name>
+      <Name>SC2Domain</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Utilities\Utilities\Utilities.csproj">
       <Project>{C2B7E39D-3F74-42EE-9294-BC686D367CB3}</Project>

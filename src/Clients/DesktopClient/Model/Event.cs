@@ -6,35 +6,124 @@ using System.Threading.Tasks;
 
 using GalaSoft.MvvmLight;
 
-using SC2LiquipediaStatistics.LiquipediaDomain.Model;
+using SC2Statistics.SC2Domain.Model;
 
 namespace SC2LiquipediaStatistics.DesktopClient.Model
 {
     public class Event : ObservableObject
     {
         public long Id { get; set; }
-        public string Name { get; set; }
-        public string LiquipediaReference { get; set; }
-        public DateTime? StartDate { get; set; }
-        public DateTime? EndDate { get; set; }
-        public LiquipediaTier LiquipediaTier { get; set; }
-        public string PrizePool { get; set; }
-        public Expansion Expansion { get; set; }
 
-        public IList<Match> Matches { get; set; }
-
-        public Event()
+        private string name;
+        public string Name
         {
-            Matches = new List<Match>();
+            get
+            {
+                return name;
+            }
+            set
+            {
+                if (name == value)
+                    return;
+
+                Set(() => Name, ref name, value);
+            }
         }
 
-        public void AddMatch(Match match)
+        private string liquipediaReference;
+        public string LiquipediaReference
         {
-            if (Matches.Contains(match))
-                return;
+            get
+            {
+                return liquipediaReference;
+            }
+            set
+            {
+                if (liquipediaReference == value)
+                    return;
 
-            match.Event = this;
-            Matches.Add(match);
+                Set(() => LiquipediaReference, ref liquipediaReference, value);
+            }
+        }
+
+        private DateTime? startDate;
+        public DateTime? StartDate
+        {
+            get
+            {
+                return startDate;
+            }
+            set
+            {
+                if (startDate == value)
+                    return;
+
+                Set(() => StartDate, ref startDate, value);
+            }
+        }
+
+        private DateTime? endDate;
+        public DateTime? EndDate
+        {
+            get
+            {
+                return endDate;
+            }
+            set
+            {
+                if (endDate == value)
+                    return;
+
+                Set(() => EndDate, ref endDate, value);
+            }
+        }
+
+        private LiquipediaTier liquipediaTier;
+        public LiquipediaTier LiquipediaTier
+        {
+            get
+            {
+                return liquipediaTier;
+            }
+            set
+            {
+                if (liquipediaTier == value)
+                    return;
+
+                Set(() => LiquipediaTier, ref liquipediaTier, value);
+            }
+        }
+
+        private string prizePool;
+        public string PrizePool
+        {
+            get
+            {
+                return prizePool;
+            }
+            set
+            {
+                if (prizePool == value)
+                    return;
+
+                Set(() => PrizePool, ref prizePool, value);
+            }
+        }
+
+        private Expansion expansion;
+        public Expansion Expansion
+        {
+            get
+            {
+                return expansion;
+            }
+            set
+            {
+                if (expansion == value)
+                    return;
+
+                Set(() => Expansion, ref expansion, value);
+            }
         }
     }
 }

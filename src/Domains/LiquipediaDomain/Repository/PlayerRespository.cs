@@ -1,15 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 using NHibernate.Linq;
 
-using SC2LiquipediaStatistics.LiquipediaDomain.Model;
 using SC2LiquipediaStatistics.Utilities.DataBase;
 
-namespace SC2LiquipediaStatistics.LiquipediaDomain.Repository
+using SC2Statistics.SC2Domain.Model;
+
+namespace SC2Statistics.SC2Domain.Repository
 {
     public class PlayerRespository : RepositoryBase<Player>, IPlayerRespository
     {

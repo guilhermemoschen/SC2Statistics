@@ -9,11 +9,12 @@ using NHibernate.Linq;
 using NHibernate.Type;
 
 using SC2LiquipediaStatistics.ImportTool.Log;
-using SC2LiquipediaStatistics.LiquipediaDomain.Model;
-using SC2LiquipediaStatistics.LiquipediaDomain.Repository;
-using SC2LiquipediaStatistics.LiquipediaDomain.Service;
 using SC2LiquipediaStatistics.Utilities.DataBase;
 using SC2LiquipediaStatistics.Utilities.Web;
+
+using SC2Statistics.SC2Domain.Model;
+using SC2Statistics.SC2Domain.Repository;
+using SC2Statistics.SC2Domain.Service;
 
 namespace SC2LiquipediaStatistics.ImportTool
 {

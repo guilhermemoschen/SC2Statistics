@@ -1,9 +1,9 @@
 ﻿using NHibernate.Mapping.ByCode;
 using NHibernate.Mapping.ByCode.Conformist;
 
-using SC2LiquipediaStatistics.LiquipediaDomain.Model;
+using SC2Statistics.SC2Domain.Model;
 
-namespace SC2LiquipediaStatistics.LiquipediaDomain.Repository.Maps
+namespace SC2Statistics.SC2Domain.Repository.Maps
 {
     public class PlayerMap : ClassMapping<Player>
     {

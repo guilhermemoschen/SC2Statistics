@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 using GalaSoft.MvvmLight;
 
-using SC2LiquipediaStatistics.LiquipediaDomain.Model;
+using SC2Statistics.SC2Domain.Model;
 
 namespace SC2LiquipediaStatistics.DesktopClient.Model
 {

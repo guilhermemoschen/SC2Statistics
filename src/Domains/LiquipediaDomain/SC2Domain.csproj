@@ -7,8 +7,8 @@
     <ProjectGuid>{1BC74F48-67F5-487F-886F-F901100803BB}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>SC2LiquipediaStatistics.LiquipediaDomain</RootNamespace>
-    <AssemblyName>LiquipediaDomain</AssemblyName>
+    <RootNamespace>SC2Statistics.SC2Domain</RootNamespace>
+    <AssemblyName>SC2Domain</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -52,6 +52,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Transactions" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -60,6 +61,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Model\PlayerStatistics.cs" />
+    <Compile Include="Repository\IMatchRepository.cs" />
+    <Compile Include="Repository\MatchRepository.cs" />
+    <Compile Include="Service\IStatisticsService.cs" />
+    <Compile Include="Service\StatisticsService.cs" />
     <Compile Include="UnityConfiguration.cs" />
     <Compile Include="Model\Event.cs" />
     <Compile Include="Model\Expansion.cs" />
@@ -78,9 +84,9 @@
     <Compile Include="Repository\Maps\MatchMap.cs" />
     <Compile Include="Repository\Maps\PlayerMap.cs" />
     <Compile Include="Repository\PlayerRespository.cs" />
-    <Compile Include="Service\ILiquipediaService.cs" />
+    <Compile Include="Service\ISC2Service.cs" />
     <Compile Include="Service\IParseService.cs" />
-    <Compile Include="Service\LiquipediaService.cs" />
+    <Compile Include="Service\SC2Service.cs" />
     <Compile Include="Service\ParseService.cs" />
   </ItemGroup>
   <ItemGroup>

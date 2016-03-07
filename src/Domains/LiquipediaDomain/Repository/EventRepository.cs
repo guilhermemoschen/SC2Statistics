@@ -1,15 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-using SC2LiquipediaStatistics.LiquipediaDomain.Model;
+using NHibernate.Linq;
+
 using SC2LiquipediaStatistics.Utilities.DataBase;
 
-namespace SC2LiquipediaStatistics.LiquipediaDomain.Repository
+using SC2Statistics.SC2Domain.Model;
+
+namespace SC2Statistics.SC2Domain.Repository
 {
     public class EventRepository : RepositoryBase<Event>, IEventRepository
     {
+        public IList<Event> GetAllEvents()
+        {
+            return Session.Query<Event>().ToList();
+        }
     }
 }

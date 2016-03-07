@@ -60,6 +60,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DataBase\IRepositoryBase.cs" />
     <Compile Include="DataBase\NHibernateAndSQLiteConfiguration.cs" />
     <Compile Include="DataBase\RepositoryBase.cs" />
     <Compile Include="Log\ILogger.cs" />

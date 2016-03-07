@@ -2,9 +2,9 @@
 using NHibernate.Mapping.ByCode.Conformist;
 using NHibernate.Type;
 
-using SC2LiquipediaStatistics.LiquipediaDomain.Model;
+using SC2Statistics.SC2Domain.Model;
 
-namespace SC2LiquipediaStatistics.LiquipediaDomain.Repository.Maps
+namespace SC2Statistics.SC2Domain.Repository.Maps
 {
     public class MatchMap : ClassMapping<Match>
     {

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -17,11 +16,11 @@ using System.Windows.Shapes;
 namespace SC2LiquipediaStatistics.DesktopClient.View
 {
     /// <summary>
-    /// Interaction logic for Event.xaml
+    /// Interaction logic for AddEvent.xaml
     /// </summary>
-    public partial class EventView : UserControl
+    public partial class AddEventView : UserControl
     {
-        public EventView()
+        public AddEventView()
         {
             InitializeComponent();
         }

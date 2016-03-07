@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 
-using SC2LiquipediaStatistics.LiquipediaDomain.Model;
+using SC2Statistics.SC2Domain.Model;
 
-namespace SC2LiquipediaStatistics.LiquipediaDomain.Service
+namespace SC2Statistics.SC2Domain.Service
 {
     public interface IParseService
     {

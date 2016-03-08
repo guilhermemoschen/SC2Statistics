@@ -7,7 +7,7 @@
                 <Setter Property="Margin" Value="0,0,0,4" />
             </Style>
             <Style TargetType="Label" BasedOn="{StaticResource {x:Type Label}}">
-                <Setter Property="Width" Value="100" />
+                <Setter Property="Width" Value="200" />
                 <Setter Property="VerticalAlignment" Value="Center" />
             </Style>
             <Style TargetType="CheckBox" BasedOn="{StaticResource {x:Type CheckBox}}">

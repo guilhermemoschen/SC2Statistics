@@ -37,7 +37,6 @@ namespace SC2LiquipediaStatistics.DesktopClient.ViewModel
         }
 
         protected Player selectedPlayer;
-
         public Player SelectedPlayer
         {
             get
@@ -66,6 +65,22 @@ namespace SC2LiquipediaStatistics.DesktopClient.ViewModel
                     return;
 
                 Set(() => PlayerStatistics, ref playerStatistics, value, true);
+            }
+        }
+
+        protected ObservableCollection<Event> eventsParticipated;
+        public ObservableCollection<Event> EventsParticipated
+        {
+            get
+            {
+                return eventsParticipated;
+            }
+            set
+            {
+                if (value == null || value == eventsParticipated)
+                    return;
+
+                Set(() => EventsParticipated, ref eventsParticipated, value, true);
             }
         }
 

@@ -9,6 +9,8 @@ namespace SC2Statistics.SC2Domain.Model
     public class PlayerStatistics
     {
         public Player Player { get; set; }
+        public IList<Event> EventsParticipated { get; set; }
+        public int TotalEventsParticipated { get; set; }
         public int TotalMatchesPlayed { get; set; }
         public int TotalMatchesPlayedAgainstTerran { get; set; }
         public int TotalMatchesPlayedAgainstZerg { get; set; }

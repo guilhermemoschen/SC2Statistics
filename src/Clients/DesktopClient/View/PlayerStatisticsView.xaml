@@ -33,10 +33,23 @@
     </UserControl.Resources>
     <Grid Style="{StaticResource ContentRoot}">
         <Grid.RowDefinitions>
-            <RowDefinition Height="40"></RowDefinition>
+            <RowDefinition Height="100"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
             <RowDefinition Height="*"></RowDefinition>
         </Grid.RowDefinitions>
-        <ComboBox DisplayMemberPath="Name" Grid.Row="0" SelectedItem="{Binding SelectedPlayer}" ItemsSource="{Binding Players}" Width="200" Height="30" HorizontalAlignment="Left" VerticalAlignment="Top" />
+        <StackPanel Grid.Row="0" Style="{StaticResource Form}">
+            <StackPanel>
+                <Label Content="Select a Player"/>
+                <ComboBox DisplayMemberPath="Name" SelectedItem="{Binding SelectedPlayer}" ItemsSource="{Binding Players}" Width="200" Height="30" HorizontalAlignment="Left" VerticalAlignment="Top" />
+            </StackPanel>
+            <StackPanel>
+                <Label Content="Select Starcraft 2 Expansion" />
+                <ComboBox DisplayMemberPath="Name" SelectedItem="{Binding SelectedPlayer}" ItemsSource="{Binding Players}" Width="200" Height="30" HorizontalAlignment="Left" VerticalAlignment="Top" />
+            </StackPanel>
+            <StackPanel>
+                <Button Content="Search"/>
+            </StackPanel>
+        </StackPanel>
         <StackPanel Grid.Row="1">
             <StackPanel Margin="0,0,0,10" Width="{Binding ActualWidth, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type StackPanel}}}">
                 <TextBlock Text="{Binding PlayerStatistics.Player.Name}" HorizontalAlignment="Center" Style="{StaticResource Heading2}" />
@@ -46,6 +59,7 @@
                     <Border>
                         <TextBlock>
                             <TextBlock Style="{StaticResource Heading2}" Text="Overall" /><LineBreak/>
+                            Total Events/Tournaments participated <TextBlock Text="{Binding PlayerStatistics.TotalEventsParticipated}" Style="{StaticResource Inline}" /><LineBreak />
                             Total Matches Played <TextBlock Text="{Binding PlayerStatistics.TotalMatchesPlayed}" Style="{StaticResource Inline}" /><LineBreak />
                             Win Rate <TextBlock Text="{Binding PlayerStatistics.WinRate,  StringFormat=0.00%}" Style="{StaticResource Inline}" />
                         </TextBlock>
@@ -65,7 +79,7 @@
                         <TextBlock>
                             <TextBlock Style="{StaticResource Heading2}" Text="VS Zerg"/><LineBreak/>
                             Total Matches Played Against Zerg <TextBlock Text="{Binding PlayerStatistics.TotalMatchesPlayedAgainstZerg}" Style="{StaticResource Inline}" /><LineBreak/>
-                            Win Rate Against Zerg <TextBlock Text="{Binding PlayerStatistics.WinRateXZerg,  StringFormat=0.00%}"  />
+                            Win Rate Against Zerg <TextBlock Text="{Binding PlayerStatistics.WinRateXZerg,  StringFormat=0.00%}" Style="{StaticResource Inline}" />
                         </TextBlock>
                     </Border>
                 </StackPanel>
@@ -79,6 +93,19 @@
                     </Border>
                 </StackPanel>
             </WrapPanel>
+        </StackPanel>
+        <StackPanel Grid.Row="2" Margin="0,20,0,0">
+            <StackPanel Margin="0,0,0,10" Width="{Binding ActualWidth, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type StackPanel}}}">
+                <TextBlock Text="Events/Tournaments Participated" HorizontalAlignment="Center" Style="{StaticResource Heading2}" />
+            </StackPanel>
+            <DataGrid IsReadOnly="true" HorizontalAlignment="Left" VerticalAlignment="Top" SelectionMode="Single" AutoGenerateColumns="False">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Width="*" Binding="{Binding Name}" Header="Name"/>
+                    <DataGridTextColumn Width="*" Binding="{Binding LiquipediaTier}" Header="Tier"/>
+                    <DataGridTextColumn Width="*" Binding="{Binding StartDate}" Header="Start"/>
+                    <DataGridTextColumn Width="*" Binding="{Binding EndDate}" Header="End"/>
+                </DataGrid.Columns>
+            </DataGrid>
         </StackPanel>
     </Grid>
 </UserControl>

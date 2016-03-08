@@ -31,7 +31,9 @@ namespace SC2Statistics.SC2Domain.Service
             {
                 Player = player,
                 WinRate = (decimal)matchesWon.Count / (decimal)allMatches.Count,
-                TotalMatchesPlayed = allMatches.Count
+                TotalMatchesPlayed = allMatches.Count,
+                TotalEventsParticipated = allMatches.GroupBy(x => x.Event).Count(),
+                EventsParticipated = allMatches.GroupBy(x => x.Event).Select(x => x.Key).ToList(),
             };
 
             var matchesXZerg = allMatches

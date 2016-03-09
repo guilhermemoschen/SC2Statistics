@@ -8,6 +8,10 @@ namespace SC2Statistics.SC2Domain.Repository
 {
     public interface IEventRepository : IRepositoryBase<Event>
     {
-        IList<Event> GetAllEvents();
+        IList<Event> FindMainEvents();
+
+        IList<Event> FindEventsByPlayer(long playerId);
+
+        Event FindByReference(string url);
     }
 }

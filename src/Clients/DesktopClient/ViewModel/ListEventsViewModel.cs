@@ -19,6 +19,7 @@ using GalaSoft.MvvmLight.CommandWpf;
 using SC2LiquipediaStatistics.DesktopClient.Model;
 using SC2LiquipediaStatistics.DesktopClient.Service;
 using SC2LiquipediaStatistics.DesktopClient.View;
+using SC2LiquipediaStatistics.Utilities.DataBase;
 using SC2LiquipediaStatistics.Utilities.Unity;
 
 using SC2Statistics.SC2Domain.Service;
@@ -79,9 +80,6 @@ namespace SC2LiquipediaStatistics.DesktopClient.ViewModel
             Initialize();
         }
 
-        /// <summary>
-        /// Constructor only for Designner
-        /// </summary>
         public ListEventsViewModel()
         {
             Initialize();
@@ -103,8 +101,15 @@ namespace SC2LiquipediaStatistics.DesktopClient.ViewModel
             if (IsInDesignMode)
                 return;
 
-            var domainEvents = SC2Service.FindAllEvents();
-            Events = new ObservableCollection<Event>(Mapper.Map<IList<DomainEntities.Event>, IList<Event>>(domainEvents));
+            IList<Event> events;
+
+            using (var context = new NHibernateSessionContext())
+            {
+                var domainEvents = SC2Service.FindMainEvents();
+                events = Mapper.Map<IList<DomainEntities.Event>, IList<Event>>(domainEvents);
+            }
+
+            Events = new ObservableCollection<Event>(events);
         }
     }
 }

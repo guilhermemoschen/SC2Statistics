@@ -18,9 +18,9 @@ namespace SC2Statistics.SC2Domain.Service
             MatchRepository = matchRepository;
         }
 
-        public PlayerStatistics GeneratePlayerStatistics(Player player)
+        public PlayerStatistics GeneratePlayerStatistics(Player player, Expansion expansion)
         {
-            var allMatches = MatchRepository.FindAll(player);
+            var allMatches = MatchRepository.FindMatchesByPlayerAndExpansion(player, expansion);
 
             if (!allMatches.Any())
                 return null;

@@ -157,6 +157,7 @@
     <Compile Include="Common\MessageLogger.cs" />
     <Compile Include="Model\EventItem.cs" />
     <Compile Include="Model\PlayerStatistics.cs" />
+    <Compile Include="Model\SubEvent.cs" />
     <Compile Include="Model\Translator\SC2DomainProfile.cs" />
     <Compile Include="Service\EventsListService.cs" />
     <Compile Include="Service\IEventsListService.cs" />

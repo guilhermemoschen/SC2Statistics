@@ -4,6 +4,6 @@ namespace SC2Statistics.SC2Domain.Service
 {
     public interface IStatisticsService
     {
-        PlayerStatistics GeneratePlayerStatistics(Player player);
+        PlayerStatistics GeneratePlayerStatistics(Player player, Expansion expansion);
     }
 }

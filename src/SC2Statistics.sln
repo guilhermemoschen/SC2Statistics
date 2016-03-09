@@ -54,4 +54,7 @@ Global
 		{EF62F47F-EC42-4335-A944-9591E84FBD65} = {5FC22C8C-934B-4307-B443-3EC9D2A5D149}
 		{CDD99D97-1123-4D32-AC76-CD2D5E332658} = {EF62F47F-EC42-4335-A944-9591E84FBD65}
 	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		EnterpriseLibraryConfigurationToolBinariesPathV6 = packages\EnterpriseLibrary.Common.6.0.1304.0\lib\NET45;packages\EnterpriseLibrary.Validation.6.0.1304.0\lib\NET45
+	EndGlobalSection
 EndGlobal

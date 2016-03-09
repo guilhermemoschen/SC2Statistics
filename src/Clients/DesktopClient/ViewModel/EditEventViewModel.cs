@@ -13,6 +13,7 @@ using GalaSoft.MvvmLight.CommandWpf;
 using SC2LiquipediaStatistics.DesktopClient.Model;
 using SC2LiquipediaStatistics.DesktopClient.Service;
 using SC2LiquipediaStatistics.DesktopClient.View;
+using SC2LiquipediaStatistics.Utilities.DataBase;
 
 using SC2Statistics.SC2Domain.Service;
 
@@ -75,9 +76,13 @@ namespace SC2LiquipediaStatistics.DesktopClient.ViewModel
 
         private void SaveEvent()
         {
-            var domainEvent = SC2Service.LoadEvent(SelectedEvent.Id);
-            domainEvent = Mapper.Map(SelectedEvent, domainEvent);
-            SC2Service.UpdateEvent(domainEvent);
+            using (var context = new NHibernateSessionContext())
+            {
+                var domainEvent = SC2Service.LoadEvent(SelectedEvent.Id);
+                domainEvent = Mapper.Map(SelectedEvent, domainEvent);
+                SC2Service.UpdateEvent(domainEvent);
+            }
+            
             NavigationService.NavigateTo(ViewLocator.ListEventsView);
         }
 

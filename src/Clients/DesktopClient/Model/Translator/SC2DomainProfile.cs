@@ -18,6 +18,8 @@ namespace SC2LiquipediaStatistics.DesktopClient.Model.Translator
             // Domain -> UI
             CreateMap<SC2DomainEntities.Event, Event>();
 
+            CreateMap<SC2DomainEntities.Event, SubEvent>();
+
             CreateMap<SC2DomainEntities.Game, Game>();
 
             CreateMap<SC2DomainEntities.Match, Match>();
@@ -31,7 +33,8 @@ namespace SC2LiquipediaStatistics.DesktopClient.Model.Translator
                 .ForMember(x => x.EventsParticipaed, opt => opt.Ignore());
 
             CreateMap<Event, SC2DomainEntities.Event>()
-                .ForMember(x => x.Matches, opt => opt.Ignore());
+                .ForMember(x => x.Matches, opt => opt.Ignore())
+                .ForMember(x => x.SubEvents, opt => opt.Ignore());
         }
     }
 }

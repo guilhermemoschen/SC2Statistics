@@ -23,13 +23,33 @@ namespace SC2Statistics.SC2Domain.Repository.Maps
             Property(x => x.PrizePool, mapper => mapper.NotNullable(false));
             Property(x => x.Expansion, mapper => { mapper.NotNullable(true); mapper.Type<EnumStringType<Expansion>>(); });
 
+            //Property(x => x.MainEvent, mapper => mapper.NotNullable(false));
+
+            ManyToOne(x => x.MainEvent, mapper =>
+            {
+                mapper.Column("FK_MainEvent");
+                mapper.NotNullable(false);
+                mapper.Cascade(Cascade.None);
+                mapper.Lazy(LazyRelation.NoLazy);
+            });
+
+            Bag(
+                x => x.SubEvents,
+                mapper =>
+                {
+                    mapper.Key(keyMapper => keyMapper.Column("FK_MainEvent"));
+                    mapper.Cascade(Cascade.All);
+                    mapper.Lazy(CollectionLazy.Lazy);
+                },
+                relation => relation.OneToMany()
+            );
+
             Bag(
                 x => x.Matches,
                 mapper =>
                 {
                     mapper.Key(keyMapper => keyMapper.Column("FK_Event"));
                     mapper.Cascade(Cascade.All);
-
                 },
                 relation => relation.OneToMany()
             );

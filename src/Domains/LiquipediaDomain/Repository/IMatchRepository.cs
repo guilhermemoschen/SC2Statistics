@@ -6,6 +6,6 @@ namespace SC2Statistics.SC2Domain.Repository
 {
     public interface IMatchRepository
     {
-        IList<Match> FindAll(Player player);
+        IList<Match> FindMatchesByPlayerAndExpansion(Player player, Expansion expansion);
     }
 }

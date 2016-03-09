@@ -3,8 +3,13 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
+using Microsoft.Practices.EnterpriseLibrary.Validation;
+
+using SC2LiquipediaStatistics.Utilities.Domain;
 using SC2LiquipediaStatistics.Utilities.Log;
+using SC2LiquipediaStatistics.Utilities.Web;
 
 using SC2Statistics.SC2Domain.Model;
 using SC2Statistics.SC2Domain.Repository;
@@ -17,6 +22,8 @@ namespace SC2Statistics.SC2Domain.Service
     public class ParseService : IParseService
     {
         #region REGEX
+
+        public const string ValidateLiquipediaLink = @"https?\:\/\/wiki\.teamliquid\.net\/starcraft2\/.+";
 
         public const string FindPrizePool = @"(?<=Prize pool:\<\/div\>\s).*?(?=\<\/)";
 
@@ -48,46 +55,122 @@ namespace SC2Statistics.SC2Domain.Service
 
         public const string FindMapName = @"[\s\S]*?\<div.*?href.*?\>[\s]?";
 
-
         #endregion
 
+        public IDownloader Downloader { get; protected set; }
         public ILogger Logger { get; protected set; }
         public IPlayerRespository PlayerRespository { get; protected set; }
+        public IEventRepository EventRepository { get; protected set; }
 
-        public ParseService(IPlayerRespository playerRespository, ILogger logger)
+        public ParseService(IPlayerRespository playerRespository, IEventRepository eventRepository, IDownloader downloader, ILogger logger)
         {
             PlayerRespository = playerRespository;
+            EventRepository = eventRepository;
+            Downloader = downloader;
             Logger = logger;
         }
 
         #region Event
-        public Event ParseEvent(string mainEventUrl, string mainEventContent, IDictionary<string, string> subEvents = null)
+        public async Task<Event> ParseEvent(string url)
+        {
+            if (url == null)
+                throw new ArgumentNullException("url");
+
+            if (!Regex.IsMatch(url, ValidateLiquipediaLink))
+            {
+                throw new ValidationException("The URL is not a valid Liquipedia address.");
+            }
+
+            var existentEvent = EventRepository.FindByReference(url);
+            if (existentEvent != null)
+                throw new ValidationException(string.Format("The {0} has been already processed.", existentEvent.Name));
+
+            Logger.Info("Downloading Event information...");
+            var timestamp = DateTime.Now.TimeOfDay;
+            var mainPageContent = await Downloader.GetContent(url);
+            timestamp = DateTime.Now.TimeOfDay - timestamp;
+            Logger.Info("OK {0} seconds", timestamp.TotalSeconds);
+
+            Logger.Info("Parsing Event...");
+            timestamp = DateTime.Now.TimeOfDay;
+
+            var sc2Event = await Task.Run(() => ParseEvent(url, mainPageContent));
+
+            if (!sc2Event.IsValid)
+            {
+                throw new ValidationException("The event is invalid.", sc2Event.ValidationResults);
+            }
+
+            timestamp = DateTime.Now.TimeOfDay - timestamp;
+            Logger.Info("Finished {0} in {1} seconds", sc2Event.Name, timestamp.TotalSeconds);
+
+            Logger.Info("Downloading Sub Events...");
+            timestamp = DateTime.Now.TimeOfDay;
+            var subEventsContents = await GetExtraPagesContents(url, mainPageContent);
+            timestamp = DateTime.Now.TimeOfDay - timestamp;
+            Logger.Info("{0} sub events found in {0} seconds", subEventsContents.Count, timestamp.TotalSeconds);
+
+            foreach (var subEventContent in subEventsContents)
+            {
+                Logger.Info("Parsing Sub Event...");
+                timestamp = DateTime.Now.TimeOfDay;
+                var subEvent = await Task.Run(() => ParseEvent(subEventContent.Key, subEventContent.Value));
+                if (!subEvent.IsValid)
+                    continue;
+                timestamp = DateTime.Now.TimeOfDay - timestamp;
+                Logger.Info("Finished {0} in {1} seconds", subEvent.Name, timestamp.TotalSeconds);
+                sc2Event.AddSubEvent(subEvent);
+            }
+
+            return sc2Event;
+        }
+
+        private async Task<IDictionary<string, string>> GetExtraPagesContents(string mainEventUrl, string mainContent)
+        {
+            var subPages = new Dictionary<string, string>();
+            var extraPagesUrls = new List<string>();
+            var pendingExtraPagesUrl = GetSubPagesUrls(mainEventUrl, mainContent);
+
+            while (pendingExtraPagesUrl.Any())
+            {
+                var url = pendingExtraPagesUrl.First();
+
+                if (extraPagesUrls.Contains(url))
+                {
+                    pendingExtraPagesUrl.Remove(url);
+                    continue;
+                }
+
+                extraPagesUrls.Add(url);
+
+                var content = await Downloader.GetContent(url);
+                subPages.Add(url, content);
+
+                foreach (var page in GetSubPagesUrls(url, content))
+                {
+                    pendingExtraPagesUrl.Add(page);
+                }
+            }
+
+            return subPages;
+        }
+
+        public Event ParseEvent(string url, string html)
         {
             var sc2Event = new Event
             {
-                Name = GetEventName(mainEventContent),
-                StartDate = GetEventStartDate(mainEventContent),
-                EndDate = GetEventEndDate(mainEventContent),
-                Expansion = GetEventExpansion(mainEventContent),
-                LiquipediaReference = mainEventUrl,
-                LiquipediaTier = GetEventTier(mainEventContent),
-                PrizePool = GetEventPrizePool(mainEventContent)
+                Name = GetEventName(html),
+                StartDate = GetEventStartDate(html),
+                EndDate = GetEventEndDate(html),
+                Expansion = GetEventExpansion(html),
+                LiquipediaReference = url,
+                LiquipediaTier = GetEventTier(html),
+                PrizePool = GetEventPrizePool(html)
             };
 
-            foreach (var match in ParseMatches(mainEventUrl, mainEventContent))
+            foreach (var match in ParseMatches(url, html))
             {
                 sc2Event.AddMatch(match);
-            }
-
-            if (subEvents != null)
-            {
-                foreach (var subEventUrl in subEvents.Keys)
-                {
-                    foreach (var match in ParseMatches(subEventUrl, subEvents[subEventUrl]))
-                    {
-                        sc2Event.AddMatch(match);
-                    }
-                }
             }
 
             return sc2Event;
@@ -191,7 +274,8 @@ namespace SC2Statistics.SC2Domain.Service
 
         private string GetEventName(string html)
         {
-            return Regex.Match(html, FindEventName).Value;
+            var match = Regex.Match(html, FindEventName);
+            return match.Success ? match.Value : null;
         }
 
         #endregion

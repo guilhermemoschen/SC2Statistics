@@ -125,5 +125,7 @@ namespace SC2LiquipediaStatistics.DesktopClient.Model
                 Set(() => Expansion, ref expansion, value);
             }
         }
+
+        public IList<SubEvent> SubEvents { get; set; }
     }
 }

@@ -10,37 +10,53 @@
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <ScrollViewer>
-        <StackPanel Style="{StaticResource Form}">
-            <TextBlock Text="Edit Event" Style="{StaticResource Heading2}" Margin="0,0,0,8" />
-            <StackPanel Orientation="Vertical">
-                <StackPanel>
-                    <Label Content="Name" Target="{Binding ElementName=TextName}"/>
-                    <TextBox x:Name="TextName" Width="150" Text="{Binding SelectedEvent.Name}" />
-                </StackPanel>
-                <StackPanel>
-                    <Label Content="Start Date" Target="{Binding ElementName=DatePickerStartDate}"/>
-                    <DatePicker x:Name="DatePickerStartDate" Width="150" SelectedDate="{Binding SelectedEvent.StartDate}" />
-                </StackPanel>
-                <StackPanel>
-                    <Label Content="End Date" Target="{Binding ElementName=DatePickerEndDate}"/>
-                    <DatePicker x:Name="DatePickerEndDate" Width="150" SelectedDate="{Binding SelectedEvent.EndDate}" />
-                </StackPanel>
-                <StackPanel>
-                    <Label Content="SC2 Expansion"/>
-                    <ComboBox SelectedItem="{Binding SelectedEvent.Expansion}" ItemsSource="{Binding Expansions}" Width="150" />
-                </StackPanel>
-                <StackPanel>
-                    <Label Content="Tier" />
-                    <ComboBox Width="150" SelectedItem="{Binding SelectedEvent.LiquipediaTier}" ItemsSource="{Binding LiquipediaTiers}" />
-                </StackPanel>
-                <StackPanel>
-                    <Label Content="Prize Pool" Target="{Binding ElementName=TextPrizePool}"/>
-                    <TextBox x:Name="TextPrizePool" Width="150" Text="{Binding SelectedEvent.PrizePool}" />
-                </StackPanel>
-                <StackPanel>
-                    <Button Command="{Binding SaveCommand}" Content="Save"/>
+        <Grid Style="{StaticResource ContentRoot}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="*"></RowDefinition>
+            </Grid.RowDefinitions>
+            
+            <StackPanel Grid.Row="0" Style="{StaticResource Form}">
+                <TextBlock Text="Edit Event" Style="{StaticResource Heading2}" Margin="0,0,0,8" />
+                <StackPanel Orientation="Vertical">
+                    <StackPanel>
+                        <Label Content="Name" Target="{Binding ElementName=TextName}"/>
+                        <TextBox x:Name="TextName" Width="150" Text="{Binding SelectedEvent.Name}" />
+                    </StackPanel>
+                    <StackPanel>
+                        <Label Content="Start Date" Target="{Binding ElementName=DatePickerStartDate}"/>
+                        <DatePicker x:Name="DatePickerStartDate" Width="150" SelectedDate="{Binding SelectedEvent.StartDate}" />
+                    </StackPanel>
+                    <StackPanel>
+                        <Label Content="End Date" Target="{Binding ElementName=DatePickerEndDate}"/>
+                        <DatePicker x:Name="DatePickerEndDate" Width="150" SelectedDate="{Binding SelectedEvent.EndDate}" />
+                    </StackPanel>
+                    <StackPanel>
+                        <Label Content="SC2 Expansion"/>
+                        <ComboBox SelectedItem="{Binding SelectedEvent.Expansion}" ItemsSource="{Binding Expansions}" Width="150" />
+                    </StackPanel>
+                    <StackPanel>
+                        <Label Content="Tier" />
+                        <ComboBox Width="150" SelectedItem="{Binding SelectedEvent.LiquipediaTier}" ItemsSource="{Binding LiquipediaTiers}" />
+                    </StackPanel>
+                    <StackPanel>
+                        <Label Content="Prize Pool" Target="{Binding ElementName=TextPrizePool}"/>
+                        <TextBox x:Name="TextPrizePool" Width="150" Text="{Binding SelectedEvent.PrizePool}" />
+                    </StackPanel>
+                    <StackPanel>
+                        <Button Command="{Binding SaveCommand}" Content="Save"/>
+                    </StackPanel>
                 </StackPanel>
             </StackPanel>
-        </StackPanel>
+            <StackPanel Grid.Row="1">
+                <TextBlock Text="Sub Events" Style="{StaticResource Heading2}" Margin="0,0,0,8" />
+                <DataGrid  ItemsSource="{Binding SelectedEvent.SubEvents}" IsReadOnly="true" HorizontalAlignment="Left" Margin="0,0,0,0" VerticalAlignment="Top" SelectionMode="Single" AutoGenerateColumns="False">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Width="*" Binding="{Binding Name}" Header="Name"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </StackPanel>
+            
+        </Grid>
     </ScrollViewer>
 </UserControl>

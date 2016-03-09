@@ -14,10 +14,13 @@ namespace SC2Statistics.SC2Domain.Repository
 {
     public class MatchRepository : RepositoryBase<Match>, IMatchRepository
     {
-        public IList<Match> FindAll(Player player)
+        public IList<Match> FindMatchesByPlayerAndExpansion(Player player, Expansion expansion)
         {
             return Session.Query<Match>()
-                .Where(x => x.Player1.Id == player.Id || x.Player2.Id == player.Id)
+                .Where(x => 
+                    (x.Player1.Id == player.Id || x.Player2.Id == player.Id) && 
+                    (x.Event.Expansion == expansion)
+                )
                 .ToList();
         }
     }

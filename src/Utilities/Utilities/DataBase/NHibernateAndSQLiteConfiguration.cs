@@ -98,5 +98,24 @@ namespace SC2LiquipediaStatistics.Utilities.DataBase
                 return currentSession;
             }
         }
+
+        public static void DisposeSession()
+        {
+            if (SessionFactory != null && CurrentSessionContext.HasBind(SessionFactory))
+            {
+                try
+                {
+                    var session = SessionFactory.GetCurrentSession();
+                    if (session.IsOpen)
+                    {
+                        session.Dispose();
+                    }
+                }
+                finally
+                {
+                    CurrentSessionContext.Unbind(SessionFactory);
+                }
+            }
+        }
     }
 }

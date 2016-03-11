@@ -58,7 +58,7 @@ namespace SC2Statistics.SC2Domain.Repository.Maps
                 mapper =>
                 {
                     mapper.Column("FK_Event");
-                    mapper.NotNullable(true);
+                    mapper.NotNullable(false);
                     mapper.Cascade(Cascade.None);
                 }
             );
@@ -68,8 +68,8 @@ namespace SC2Statistics.SC2Domain.Repository.Maps
                 mapper =>
                 {
                     mapper.Key(keyMapper => keyMapper.Column("FK_Match"));
-                    mapper.Inverse(true);
-                    mapper.Cascade(Cascade.All);
+                    mapper.Inverse(false);
+                    mapper.Cascade(Cascade.All | Cascade.DeleteOrphans);
                 }, 
                 relation => relation.OneToMany()
             );

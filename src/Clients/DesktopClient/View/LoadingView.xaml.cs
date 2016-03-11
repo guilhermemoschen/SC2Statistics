@@ -13,20 +13,14 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-using FirstFloor.ModernUI.Windows;
-
-using FragmentNavigationEventArgs = FirstFloor.ModernUI.Windows.Navigation.FragmentNavigationEventArgs;
-using NavigatingCancelEventArgs = FirstFloor.ModernUI.Windows.Navigation.NavigatingCancelEventArgs;
-using NavigationEventArgs = FirstFloor.ModernUI.Windows.Navigation.NavigationEventArgs;
-
 namespace SC2LiquipediaStatistics.DesktopClient.View
 {
     /// <summary>
-    /// Interaction logic for ListEventsView.xaml
+    /// Interaction logic for LoadingView.xaml
     /// </summary>
-    public partial class ListEventsView
+    public partial class LoadingView
     {
-        public ListEventsView()
+        public LoadingView()
         {
             InitializeComponent();
         }

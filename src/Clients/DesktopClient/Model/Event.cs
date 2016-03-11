@@ -14,6 +14,22 @@ namespace SC2LiquipediaStatistics.DesktopClient.Model
     {
         public long Id { get; set; }
 
+        private bool isActive;
+        public bool IsActive
+        {
+            get
+            {
+                return isActive;
+            }
+            set
+            {
+                if (isActive == value)
+                    return;
+
+                Set(() => IsActive, ref isActive, value);
+            }
+        }
+
         private string name;
         public string Name
         {
@@ -129,3 +145,4 @@ namespace SC2LiquipediaStatistics.DesktopClient.Model
         public IList<SubEvent> SubEvents { get; set; }
     }
 }
+

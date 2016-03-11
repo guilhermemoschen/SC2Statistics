@@ -11,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
+using System.Windows.Input;
 using System.Windows.Media;
 
 using FirstFloor.ModernUI.Windows.Controls;
@@ -23,7 +24,7 @@ namespace SC2LiquipediaStatistics.DesktopClient.Service
     public class NavigationService : IModernNavigationService
     {
         private readonly Dictionary<string, Uri> _pagesByKey;
-        private readonly List<string> _historic;
+        private object parameter;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="NavigationService"/> class.
@@ -31,7 +32,6 @@ namespace SC2LiquipediaStatistics.DesktopClient.Service
         public NavigationService()
         {
             _pagesByKey = new Dictionary<string, Uri>();
-            _historic = new List<string>();
         }
 
         /// <summary>
@@ -40,11 +40,7 @@ namespace SC2LiquipediaStatistics.DesktopClient.Service
         /// <value>
         /// The current page key.
         /// </value>
-        public string CurrentPageKey
-        {
-            get;
-            private set;
-        }
+        public string CurrentPageKey { get; private set; }
 
         /// <summary>
         /// Gets the parameter.
@@ -52,7 +48,19 @@ namespace SC2LiquipediaStatistics.DesktopClient.Service
         /// <value>
         /// The parameter.
         /// </value>
-        public object Parameter { get; private set; }
+        public object Parameter
+        {
+            get
+            {
+                var value = parameter;
+                Parameter = null;
+                return value;
+            }
+            private set
+            {
+                parameter = value;
+            }
+        }
 
         public Uri GetPageUri(string pageKey)
         {
@@ -64,10 +72,10 @@ namespace SC2LiquipediaStatistics.DesktopClient.Service
         /// </summary>
         public void GoBack()
         {
-            if (_historic.Count > 1)
+            var frame = GetDescendantFromName(Application.Current.MainWindow, "ContentFrame") as ModernFrame;
+            if (frame != null)
             {
-                _historic.RemoveAt(_historic.Count - 1);
-                NavigateTo(_historic.Last(), null);
+                NavigationCommands.BrowseBack.Execute(null, frame);
             }
         }
 
@@ -105,11 +113,10 @@ namespace SC2LiquipediaStatistics.DesktopClient.Service
                 // Set the frame source, which initiates navigation
                 if (frame != null)
                 {
+                    Parameter = parameter;
                     frame.Source = _pagesByKey[pageKey];
+                    CurrentPageKey = pageKey;
                 }
-                Parameter = parameter;
-                _historic.Add(pageKey);
-                CurrentPageKey = pageKey;
             }
         }
 

@@ -15,6 +15,7 @@ namespace SC2Statistics.SC2Domain.Repository.Maps
 
             Id(x => x.Id, mapper => mapper.Generator(Generators.Identity));
 
+            Property(x => x.IsActive, mapper => mapper.NotNullable(true));
             Property(x => x.Name, mapper => mapper.NotNullable(true));
             Property(x => x.LiquipediaReference, mapper => mapper.NotNullable(true));
             Property(x => x.StartDate, mapper => mapper.NotNullable(false));
@@ -22,8 +23,6 @@ namespace SC2Statistics.SC2Domain.Repository.Maps
             Property(x => x.LiquipediaTier, mapper => { mapper.NotNullable(true); mapper.Type<EnumStringType<LiquipediaTier>>(); } );
             Property(x => x.PrizePool, mapper => mapper.NotNullable(false));
             Property(x => x.Expansion, mapper => { mapper.NotNullable(true); mapper.Type<EnumStringType<Expansion>>(); });
-
-            //Property(x => x.MainEvent, mapper => mapper.NotNullable(false));
 
             ManyToOne(x => x.MainEvent, mapper =>
             {
@@ -38,7 +37,8 @@ namespace SC2Statistics.SC2Domain.Repository.Maps
                 mapper =>
                 {
                     mapper.Key(keyMapper => keyMapper.Column("FK_MainEvent"));
-                    mapper.Cascade(Cascade.All);
+                    mapper.Inverse(false);
+                    mapper.Cascade(Cascade.All | Cascade.DeleteOrphans);
                     mapper.Lazy(CollectionLazy.Lazy);
                 },
                 relation => relation.OneToMany()
@@ -49,7 +49,9 @@ namespace SC2Statistics.SC2Domain.Repository.Maps
                 mapper =>
                 {
                     mapper.Key(keyMapper => keyMapper.Column("FK_Event"));
-                    mapper.Cascade(Cascade.All);
+                    mapper.Inverse(false);
+                    mapper.Cascade(Cascade.All | Cascade.DeleteOrphans);
+                    mapper.Lazy(CollectionLazy.Lazy);
                 },
                 relation => relation.OneToMany()
             );

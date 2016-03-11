@@ -40,7 +40,6 @@ namespace SC2LiquipediaStatistics.Utilities.DataBase
                 .SetProperty(Environment.ProxyFactoryFactoryClass,
                 typeof(NHibernate.Bytecode.DefaultProxyFactoryFactory).AssemblyQualifiedName);
 
-
             var mapper = new ModelMapper();
             var addedAssemblies = new List<string>();
 

@@ -9,14 +9,18 @@ namespace SC2Statistics.SC2Domain.Service
     {
         IList<Event> FindMainEvents();
 
-        void CreateEvent(Event sc2Event);
+        Event CreateEvent(Event sc2Event);
 
         IList<Player> FindAllPlayers();
 
-        void UpdateEvent(Event sc2Event);
+        void UpdateEvent(Event sc2Event, IEnumerable<long>  eventsIdToActive = null, IEnumerable<long> eventsIdToDeactive = null);
 
         Event LoadEvent(long eventId);
 
         IList<Event> FindEventsByPlayer(long playerId);
+
+        void ActiveEvent(long eventId);
+
+        void InactiveEvent(long eventId);
     }
 }

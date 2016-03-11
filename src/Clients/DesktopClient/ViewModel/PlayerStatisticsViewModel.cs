@@ -24,7 +24,7 @@ using SC2DomainEntities = SC2Statistics.SC2Domain.Model;
 
 namespace SC2LiquipediaStatistics.DesktopClient.ViewModel
 {
-    public class PlayerStatisticsViewModel : ViewModelBase
+    public class PlayerStatisticsViewModel : ModernViewModelBase
     {
         protected ObservableCollection<Player> players;
         public ObservableCollection<Player> Players
@@ -51,7 +51,7 @@ namespace SC2LiquipediaStatistics.DesktopClient.ViewModel
             }
             set
             {
-                if (selectedPlayer != null && selectedPlayer.Id == value.Id)
+                if (value == null || (selectedPlayer != null && selectedPlayer.Id == value.Id))
                     return;
 
                 Set(() => SelectedPlayer, ref selectedPlayer, value, true);
@@ -122,10 +122,6 @@ namespace SC2LiquipediaStatistics.DesktopClient.ViewModel
             StatisticsService = statisticsService;
             Mapper = mapper;
 
-            var domainPlayers = sc2Service.FindAllPlayers();
-            var players = Mapper.Map<IList<SC2DomainEntities.Player>, IList<Player>>(domainPlayers);
-            Players = new ObservableCollection<Player>(players);
-
             GenerateStatisticsCommand = new RelayCommand(GenerateStatistics);
             Expansions = new List<KeyValuePair<string, SC2DomainEntities.Expansion>>();
             Expansions.Add(new KeyValuePair<string, SC2DomainEntities.Expansion>("Hearth of the Swarm", SC2DomainEntities.Expansion.HeartOfTheSwarm));
@@ -153,6 +149,16 @@ namespace SC2LiquipediaStatistics.DesktopClient.ViewModel
             }
 
             EventsParticipated = new ObservableCollection<Event>(events);
+        }
+
+        public void View_OnLoad()
+        {
+            if (IsInDesignMode)
+                return;
+
+            var domainPlayers = SC2Service.FindAllPlayers();
+            var players = Mapper.Map<IList<SC2DomainEntities.Player>, IList<Player>>(domainPlayers);
+            Players = new ObservableCollection<Player>(players);
         }
     }
 }

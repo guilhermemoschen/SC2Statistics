@@ -18,6 +18,7 @@ namespace SC2Statistics.SC2Domain.Repository
         {
             return Session.Query<Match>()
                 .Where(x => 
+                    (x.Event.IsActive) &&
                     (x.Player1.Id == player.Id || x.Player2.Id == player.Id) && 
                     (x.Event.Expansion == expansion)
                 )

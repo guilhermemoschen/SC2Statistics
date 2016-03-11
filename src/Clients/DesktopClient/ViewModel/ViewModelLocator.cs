@@ -36,6 +36,14 @@ namespace SC2LiquipediaStatistics.DesktopClient.ViewModel
             }
         }
 
+        public LoadingViewModel LoadingViewModel
+        {
+            get
+            {
+                return Container.Resolve<LoadingViewModel>();
+            }
+        }
+
         public EditEventViewModel EditEventViewModel
         {
             get

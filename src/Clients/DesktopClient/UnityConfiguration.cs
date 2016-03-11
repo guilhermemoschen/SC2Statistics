@@ -26,7 +26,10 @@ namespace SC2LiquipediaStatistics.DesktopClient
             // ViewModels
             container.RegisterType<ListEventsViewModel>();
             container.RegisterType<AddEventViewModel>();
+            container.RegisterType<EditEventViewModel>();
             container.RegisterType<PlayerStatisticsViewModel>();
+            container.RegisterType<MainViewModel>();
+            container.RegisterType<LoadingViewModel>();
 
             // Services
             container.RegisterType<IEventsListService, EventsListService>();
@@ -38,6 +41,9 @@ namespace SC2LiquipediaStatistics.DesktopClient
             navigationService.Configure(ViewLocator.EditEventView, new Uri("View/EditEventView.xaml", UriKind.Relative));
             navigationService.Configure(ViewLocator.PlayerStatisticsView, new Uri("View/PlayerStatisticsView.xaml", UriKind.Relative));
             container.RegisterInstance<IModernNavigationService>(navigationService);
+
+            // Loading
+            container.RegisterType<ILoadingService, LoadingService>();
 
             // Utilities
             container.RegisterType<IDownloader, Downloader>();

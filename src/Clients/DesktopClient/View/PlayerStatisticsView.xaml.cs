@@ -18,7 +18,7 @@ namespace SC2LiquipediaStatistics.DesktopClient.View
     /// <summary>
     /// Interaction logic for PlayerSelection.xaml
     /// </summary>
-    public partial class PlayerStatisticsView : UserControl
+    public partial class PlayerStatisticsView
     {
         public PlayerStatisticsView()
         {

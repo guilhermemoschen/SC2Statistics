@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using System.Transactions;
 
 using Microsoft.Practices.EnterpriseLibrary.Validation;
+
+using NHibernate.Linq;
 
 using SC2LiquipediaStatistics.Utilities.Domain;
 using SC2LiquipediaStatistics.Utilities.Log;
@@ -39,7 +42,7 @@ namespace SC2Statistics.SC2Domain.Service
                 .FindMainEvents();
         }
 
-        public void CreateEvent(Event sc2Event)
+        public Event CreateEvent(Event sc2Event)
         {
             if (sc2Event == null)
                 throw new ArgumentNullException("sc2Event");
@@ -47,11 +50,23 @@ namespace SC2Statistics.SC2Domain.Service
             if (!sc2Event.IsValid)
                 throw new ValidationException(sc2Event.ValidationResults);
 
-            using (var scope = new TransactionScope())
+            var existentEvent = EventRepository.FindByReference(sc2Event.LiquipediaReference);
+            if (existentEvent == null)
             {
-                EventRepository.Save(sc2Event);
-                scope.Complete();
+                using (var scope = new TransactionScope())
+                {
+                    EventRepository.Save(sc2Event);
+                    scope.Complete();
+                }
             }
+            else
+            {
+                existentEvent.Merge(sc2Event);
+                UpdateEvent(existentEvent);
+                
+            }
+
+            return existentEvent ?? sc2Event;
         }
 
         public IList<Player> FindAllPlayers()
@@ -62,7 +77,7 @@ namespace SC2Statistics.SC2Domain.Service
                 .ToList();
         }
 
-        public void UpdateEvent(Event sc2Event)
+        public void UpdateEvent(Event sc2Event, IEnumerable<long> eventsIdToActive = null, IEnumerable<long> eventsIdToDeactive = null)
         {
             if (sc2Event == null)
                 throw new ArgumentNullException("sc2Event");
@@ -71,6 +86,26 @@ namespace SC2Statistics.SC2Domain.Service
             {
                 EventRepository.Merge(sc2Event);
                 scope.Complete();
+
+                if (eventsIdToActive != null)
+                {
+                    foreach (var subEventId in eventsIdToActive)
+                    {
+                        var subEvent = EventRepository.Load(subEventId);
+                        subEvent.IsActive = true;
+                        EventRepository.Merge(subEvent);
+                    }
+                }
+
+                if (eventsIdToDeactive != null)
+                {
+                    foreach (var subEventId in eventsIdToDeactive)
+                    {
+                        var subEvent = EventRepository.Load(subEventId);
+                        subEvent.IsActive = false;
+                        EventRepository.Merge(subEvent);
+                    }
+                }
             }
         }
 
@@ -82,6 +117,26 @@ namespace SC2Statistics.SC2Domain.Service
         public IList<Event> FindEventsByPlayer(long playerId)
         {
             return EventRepository.FindEventsByPlayer(playerId);
+        }
+
+        public void ActiveEvent(long eventId)
+        {
+            using (new TransactionScope())
+            {
+                var existentEvent = EventRepository.Load(eventId);
+                existentEvent.IsActive = true;
+                EventRepository.Merge(existentEvent);
+            }
+        }
+
+        public void InactiveEvent(long eventId)
+        {
+            using (new TransactionScope())
+            {
+                var existentEvent = EventRepository.Load(eventId);
+                existentEvent.IsActive = false;
+                EventRepository.Merge(existentEvent);
+            }
         }
     }
 }

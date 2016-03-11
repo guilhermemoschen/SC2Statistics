@@ -18,7 +18,7 @@ namespace SC2LiquipediaStatistics.DesktopClient.View
     /// <summary>
     /// Interaction logic for Introduction.xaml
     /// </summary>
-    public partial class IntroductionView : UserControl
+    public partial class IntroductionView
     {
         public IntroductionView()
         {

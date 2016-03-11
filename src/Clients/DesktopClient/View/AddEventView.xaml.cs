@@ -18,7 +18,7 @@ namespace SC2LiquipediaStatistics.DesktopClient.View
     /// <summary>
     /// Interaction logic for AddEvent.xaml
     /// </summary>
-    public partial class AddEventView : UserControl
+    public partial class AddEventView
     {
         public AddEventView()
         {

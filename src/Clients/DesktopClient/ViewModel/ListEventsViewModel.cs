@@ -28,7 +28,7 @@ using DomainEntities = SC2Statistics.SC2Domain.Model;
 
 namespace SC2LiquipediaStatistics.DesktopClient.ViewModel
 {
-    public class ListEventsViewModel : ViewModelBase
+    public class ListEventsViewModel : ModernViewModelBase
     {
         private ObservableCollection<Event> events;
         public ObservableCollection<Event> Events
@@ -63,7 +63,7 @@ namespace SC2LiquipediaStatistics.DesktopClient.ViewModel
             }
         }
 
-        public ICommand SelectEvent { get; private set; }
+        public ICommand SelectedEventCommand { get; private set; }
 
         public ISC2Service SC2Service { get; private set; }
 
@@ -77,18 +77,8 @@ namespace SC2LiquipediaStatistics.DesktopClient.ViewModel
             NavigationService = navigationService;
             Mapper = mapper;
 
-            Initialize();
-        }
-
-        public ListEventsViewModel()
-        {
-            Initialize();
-        }
-
-        private void Initialize()
-        {
-            Events = new ObservableCollection<Event>();
-            SelectEvent = new RelayCommand(NavigateToEditEvent);
+            SelectedEventCommand = new RelayCommand(NavigateToEditEvent);
+            NavigatedToCommand = new RelayCommand<object>(LoadGrid);
         }
 
         private void NavigateToEditEvent()
@@ -96,7 +86,7 @@ namespace SC2LiquipediaStatistics.DesktopClient.ViewModel
             NavigationService.NavigateTo(ViewLocator.EditEventView, SelectedEvent);
         }
 
-        public void OnLoad()
+        public void LoadGrid(object parameter)
         {
             if (IsInDesignMode)
                 return;

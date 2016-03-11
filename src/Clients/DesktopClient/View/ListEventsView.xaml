@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="SC2LiquipediaStatistics.DesktopClient.View.ListEventsView"
+﻿<Common:ModernUserControl x:Class="SC2LiquipediaStatistics.DesktopClient.View.ListEventsView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -7,19 +7,19 @@
              xmlns:Common="clr-namespace:SC2LiquipediaStatistics.DesktopClient.Common"
              mc:Ignorable="d" 
              DataContext="{Binding ListEventsViewModel, Source={StaticResource Locator}}"
-             Common:Behaviors.LoadedMethodName="OnLoad"
-             d:DesignHeight="300" d:DesignWidth="300">
+             d:DesignHeight="600" d:DesignWidth="800">
     <Grid Style="{StaticResource ContentRoot}">
         <DataGrid ItemsSource="{Binding Events}" SelectedItem="{Binding SelectedEvent}" IsReadOnly="true" HorizontalAlignment="Left" Margin="0,0,0,0" VerticalAlignment="Top" SelectionMode="Single" AutoGenerateColumns="False">
             <DataGrid.Columns>
-                <DataGridTextColumn Width="*" Binding="{Binding Name}" Header="Name"/>
-                <DataGridTextColumn Width="*" Binding="{Binding LiquipediaTier}" Header="Tier"/>
-                <DataGridTextColumn Width="*" Binding="{Binding StartDate}" Header="Start"/>
-                <DataGridTextColumn Width="*" Binding="{Binding EndDate}" Header="End"/>
+                <mui:DataGridCheckBoxColumn Width="Auto" Binding="{Binding IsActive}" Header="Active"/>
+                <mui:DataGridTextColumn Width="*" Binding="{Binding Name}" Header="Name"/>
+                <mui:DataGridTextColumn Width="Auto" Binding="{Binding LiquipediaTier}" Header="Tier"/>
+                <mui:DataGridTextColumn Width="Auto" Binding="{Binding StartDate}" Header="Start"/>
+                <mui:DataGridTextColumn Width="Auto" Binding="{Binding EndDate}" Header="End"/>
             </DataGrid.Columns>
             <DataGrid.InputBindings>
-                <MouseBinding MouseAction="LeftDoubleClick" Command="{Binding SelectEvent}" />
+                <MouseBinding MouseAction="LeftDoubleClick" Command="{Binding SelectedEventCommand}" />
             </DataGrid.InputBindings>
         </DataGrid>
     </Grid>
-</UserControl>
+</Common:ModernUserControl>

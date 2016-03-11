@@ -23,7 +23,7 @@ namespace SC2Statistics.SC2Domain.Service
     {
         #region REGEX
 
-        public const string ValidateLiquipediaLink = @"https?\:\/\/wiki\.teamliquid\.net\/starcraft2\/.+";
+        public const string ValidateLiquipediaLink = @"^(https?\:\/\/)?wiki\.teamliquid\.net\/starcraft2\/.+";
 
         public const string FindPrizePool = @"(?<=Prize pool:\<\/div\>\s).*?(?=\<\/)";
 
@@ -71,7 +71,12 @@ namespace SC2Statistics.SC2Domain.Service
         }
 
         #region Event
-        public async Task<Event> ParseEvent(string url)
+        public Event GetSC2Event(string url)
+        {
+            return GetSC2Event(url, null);
+        }
+
+        private Event GetSC2Event(string url, string html)
         {
             if (url == null)
                 throw new ArgumentNullException("url");
@@ -81,51 +86,74 @@ namespace SC2Statistics.SC2Domain.Service
                 throw new ValidationException("The URL is not a valid Liquipedia address.");
             }
 
-            var existentEvent = EventRepository.FindByReference(url);
-            if (existentEvent != null)
-                throw new ValidationException(string.Format("The {0} has been already processed.", existentEvent.Name));
-
-            Logger.Info("Downloading Event information...");
-            var timestamp = DateTime.Now.TimeOfDay;
-            var mainPageContent = await Downloader.GetContent(url);
-            timestamp = DateTime.Now.TimeOfDay - timestamp;
-            Logger.Info("OK {0} seconds", timestamp.TotalSeconds);
-
-            Logger.Info("Parsing Event...");
-            timestamp = DateTime.Now.TimeOfDay;
-
-            var sc2Event = await Task.Run(() => ParseEvent(url, mainPageContent));
-
-            if (!sc2Event.IsValid)
+            if (!Regex.IsMatch(url, "https?://"))
             {
-                throw new ValidationException("The event is invalid.", sc2Event.ValidationResults);
+                url = string.Format("http://{0}", url);
             }
 
-            timestamp = DateTime.Now.TimeOfDay - timestamp;
-            Logger.Info("Finished {0} in {1} seconds", sc2Event.Name, timestamp.TotalSeconds);
+            if (html == null)
+                html = Download(url);
 
-            Logger.Info("Downloading Sub Events...");
-            timestamp = DateTime.Now.TimeOfDay;
-            var subEventsContents = await GetExtraPagesContents(url, mainPageContent);
+            Logger.Info("Parsing {0}", url);
+            var timestamp = DateTime.Now.TimeOfDay;
+
+            var sc2Event = ParseEvent(url, html);
+
+            if (!sc2Event.IsValid)
+                throw new ValidationException("The event is invalid.", sc2Event.ValidationResults);
+
             timestamp = DateTime.Now.TimeOfDay - timestamp;
-            Logger.Info("{0} sub events found in {0} seconds", subEventsContents.Count, timestamp.TotalSeconds);
+            Logger.Info("Finished in {0:0.000} seconds", timestamp.TotalSeconds);
+
+            return sc2Event;
+        }
+
+        public Event GetSC2EventWithSubEvents(string url)
+        {
+            var mainPageContent = Download(url);
+            var sc2Event = GetSC2Event(url, mainPageContent);
+            var subEventsContents = GetSubEventsContents(url, mainPageContent);
 
             foreach (var subEventContent in subEventsContents)
             {
-                Logger.Info("Parsing Sub Event...");
-                timestamp = DateTime.Now.TimeOfDay;
-                var subEvent = await Task.Run(() => ParseEvent(subEventContent.Key, subEventContent.Value));
-                if (!subEvent.IsValid)
+                Event subEvent;
+                try
+                {
+                    subEvent = GetSC2Event(subEventContent.Key, subEventContent.Value);
+                }
+                catch (ValidationException)
+                {
+                    Logger.Info("Invalid Sub Event {0}", subEventContent.Key);
                     continue;
-                timestamp = DateTime.Now.TimeOfDay - timestamp;
-                Logger.Info("Finished {0} in {1} seconds", subEvent.Name, timestamp.TotalSeconds);
-                sc2Event.AddSubEvent(subEvent);
+                }
+
+                if (!subEvent.Matches.Any())
+                {
+                    Logger.Info("{0} doesn't have any match.", subEvent.Name);
+                }
+                else
+                {
+                    sc2Event.AddSubEvent(subEvent);
+                }
             }
 
             return sc2Event;
         }
 
-        private async Task<IDictionary<string, string>> GetExtraPagesContents(string mainEventUrl, string mainContent)
+        private string Download(string url)
+        {
+            if (!Regex.IsMatch(url, "https?://"))
+                url = "http://" + url;
+
+            Logger.Info("Downloading {0}", url);
+            var timestamp = DateTime.Now.TimeOfDay;
+            var html = Downloader.GetContent(new Uri(url));
+            timestamp = DateTime.Now.TimeOfDay - timestamp;
+            Logger.Info("Finished in {0:0.000} seconds", timestamp.TotalSeconds);
+            return html;
+        }
+
+        private IDictionary<string, string> GetSubEventsContents(string mainEventUrl, string mainContent)
         {
             var subPages = new Dictionary<string, string>();
             var extraPagesUrls = new List<string>();
@@ -143,7 +171,7 @@ namespace SC2Statistics.SC2Domain.Service
 
                 extraPagesUrls.Add(url);
 
-                var content = await Downloader.GetContent(url);
+                var content = Download(url);
                 subPages.Add(url, content);
 
                 foreach (var page in GetSubPagesUrls(url, content))
@@ -575,12 +603,12 @@ namespace SC2Statistics.SC2Domain.Service
             var subPagesUrls = new List<string>();
 
             var mainPagePath = Regex.Replace(pageUrl, @".*?\/starcraft2\/", string.Empty);
-            var pattern = string.Format(@"\<a href=.\/starcraft2\/{0}\/.*?" + "\"", mainPagePath);
+            var pattern = string.Format(@"\<a href=.\/starcraft2\/{0}\/[\w\/]*?(?=\" + "\"" + ")", mainPagePath);
             var urls = Regex.Matches(pageContent, pattern).Cast<RegexMatch>().Select(x => x.Value);
 
             foreach (var url in urls)
             {
-                var cleanUrl = Regex.Replace(url, ".*?\\\"\\/", string.Empty).Replace("\"", string.Empty);
+                var cleanUrl = Regex.Replace(url, ".*?\\\"\\/", string.Empty);
                 cleanUrl = string.Format("http://wiki.teamliquid.net/{0}", cleanUrl);
 
                 if (!subPagesUrls.Contains(cleanUrl))

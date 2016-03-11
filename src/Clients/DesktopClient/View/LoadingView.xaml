@@ -1,0 +1,24 @@
+﻿<Common:ModernUserControl x:Class="SC2LiquipediaStatistics.DesktopClient.View.LoadingView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:SC2LiquipediaStatistics.DesktopClient.View"
+             xmlns:mui="http://firstfloorsoftware.com/ModernUI"
+             xmlns:Common="clr-namespace:SC2LiquipediaStatistics.DesktopClient.Common"
+             xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
+             mc:Ignorable="d" d:DesignHeight="180" d:DesignWidth="400"
+             DataContext="{Binding LoadingViewModel, Source={StaticResource Locator}}"
+             >
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Loaded">
+            <i:InvokeCommandAction Command="{Binding LoadedCommand}"/>
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Orientation="Vertical" Width="auto" Height="auto">
+            <mui:ModernProgressRing IsActive="True" Width="80" Height="80" Style="{StaticResource ThreeBounceProgressRingStyle}" />
+            <TextBlock Text="{Binding Messages}" TextWrapping="WrapWithOverflow" MinHeight="100" />
+        </StackPanel>
+    </ScrollViewer>
+</Common:ModernUserControl>

@@ -7,6 +7,7 @@ namespace SC2Statistics.SC2Domain.Service
 {
     public interface IParseService
     {
-        Task<Event> ParseEvent(string url);
+        Event GetSC2Event(string url);
+        Event GetSC2EventWithSubEvents(string url);
     }
 }

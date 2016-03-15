@@ -8,11 +8,13 @@
         xmlns:Common="clr-namespace:SC2LiquipediaStatistics.DesktopClient.Common"
         mc:Ignorable="d"
         Title="Starcraft 2 Statistics" Height="600" Width="800"
-        IsTitleVisible="True" WindowState="Maximized">
+        DataContext="{Binding MainViewModel, Source={StaticResource Locator}}"
+        IsTitleVisible="True" WindowState="Maximized"
+        ContentSource="/View/HomeView.xaml">
     <mui:ModernWindow.MenuLinkGroups>
         <mui:LinkGroup DisplayName="Home">
             <mui:LinkGroup.Links>
-                <mui:Link DisplayName="Introduction" Source="/View/IntroductionView.xaml" />
+                <mui:Link DisplayName="Introduction" Source="/View/HomeView.xaml" />
             </mui:LinkGroup.Links>
         </mui:LinkGroup>
         <mui:LinkGroup DisplayName="Tournaments">

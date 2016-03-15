@@ -152,11 +152,13 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="AutoMapperConfiguration.cs" />
+    <Compile Include="Configuration\AutoMapperConfiguration.cs" />
     <Compile Include="Common\Behaviors.cs" />
     <Compile Include="Common\LogMessage.cs" />
     <Compile Include="Common\MessageLogger.cs" />
     <Compile Include="Common\ModernUserControl.cs" />
+    <Compile Include="Configuration\DataBaseConfiguration.cs" />
+    <Compile Include="Configuration\NavigationConfiguration.cs" />
     <Compile Include="Model\EventItem.cs" />
     <Compile Include="Model\PlayerStatistics.cs" />
     <Compile Include="Model\SubEvent.cs" />
@@ -167,7 +169,7 @@
     <Compile Include="Service\IModernNavigationService.cs" />
     <Compile Include="Service\LoadingService.cs" />
     <Compile Include="Service\NavigationService.cs" />
-    <Compile Include="UnityConfiguration.cs" />
+    <Compile Include="Configuration\UnityConfiguration.cs" />
     <Compile Include="Model\Event.cs" />
     <Compile Include="Model\Game.cs" />
     <Compile Include="Model\Match.cs" />
@@ -186,8 +188,8 @@
     <Compile Include="View\EditEventView.xaml.cs">
       <DependentUpon>EditEventView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\IntroductionView.xaml.cs">
-      <DependentUpon>IntroductionView.xaml</DependentUpon>
+    <Compile Include="View\HomeView.xaml.cs">
+      <DependentUpon>HomeView.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\ListEventsView.xaml.cs">
       <DependentUpon>ListEventsView.xaml</DependentUpon>
@@ -211,7 +213,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\IntroductionView.xaml">
+    <Page Include="View\HomeView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

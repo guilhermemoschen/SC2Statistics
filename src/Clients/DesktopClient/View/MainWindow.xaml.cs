@@ -19,13 +19,6 @@ namespace SC2LiquipediaStatistics.DesktopClient.View
         public MainWindow()
         {
             InitializeComponent();
-            NavigateToHomeView();
-        }
-
-        private void NavigateToHomeView()
-        {
-            var navigationService = Container.Resolve<IModernNavigationService>();
-            ContentSource = navigationService.GetPageUri(ViewLocator.InitialView);
         }
     }
 }

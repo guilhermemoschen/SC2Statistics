@@ -10,6 +10,7 @@ using FirstFloor.ModernUI.Windows.Controls;
 
 using NHibernate.Linq;
 
+using SC2LiquipediaStatistics.DesktopClient.Configuration;
 using SC2LiquipediaStatistics.DesktopClient.Service;
 using SC2LiquipediaStatistics.DesktopClient.ViewModel;
 using SC2LiquipediaStatistics.Utilities.Unity;
@@ -25,13 +26,10 @@ namespace SC2LiquipediaStatistics.DesktopClient
     {
         public App()
         {
-            Container.Configure();
-
-            AutoMapperConfiguration.Configure(Container.Instance);
-
-            DesktopClient.UnityConfiguration.RegisterTypes(Container.Instance);
-            SC2Statistics.SC2Domain.UnityConfiguration.RegisterTypes(Container.Instance);
-            Utilities.DataBase.NHibernateAndSQLiteConfiguration.SetupDatabase(typeof(Player).Assembly, GetDatabaseFilePath());
+            UnityConfiguration.Configure();
+            AutoMapperConfiguration.Configure();
+            DataBaseConfiguration.Configure();
+            NavigationConfiguration.Configure();
 
             DispatcherUnhandledException += OnDispatcherUnhandledException;
         }
@@ -40,17 +38,6 @@ namespace SC2LiquipediaStatistics.DesktopClient
         {
             ModernDialog.ShowMessage("Something wrong happend :o", "Oh, no!", MessageBoxButton.OK);
             dispatcherUnhandledExceptionEventArgs.Handled = true;
-        }
-
-        private string GetDatabaseFilePath()
-        {
-#if DEBUG
-            var dataBaseFilePath = @"..\..\..\..\";
-#else
-            var dataBaseFilePath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-            dataBaseFilePath = Path.Combine(dataBaseFilePath, "SC2Statistics");
-#endif
-            return Path.Combine(dataBaseFilePath, ConfigurationManager.AppSettings["DataBaseFilePath"]);
         }
     }
 }

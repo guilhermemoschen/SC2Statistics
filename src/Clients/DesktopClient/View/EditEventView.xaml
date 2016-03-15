@@ -10,9 +10,13 @@
              DataContext="{Binding EditEventViewModel, Source={StaticResource Locator}}"
              mc:Ignorable="d" 
              d:DesignHeight="600" d:DesignWidth="800">
+    <Common:ModernUserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+    </Common:ModernUserControl.Resources>
     <ScrollViewer Style="{StaticResource ContentRoot}" VerticalScrollBarVisibility="Auto">
         <Grid>
             <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"></RowDefinition>
                 <RowDefinition Height="Auto"></RowDefinition>
                 <RowDefinition Height="*"></RowDefinition>
             </Grid.RowDefinitions>
@@ -53,17 +57,42 @@
                     </StackPanel>
                 </StackPanel>
             </StackPanel>
-            <StackPanel Grid.Row="1">
+            <StackPanel Grid.Row="1" Visibility="{Binding SelectedEvent.HasSubEvents, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <TextBlock Text="Sub Events" Style="{StaticResource Heading2}" Margin="0,0,0,8" />
-                <DataGrid ItemsSource="{Binding SelectedEvent.SubEvents}" SelectedItem="{Binding SelectedSubEvent}" IsReadOnly="false" CanUserAddRows="false" VerticalAlignment="Top" SelectionMode="Single" SelectionUnit="FullRow" AutoGenerateColumns="False" CanUserResizeRows="False" RowDetailsVisibilityMode="Visible">
+                <DataGrid ItemsSource="{Binding SelectedEvent.SubEvents}" SelectedItem="{Binding SelectedSubEvent}" IsReadOnly="True" CanUserAddRows="false" VerticalAlignment="Top" SelectionMode="Single" SelectionUnit="FullRow" AutoGenerateColumns="False" CanUserResizeRows="False" RowDetailsVisibilityMode="Visible">
                     <DataGrid.Columns>
                         <mui:DataGridCheckBoxColumn Width="Auto" Binding="{Binding IsActive}" Header="Active"/>
-                        <mui:DataGridTextColumn Width="*" Binding="{Binding Name}" Header="Name" IsReadOnly="True" />
+                        <mui:DataGridTextColumn Width="*" Binding="{Binding Name}" Header="Name" />
+                        <DataGridTemplateColumn Width="Auto" Header="Actions">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal">
+                                        <Button Margin="0" Padding="0" BorderThickness="0" Width="24" Height="24" Cursor="Hand" Command="{Binding DataContext.EditSubEventCommand, RelativeSource = {RelativeSource FindAncestor, AncestorType={x:Type DataGrid}}}">
+                                            <Button.Background>
+                                                <ImageBrush ImageSource="/DesktopClient;component/Assets/ic_create_black_24dp_1x.png"/>
+                                            </Button.Background>
+                                        </Button>
+                                        <Button Margin="0" Padding="0" BorderThickness="0" Width="24" Height="24" Cursor="Hand" Command="{Binding DataContext.DeleteSubEventCommand, RelativeSource = {RelativeSource FindAncestor, AncestorType={x:Type DataGrid}}}">
+                                            <Button.Background>
+                                                <ImageBrush ImageSource="/DesktopClient;component/Assets/ic_delete_black_24dp_1x.png"/>
+                                            </Button.Background>
+                                        </Button>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
                     </DataGrid.Columns>
-                    <DataGrid.InputBindings>
-                        <MouseBinding MouseAction="LeftDoubleClick" Command="{Binding SelectedSubEventCommand}" />
-                    </DataGrid.InputBindings>
                 </DataGrid>
+            </StackPanel>
+            <StackPanel Grid.Row="2" Style="{StaticResource Form}" Margin="0,20,0,0">
+                <TextBlock Text="Add New Sub Event/Tournament" Style="{StaticResource Heading2}" />
+                <StackPanel>
+                    <Label Content="Link" />
+                    <TextBox Width="300" Text="{Binding SubEventUrl}"/>
+                </StackPanel>
+                <StackPanel>
+                    <Button Command="{Binding AddNewSubEventCommand}" Content="Add Sub Event"/>
+                </StackPanel>
             </StackPanel>
         </Grid>
     </ScrollViewer>

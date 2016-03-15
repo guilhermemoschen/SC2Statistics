@@ -31,8 +31,7 @@ namespace SC2LiquipediaStatistics.DesktopClient
 
             DesktopClient.UnityConfiguration.RegisterTypes(Container.Instance);
             SC2Statistics.SC2Domain.UnityConfiguration.RegisterTypes(Container.Instance);
-
-            Utilities.DataBase.NHibernateAndSQLiteConfiguration.SetupDatabase(typeof(Player).Assembly, ConfigurationManager.AppSettings["DataBaseFilePath"]);
+            Utilities.DataBase.NHibernateAndSQLiteConfiguration.SetupDatabase(typeof(Player).Assembly, GetDatabaseFilePath());
 
             DispatcherUnhandledException += OnDispatcherUnhandledException;
         }
@@ -41,6 +40,17 @@ namespace SC2LiquipediaStatistics.DesktopClient
         {
             ModernDialog.ShowMessage("Something wrong happend :o", "Oh, no!", MessageBoxButton.OK);
             dispatcherUnhandledExceptionEventArgs.Handled = true;
+        }
+
+        private string GetDatabaseFilePath()
+        {
+#if DEBUG
+            var dataBaseFilePath = @"..\..\..\..\";
+#else
+            var dataBaseFilePath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+            dataBaseFilePath = Path.Combine(dataBaseFilePath, "SC2Statistics");
+#endif
+            return Path.Combine(dataBaseFilePath, ConfigurationManager.AppSettings["DataBaseFilePath"]);
         }
     }
 }

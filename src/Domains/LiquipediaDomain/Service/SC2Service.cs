@@ -138,5 +138,26 @@ namespace SC2Statistics.SC2Domain.Service
                 EventRepository.Merge(existentEvent);
             }
         }
+
+        public void DeleteEvent(long eventId)
+        {
+            using (var scope = new TransactionScope())
+            {
+                var existentEvent = EventRepository.Load(eventId);
+                EventRepository.Delete(existentEvent);
+                scope.Complete();
+            }
+        }
+
+        public void DeleteSubEvent(long eventId, long subEventId)
+        {
+            using (var scope = new TransactionScope())
+            {
+                var existentEvent = EventRepository.Load(eventId);
+                existentEvent.RemoveSubEvent(subEventId);
+                EventRepository.Merge(existentEvent);
+                scope.Complete();
+            }
+        }
     }
 }

@@ -19,4 +19,16 @@
         </Style.Resources>
         <Setter Property="MinWidth" Value="200"/>
     </Style>
+    <Style TargetType="DataGridCell"  x:Key="AutoEditCell">
+        <Setter Property="BorderThickness" Value="0"></Setter>
+        <Style.Triggers>
+            <MultiTrigger>
+                <MultiTrigger.Conditions>
+                    <Condition Property="IsMouseOver" Value="True" />
+                    <Condition Property="IsReadOnly" Value="False" />
+                </MultiTrigger.Conditions>
+                <Setter Property="IsEditing" Value="True" />
+            </MultiTrigger>
+        </Style.Triggers>
+    </Style>
 </ResourceDictionary>

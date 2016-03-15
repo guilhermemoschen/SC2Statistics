@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 using Microsoft.Practices.EnterpriseLibrary.Validation.Validators;
 
@@ -81,6 +82,15 @@ namespace SC2Statistics.SC2Domain.Model
             {
                 AddSubEvent(subEvent);
             }
+        }
+
+        public void RemoveSubEvent(long subEventId)
+        {
+            var subEvent = SubEvents.FirstOrDefault(x => x.Id == subEventId);
+            if (subEvent == null)
+                throw new ValidationException("Invalid SubEvent Id");
+
+            SubEvents.Remove(subEvent);
         }
     }
 }

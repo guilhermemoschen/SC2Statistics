@@ -22,5 +22,9 @@ namespace SC2Statistics.SC2Domain.Service
         void ActiveEvent(long eventId);
 
         void InactiveEvent(long eventId);
+
+        void DeleteEvent(long eventId);
+
+        void DeleteSubEvent(long eventId, long subEventId);
     }
 }

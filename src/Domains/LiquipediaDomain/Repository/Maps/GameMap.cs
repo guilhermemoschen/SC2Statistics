@@ -23,8 +23,8 @@ namespace SC2Statistics.SC2Domain.Repository.Maps
                 mapper =>
                 {
                     mapper.Column("FK_Match");
-                    mapper.NotNullable(true);
-                    mapper.Cascade(Cascade.None);
+                    mapper.NotNullable(false);
+                    mapper.Cascade(Cascade.All | Cascade.DeleteOrphans);
                 }
             );
 

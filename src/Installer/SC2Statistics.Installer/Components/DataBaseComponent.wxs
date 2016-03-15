@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+	<Fragment>
+    <Component Id="DataBaseComponent" Guid="2A827C32-44B1-43E8-91AD-C23DFD220D75" Directory="DataBaseFolder">
+      <RegistryValue Type="string" Root="HKCU" Key="Software\SC2Statistics" Name="InstallFolder" Value="[INSTALLFOLDER]" KeyPath="yes" />
+      <File Id="DataBaseFile" Name="SC2Statistics.db" DiskId="1" Source="../../DataBase/SC2Statistics.db" />
+      <RemoveFolder Id='RemoveDataBaseFolder' Directory='DataBaseFolder' On='uninstall' />
+      <RemoveFolder Id='RemoveSC2StatisticsDataFolder' Directory='SC2StatisticsDataFolder' On='uninstall' />
+    </Component>
+	</Fragment>
+</Wix>

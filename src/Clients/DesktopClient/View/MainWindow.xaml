@@ -7,8 +7,8 @@
         xmlns:mui="http://firstfloorsoftware.com/ModernUI"
         xmlns:Common="clr-namespace:SC2LiquipediaStatistics.DesktopClient.Common"
         mc:Ignorable="d"
-        Title="MainWindow" Height="600" Width="800"
-        IsTitleVisible="True">
+        Title="Starcraft 2 Statistics" Height="600" Width="800"
+        IsTitleVisible="True" WindowState="Maximized">
     <mui:ModernWindow.MenuLinkGroups>
         <mui:LinkGroup DisplayName="Home">
             <mui:LinkGroup.Links>
@@ -17,7 +17,7 @@
         </mui:LinkGroup>
         <mui:LinkGroup DisplayName="Tournaments">
             <mui:LinkGroup.Links>
-                <mui:Link DisplayName="All Events" Source="/View/ListEventsView.xaml" />
+                <mui:Link DisplayName="Events" Source="/View/ListEventsView.xaml" />
                 <mui:Link DisplayName="Add New" Source="/View/AddEventView.xaml" />
             </mui:LinkGroup.Links>
         </mui:LinkGroup>

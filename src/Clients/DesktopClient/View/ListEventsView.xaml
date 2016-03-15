@@ -14,12 +14,27 @@
                 <mui:DataGridCheckBoxColumn Width="Auto" Binding="{Binding IsActive}" Header="Active"/>
                 <mui:DataGridTextColumn Width="*" Binding="{Binding Name}" Header="Name"/>
                 <mui:DataGridTextColumn Width="Auto" Binding="{Binding LiquipediaTier}" Header="Tier"/>
-                <mui:DataGridTextColumn Width="Auto" Binding="{Binding StartDate}" Header="Start"/>
-                <mui:DataGridTextColumn Width="Auto" Binding="{Binding EndDate}" Header="End"/>
+                <mui:DataGridTextColumn Width="Auto" Binding="{Binding StartDate, StringFormat=yyyy-MM-dd}" Header="Start" />
+                <mui:DataGridTextColumn Width="Auto" Binding="{Binding EndDate, StringFormat=yyyy-MM-dd}" Header="End"/>
+                <DataGridTemplateColumn Width="Auto" Header="Actions">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
+                                <Button Margin="0" Padding="0" BorderThickness="0" Width="24" Height="24" Cursor="Hand" Command="{Binding DataContext.EditEventCommand, RelativeSource = {RelativeSource FindAncestor, AncestorType={x:Type DataGrid}}}">
+                                    <Button.Background>
+                                        <ImageBrush ImageSource="/DesktopClient;component/Assets/ic_create_black_24dp_1x.png"/>
+                                    </Button.Background>
+                                </Button>
+                                <Button Margin="0" Padding="0" BorderThickness="0" Width="24" Height="24" Cursor="Hand" Command="{Binding DataContext.DeleteEventCommand, RelativeSource = {RelativeSource FindAncestor, AncestorType={x:Type DataGrid}}}">
+                                    <Button.Background>
+                                        <ImageBrush ImageSource="/DesktopClient;component/Assets/ic_delete_black_24dp_1x.png"/>
+                                    </Button.Background>
+                                </Button>
+                            </StackPanel>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
             </DataGrid.Columns>
-            <DataGrid.InputBindings>
-                <MouseBinding MouseAction="LeftDoubleClick" Command="{Binding SelectedEventCommand}" />
-            </DataGrid.InputBindings>
         </DataGrid>
     </Grid>
 </Common:ModernUserControl>

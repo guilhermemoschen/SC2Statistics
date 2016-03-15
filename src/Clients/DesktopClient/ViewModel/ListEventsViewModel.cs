@@ -5,6 +5,7 @@ using System.Configuration;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
 using System.Xml;
 using System.Xml.Linq;
@@ -12,6 +13,8 @@ using System.Xml.Serialization;
 using System.Xml.XPath;
 
 using AutoMapper;
+
+using FirstFloor.ModernUI.Windows.Controls;
 
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.CommandWpf;
@@ -63,7 +66,8 @@ namespace SC2LiquipediaStatistics.DesktopClient.ViewModel
             }
         }
 
-        public ICommand SelectedEventCommand { get; private set; }
+        public ICommand EditEventCommand { get; private set; }
+        public ICommand DeleteEventCommand { get; private set; }
 
         public ISC2Service SC2Service { get; private set; }
 
@@ -77,8 +81,23 @@ namespace SC2LiquipediaStatistics.DesktopClient.ViewModel
             NavigationService = navigationService;
             Mapper = mapper;
 
-            SelectedEventCommand = new RelayCommand(NavigateToEditEvent);
+            EditEventCommand = new RelayCommand(NavigateToEditEvent);
+            DeleteEventCommand = new RelayCommand(DeleteSelectedEvent);
             NavigatedToCommand = new RelayCommand<object>(LoadGrid);
+        }
+
+        private void DeleteSelectedEvent()
+        {
+            var result = ModernDialog.ShowMessage("Do you really want to delete this Event?", "Attention", MessageBoxButton.YesNo);
+            if (result != MessageBoxResult.Yes)
+                return;
+
+            using (new NHibernateSessionContext())
+            {
+                SC2Service.DeleteEvent(SelectedEvent.Id);
+            }
+
+            LoadGrid(null);
         }
 
         private void NavigateToEditEvent()

@@ -35,5 +35,10 @@ namespace SC2LiquipediaStatistics.Utilities.DataBase
         {
             return Session.Load<TEntity>(id);
         }
+
+        public void Delete(TEntity entity)
+        {
+            Session.Delete(entity);
+        }
     }
 }

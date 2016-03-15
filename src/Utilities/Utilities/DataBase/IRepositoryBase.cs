@@ -15,5 +15,7 @@ namespace SC2LiquipediaStatistics.Utilities.DataBase
         IList<TEntity> FindAll();
 
         TEntity Load(long id);
+
+        void Delete(TEntity entity);
     }
 }

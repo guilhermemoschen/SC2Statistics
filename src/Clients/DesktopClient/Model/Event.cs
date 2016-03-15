@@ -143,6 +143,16 @@ namespace SC2LiquipediaStatistics.DesktopClient.Model
         }
 
         public IList<SubEvent> SubEvents { get; set; }
+
+        public Event MainEvent { get; set; }
+
+        public bool HasSubEvents
+        {
+            get
+            {
+                return SubEvents.Any();
+            }
+        }
     }
 }
 

@@ -71,6 +71,22 @@ namespace SC2LiquipediaStatistics.DesktopClient.ViewModel
             }
         }
 
+        public string subEventUrl;
+        public string SubEventUrl
+        {
+            get
+            {
+                return subEventUrl;
+            }
+            set
+            {
+                if (subEventUrl == value || value == null)
+                    return;
+
+                Set(() => SubEventUrl, ref subEventUrl, value, true);
+            }
+        }
+
         public IList<KeyValuePair<string, SC2DomainEntities.Expansion>> Expansions { get; private set; }
 
         protected KeyValuePair<string, SC2DomainEntities.Expansion> selectedExpansion;
@@ -100,7 +116,9 @@ namespace SC2LiquipediaStatistics.DesktopClient.ViewModel
 
         public ICommand SaveCommand { get; private set; }
         public ICommand ReloadAllEvenDataCommand { get; private set; }
-        public ICommand SelectedSubEventCommand { get; private set; }
+        public ICommand EditSubEventCommand { get; private set; }
+        public ICommand DeleteSubEventCommand { get; private set; }
+        public ICommand AddNewSubEventCommand { get; private set; }
 
         public EditEventViewModel(ISC2Service sc2Service, IParseService parseService, IModernNavigationService navigationService, ILoadingService loadingService, IMapper mapper)
         {
@@ -119,10 +137,44 @@ namespace SC2LiquipediaStatistics.DesktopClient.ViewModel
             SaveCommand = new RelayCommand(SaveEvent);
             NavigatedToCommand = new RelayCommand<object>(SelectEvent);
             ReloadAllEvenDataCommand = new RelayCommand(ReloadAllEvenData);
-            SelectedSubEventCommand = new RelayCommand(NavigateToEditSubEvent);
+            EditSubEventCommand = new RelayCommand(EditSubEvent);
+            DeleteSubEventCommand = new RelayCommand(DeleteSelectedSubEvent);
+            AddNewSubEventCommand = new RelayCommand(AddNewSubEvent);
         }
 
-        private void NavigateToEditSubEvent()
+        private void AddNewSubEvent()
+        {
+            ValidationException validationException = null;
+
+            LoadingService.ShowAndExecuteAction(delegate
+            {
+                using (new NHibernateSessionContext())
+                {
+                    try
+                    {
+                        var subEvent = ParseService.GetSC2EventWithSubEvents(SubEventUrl);
+                        var mainEvent = SC2Service.LoadEvent(SelectedEvent.Id);
+                        mainEvent.AddSubEvent(subEvent);
+                        SC2Service.UpdateEvent(mainEvent);
+                    }
+                    catch (ValidationException ex)
+                    {
+                        validationException = ex;
+                    }
+                }
+            });
+
+            if (validationException != null)
+            {
+                ModernDialog.ShowMessage(validationException.GetFormatedMessage(), "Validation Message", MessageBoxButton.OK);
+                return;
+            }
+
+            SubEventUrl = String.Empty;
+            ReloadSelectedEvent(SelectedEvent.Id);
+        }
+
+        private void EditSubEvent()
         {
             using (new NHibernateSessionContext())
             {
@@ -174,18 +226,48 @@ namespace SC2LiquipediaStatistics.DesktopClient.ViewModel
             {
                 var domainEvent = SC2Service.LoadEvent(SelectedEvent.Id);
                 domainEvent = Mapper.Map(SelectedEvent, domainEvent);
-                var eventsIdToActive = SelectedEvent.SubEvents
-                    .Where(x => x.IsActive)
-                    .Select(x => x.Id);
+                
+                // TODO: Update IsActive in the Grid
+                //var eventsIdToActive = SelectedEvent.SubEvents
+                //    .Where(x => x.IsActive)
+                //    .Select(x => x.Id);
 
-                var eventsIdToDeactive = SelectedEvent.SubEvents
-                    .Where(x => !x.IsActive)
-                    .Select(x => x.Id);
+                //var eventsIdToDeactive = SelectedEvent.SubEvents
+                //    .Where(x => !x.IsActive)
+                //    .Select(x => x.Id);
 
-                SC2Service.UpdateEvent(domainEvent, eventsIdToActive, eventsIdToDeactive);
+                SC2Service.UpdateEvent(domainEvent);
             }
-            
-            NavigationService.GoBack();
+
+            if (SelectedEvent.MainEvent != null)
+            {
+                ReloadSelectedEvent(SelectedEvent.MainEvent.Id);
+            }
+            else
+                NavigationService.GoBack();
+        }
+
+        private void DeleteSelectedSubEvent()
+        {
+            var result = ModernDialog.ShowMessage("Do you really want to delete this Sub Event?", "Attention", MessageBoxButton.YesNo);
+            if (result != MessageBoxResult.Yes)
+                return;
+
+            using (new NHibernateSessionContext())
+            {
+                SC2Service.DeleteSubEvent(SelectedEvent.Id, SelectedSubEvent.Id);
+            }
+
+            ReloadSelectedEvent(SelectedEvent.Id);
+        }
+
+        private void ReloadSelectedEvent(long selectedEventId)
+        {
+            using (new NHibernateSessionContext())
+            {
+                var domainEvent = SC2Service.LoadEvent(selectedEventId);
+                SelectedEvent = Mapper.Map<SC2DomainEntities.Event, Event>(domainEvent);
+            }
         }
     }
 }

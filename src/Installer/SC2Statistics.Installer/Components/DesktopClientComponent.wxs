@@ -1,0 +1,261 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+    <Fragment>
+        <DirectoryRef Id="INSTALLFOLDER">
+            <Directory Id="dir242DC17B8DFC53C13CAF172FC08B730A" Name="de" />
+            <Directory Id="dir1710C20C4C4513ACEA8627A52788727F" Name="en" />
+            <Directory Id="dir9AE38F4F5CB5E565E774521E138F44FD" Name="es" />
+            <Directory Id="dirB55DFDA91FEE7CCCBC65CA7493B75748" Name="fr" />
+            <Directory Id="dir937629FDAC3D30087170D6DA46E383A6" Name="hu" />
+            <Directory Id="dir45DE18DD71F3E8DD6BE4A0E2B48778C8" Name="it" />
+            <Directory Id="dir997B58958EFAE06BB705E870622AB899" Name="ja" />
+            <Directory Id="dirF152986C1E6339E5EF84FD1370841521" Name="ko" />
+            <Directory Id="dir339F53F3A11C56B053FD1FEC9B438810" Name="pt-BR" />
+            <Directory Id="dirBD3668345143F8EFDFB86A9B73810966" Name="ro" />
+            <Directory Id="dirE9205C68F964857267FD3312DBFF9A91" Name="ru" />
+            <Directory Id="dir8FBB04D7AB5FE55FCF40758128EC763E" Name="sv" />
+            <Directory Id="dir43FCCFA109FBF584D9155DCE31E452EB" Name="x64" />
+            <Directory Id="dir97F42FF68945B97AAE670945C4FDAE93" Name="x86" />
+            <Directory Id="dir4A8DD77DBC79775EC39CACBC8AA06107" Name="zh-Hans" />
+            <Directory Id="dir083BC4C92455CD933FA93376E7459C85" Name="zh-Hant" />
+        </DirectoryRef>
+    </Fragment>
+    <Fragment>
+        <ComponentGroup Id="DesktopClientComponent">
+            <Component Id="cmpFD65F52CD5EC0B46A750F8EEFC3D4422" Directory="INSTALLFOLDER" Guid="*">
+                <File Id="fil1F7E777B326B02F60B86F747002F8605" KeyPath="yes" Source="$(var.DesktopClientSourcePath)\AutoMapper.dll" />
+            </Component>
+            <Component Id="cmp46C017C55E8475A5DADE1FC7176D3149" Directory="INSTALLFOLDER" Guid="*">
+                <File Id="filBDEE9B5D3DB78199A411BCA41D9460F9" KeyPath="yes" Source="$(var.DesktopClientSourcePath)\AutoMapper.xml" />
+            </Component>
+            <Component Id="cmpC9561ABEA35D8420BA31A4E79E9B5673" Directory="INSTALLFOLDER" Guid="*">
+                <File Id="filBE88D664C200AB153C17EA4E66221EFA" KeyPath="yes" Source="$(var.DesktopClientSourcePath)\DesktopClient.exe" />
+            </Component>
+            <Component Id="cmpC217BC1AB76BAADB34FE0D395DCBDA42" Directory="INSTALLFOLDER" Guid="*">
+                <File Id="filB160F77880152951BCC99325A623975E" KeyPath="yes" Source="$(var.DesktopClientSourcePath)\DesktopClient.exe.config" />
+            </Component>
+            <Component Id="cmpBFA167EDD303BD069BC84C24CFA6AC8B" Directory="INSTALLFOLDER" Guid="*">
+                <File Id="fil069E8D7556622446600DCD671A07C7AE" KeyPath="yes" Source="$(var.DesktopClientSourcePath)\DesktopClient.pdb" />
+            </Component>
+            <Component Id="cmp8A31694B548A370D83A9A562CD6C1F3F" Directory="INSTALLFOLDER" Guid="*">
+                <File Id="fil6CD82F0DF6809BA69F4294E67AFC74C5" KeyPath="yes" Source="$(var.DesktopClientSourcePath)\DesktopClient.vshost.exe" />
+            </Component>
+            <Component Id="cmp88A57C1678B823D1483964DFA9DD25CA" Directory="INSTALLFOLDER" Guid="*">
+                <File Id="fil2A300A155772361AE88D3B5433D8328C" KeyPath="yes" Source="$(var.DesktopClientSourcePath)\DesktopClient.vshost.exe.config" />
+            </Component>
+            <Component Id="cmpFEA1BBE6A148AF7A060464E4101FF45A" Directory="INSTALLFOLDER" Guid="*">
+                <File Id="fil5A183C7ADD7F354DD3365F037C032BB8" KeyPath="yes" Source="$(var.DesktopClientSourcePath)\DesktopClient.vshost.exe.manifest" />
+            </Component>
+            <Component Id="cmp0BFABD100B4065787B40AA6B05938DF7" Directory="INSTALLFOLDER" Guid="*">
+                <File Id="fil1D38723F4A034EDE78B6A3B94EFB99F2" KeyPath="yes" Source="$(var.DesktopClientSourcePath)\EntityFramework.dll" />
+            </Component>
+            <Component Id="cmpB8E7B130B6B78399B39307530A3D65B2" Directory="INSTALLFOLDER" Guid="*">
+                <File Id="fil55247FAD2E00E96001D9F9C3E501E9FA" KeyPath="yes" Source="$(var.DesktopClientSourcePath)\EntityFramework.SqlServer.dll" />
+            </Component>
+            <Component Id="cmp0FB966002F85AF6212B7AD3DB5E1B405" Directory="INSTALLFOLDER" Guid="*">
+                <File Id="fil3CA52A37FA9A6E996CBB782A0218A667" KeyPath="yes" Source="$(var.DesktopClientSourcePath)\EntityFramework.SqlServer.xml" />
+            </Component>
+            <Component Id="cmp6CF5CB56E3583D0EBD44D2BB10A62A27" Directory="INSTALLFOLDER" Guid="*">
+                <File Id="filD3369B082D009ADB833B8DD9F589E45E" KeyPath="yes" Source="$(var.DesktopClientSourcePath)\EntityFramework.xml" />
+            </Component>
+            <Component Id="cmp83D5FAC530610CEEC792229B4CB4C268" Directory="INSTALLFOLDER" Guid="*">
+                <File Id="fil513AE9598A2B521142DC5B8F9C513637" KeyPath="yes" Source="$(var.DesktopClientSourcePath)\FirstFloor.ModernUI.dll" />
+            </Component>
+            <Component Id="cmp36BBAFB0D36E1A71832742F4AFF922A6" Directory="INSTALLFOLDER" Guid="*">
+                <File Id="fil169E5753B3223C4BE538508539FDA973" KeyPath="yes" Source="$(var.DesktopClientSourcePath)\FirstFloor.ModernUI.xml" />
+            </Component>
+            <Component Id="cmp0A996586383240FA3E04EF819E036618" Directory="INSTALLFOLDER" Guid="*">
+                <File Id="filFEFD2783E5DA4CE0FD0CC448B98B8282" KeyPath="yes" Source="$(var.DesktopClientSourcePath)\GalaSoft.MvvmLight.dll" />
+            </Component>
+            <Component Id="cmp17BFF5FB30D3632422DA2006E44AD968" Directory="INSTALLFOLDER" Guid="*">
+                <File Id="fil9644536B770B8F5B869068B0AA7CED33" KeyPath="yes" Source="$(var.DesktopClientSourcePath)\GalaSoft.MvvmLight.Extras.dll" />
+            </Component>
+            <Component Id="cmpA9858AEE074BA5FF4FF0B5CD1F5060D3" Directory="INSTALLFOLDER" Guid="*">
+                <File Id="fil0665D199B25D144507EB7CC43366DA59" KeyPath="yes" Source="$(var.DesktopClientSourcePath)\GalaSoft.MvvmLight.Extras.pdb" />
+            </Component>
+            <Component Id="cmp2B5A2FE464CA1F7FF7E66D03CBDEAEC6" Directory="INSTALLFOLDER" Guid="*">
+                <File Id="filE29801BA37D9EA3FF2FBD4C27F224FD6" KeyPath="yes" Source="$(var.DesktopClientSourcePath)\GalaSoft.MvvmLight.Extras.xml" />
+            </Component>
+            <Component Id="cmpC5323B58D6FE9921DCBD0DA02542A9EA" Directory="INSTALLFOLDER" Guid="*">
+                <File Id="filCA26613FF692C3372A3E128988E57B91" KeyPath="yes" Source="$(var.DesktopClientSourcePath)\GalaSoft.MvvmLight.pdb" />
+            </Component>
+            <Component Id="cmpBB590427EC85B15F8307BAB5F2C0D4FD" Directory="INSTALLFOLDER" Guid="*">
+                <File Id="filC9FFF83F6E76026272222D6FF39444A2" KeyPath="yes" Source="$(var.DesktopClientSourcePath)\GalaSoft.MvvmLight.Platform.dll" />
+            </Component>
+            <Component Id="cmp429BF624042409EF870DB4BAFA8C779F" Directory="INSTALLFOLDER" Guid="*">
+                <File Id="fil725498A756ED54FA1DC84D5734E3AE6D" KeyPath="yes" Source="$(var.DesktopClientSourcePath)\GalaSoft.MvvmLight.Platform.pdb" />
+            </Component>
+            <Component Id="cmp0CE728A49B1A18E1D2A82C1FB62839E5" Directory="INSTALLFOLDER" Guid="*">
+                <File Id="fil8C07BFCA04BBE43D6943B75B2EBC1866" KeyPath="yes" Source="$(var.DesktopClientSourcePath)\GalaSoft.MvvmLight.Platform.xml" />
+            </Component>
+            <Component Id="cmp0E0A13BC45FC27B4A39F923743C93F33" Directory="INSTALLFOLDER" Guid="*">
+                <File Id="fil5126DDA9D3089E8C4D8D8DC5E5A709A6" KeyPath="yes" Source="$(var.DesktopClientSourcePath)\GalaSoft.MvvmLight.xml" />
+            </Component>
+            <Component Id="cmpAD8551805C0E384D4FD6CD718C5E8381" Directory="INSTALLFOLDER" Guid="*">
+                <File Id="fil1300C7FBD2C9D42B5651E43A08F7DA1E" KeyPath="yes" Source="$(var.DesktopClientSourcePath)\Iesi.Collections.dll" />
+            </Component>
+            <Component Id="cmpC1DA0B7301E534FEF7D86F9E924A9733" Directory="INSTALLFOLDER" Guid="*">
+                <File Id="fil6632956B39A2FEEA0A035B1B2770FB6F" KeyPath="yes" Source="$(var.DesktopClientSourcePath)\Iesi.Collections.xml" />
+            </Component>
+            <Component Id="cmp227B2F253D6CB8A27087F47F70A62459" Directory="INSTALLFOLDER" Guid="*">
+                <File Id="filB5261509ADB8E7D2D70A1C67DCA37876" KeyPath="yes" Source="$(var.DesktopClientSourcePath)\Microsoft.Expression.Interactions.dll" />
+            </Component>
+            <Component Id="cmp4A44A96EF3A06266E3D8701B2F10CDC3" Directory="INSTALLFOLDER" Guid="*">
+                <File Id="fil2925817E964978A313EB8C4EB52F1AEE" KeyPath="yes" Source="$(var.DesktopClientSourcePath)\Microsoft.Practices.EnterpriseLibrary.Common.dll" />
+            </Component>
+            <Component Id="cmp49413881590C63615CDCC0069E3FC77E" Directory="INSTALLFOLDER" Guid="*">
+                <File Id="fil115A960CAE998310E3F74C3B9195F414" KeyPath="yes" Source="$(var.DesktopClientSourcePath)\Microsoft.Practices.EnterpriseLibrary.Common.xml" />
+            </Component>
+            <Component Id="cmp81E5BBBAD58487DCF00A6208CFD8CB99" Directory="INSTALLFOLDER" Guid="*">
+                <File Id="fil2D28902B9C59E4B1CE71EF61EEBFDC6F" KeyPath="yes" Source="$(var.DesktopClientSourcePath)\Microsoft.Practices.EnterpriseLibrary.Validation.dll" />
+            </Component>
+            <Component Id="cmpE9BAC62415B2402D2570970530FA38AA" Directory="INSTALLFOLDER" Guid="*">
+                <File Id="fil9637C70C3C372B2FDBD7B9E2D9CAAACB" KeyPath="yes" Source="$(var.DesktopClientSourcePath)\Microsoft.Practices.EnterpriseLibrary.Validation.xml" />
+            </Component>
+            <Component Id="cmpF2F1C15A47B64F045101B1AE5B4D6054" Directory="INSTALLFOLDER" Guid="*">
+                <File Id="filC342596B66E98254BB6E1CFFE50AE4AA" KeyPath="yes" Source="$(var.DesktopClientSourcePath)\Microsoft.Practices.ServiceLocation.dll" />
+            </Component>
+            <Component Id="cmpC46009BA6A5B5F8DF9BEFCAD39146906" Directory="INSTALLFOLDER" Guid="*">
+                <File Id="fil4E1754043F4A85422FD5FE1F7991ABCC" KeyPath="yes" Source="$(var.DesktopClientSourcePath)\Microsoft.Practices.ServiceLocation.pdb" />
+            </Component>
+            <Component Id="cmp6B78BD7805E072190247D7503A0E7659" Directory="INSTALLFOLDER" Guid="*">
+                <File Id="fil97C995578E25C0BCDEA9A9A8984D1772" KeyPath="yes" Source="$(var.DesktopClientSourcePath)\Microsoft.Practices.ServiceLocation.xml" />
+            </Component>
+            <Component Id="cmpAA856A11EEF773F32618D29332CADFD0" Directory="INSTALLFOLDER" Guid="*">
+                <File Id="filFBB0E3892854598F759A072FB8581B46" KeyPath="yes" Source="$(var.DesktopClientSourcePath)\Microsoft.Practices.Unity.Configuration.dll" />
+            </Component>
+            <Component Id="cmp012342D81A705F0A2AFF3CBC8F1D57B5" Directory="INSTALLFOLDER" Guid="*">
+                <File Id="fil3FB6253C70AF30707F6DEAD8F701E80B" KeyPath="yes" Source="$(var.DesktopClientSourcePath)\Microsoft.Practices.Unity.Configuration.xml" />
+            </Component>
+            <Component Id="cmp5141EFC969B8F1A9A0F1A01FFAD874BA" Directory="INSTALLFOLDER" Guid="*">
+                <File Id="filE0B15D2B280E1EDFAB44F822C47D44ED" KeyPath="yes" Source="$(var.DesktopClientSourcePath)\Microsoft.Practices.Unity.dll" />
+            </Component>
+            <Component Id="cmpB48E67D919D1C42D78781F3B5D6E4336" Directory="INSTALLFOLDER" Guid="*">
+                <File Id="fil53564AE840DB9CE660FE1F02DB1CB224" KeyPath="yes" Source="$(var.DesktopClientSourcePath)\Microsoft.Practices.Unity.RegistrationByConvention.dll" />
+            </Component>
+            <Component Id="cmp3DA176587AAA90C2405BEA615A4E9308" Directory="INSTALLFOLDER" Guid="*">
+                <File Id="fil5AD550400961120BFCFAD367E5C089E3" KeyPath="yes" Source="$(var.DesktopClientSourcePath)\Microsoft.Practices.Unity.RegistrationByConvention.xml" />
+            </Component>
+            <Component Id="cmpCFA8F064372A36F9EE1B802542E54972" Directory="INSTALLFOLDER" Guid="*">
+                <File Id="fil3861DDA5FAC6B55ED05EA3EC3DB8996A" KeyPath="yes" Source="$(var.DesktopClientSourcePath)\Microsoft.Practices.Unity.xml" />
+            </Component>
+            <Component Id="cmpA1ECE8DB012BBA16B976018E9D98B56D" Directory="INSTALLFOLDER" Guid="*">
+                <File Id="filC55FB4457A2C6CA4AE46C6FCC459FDE1" KeyPath="yes" Source="$(var.DesktopClientSourcePath)\NHibernate.dll" />
+            </Component>
+            <Component Id="cmp86ACD35D7BDFE33DE774E47D5BDCF58D" Directory="INSTALLFOLDER" Guid="*">
+                <File Id="filE11A124F6059919488CBA747E3662364" KeyPath="yes" Source="$(var.DesktopClientSourcePath)\NHibernate.xml" />
+            </Component>
+            <Component Id="cmpA93DFA2C74738232CBDE205AB0672FAE" Directory="INSTALLFOLDER" Guid="*">
+                <File Id="fil3359C57F27323E3677A01B92CE94FD46" KeyPath="yes" Source="$(var.DesktopClientSourcePath)\SC2Domain.dll" />
+            </Component>
+            <Component Id="cmpFDB8B2CE3F5920CA8001FB442FF97C6D" Directory="INSTALLFOLDER" Guid="*">
+                <File Id="fil1AF57A9646A46E8D1B15EF97361FA749" KeyPath="yes" Source="$(var.DesktopClientSourcePath)\SC2Domain.pdb" />
+            </Component>
+            <Component Id="cmp6B7CE49F5F3A518047B74FB6AC2251C5" Directory="INSTALLFOLDER" Guid="*">
+                <File Id="fil86030949C08D40073D1F77D572C14B0D" KeyPath="yes" Source="$(var.DesktopClientSourcePath)\System.Data.SQLite.dll" />
+            </Component>
+            <Component Id="cmpF0779F15EC19A57BE1B2F861D7DE696E" Directory="INSTALLFOLDER" Guid="*">
+                <File Id="filFCD462E7D1690B3E0A1EC55BB1B7FE6B" KeyPath="yes" Source="$(var.DesktopClientSourcePath)\System.Data.SQLite.EF6.dll" />
+            </Component>
+            <Component Id="cmp7CD8A031D36A447486DB78F3F83272E7" Directory="INSTALLFOLDER" Guid="*">
+                <File Id="fil78A6DA4FA512268ADE24A0CEB59C1442" KeyPath="yes" Source="$(var.DesktopClientSourcePath)\System.Data.SQLite.Linq.dll" />
+            </Component>
+            <Component Id="cmpB0D00055965EDE11CC624747CE56C686" Directory="INSTALLFOLDER" Guid="*">
+                <File Id="fil1AD5F5CE645B996B33CF1EF5C058BA4F" KeyPath="yes" Source="$(var.DesktopClientSourcePath)\System.Data.SQLite.xml" />
+            </Component>
+            <Component Id="cmp017BFB3832A5B110A2B3A350E13F2A5C" Directory="INSTALLFOLDER" Guid="*">
+                <File Id="fil17E34524E8398461D615894C92558FE9" KeyPath="yes" Source="$(var.DesktopClientSourcePath)\System.Windows.Interactivity.dll" />
+            </Component>
+            <Component Id="cmpE01A067AFE41AAF5863517AC52B7E399" Directory="INSTALLFOLDER" Guid="*">
+                <File Id="fil80B49A0B6E7C97C71B89FD33C21BC9B8" KeyPath="yes" Source="$(var.DesktopClientSourcePath)\Utilities.dll" />
+            </Component>
+            <Component Id="cmp8B1694C26CAAE996324EDC5330803FAB" Directory="INSTALLFOLDER" Guid="*">
+                <File Id="fil2F67CD83229D471ECE13F4288CD6A2FC" KeyPath="yes" Source="$(var.DesktopClientSourcePath)\Utilities.pdb" />
+            </Component>
+            <Component Id="cmpB5AC76F2952CC9DFFEAE55F2225097DA" Directory="INSTALLFOLDER" Guid="*">
+                <File Id="fil6AA069CB067F41A6BD8EE397FDA8959D" KeyPath="yes" Source="$(var.DesktopClientSourcePath)\Xceed.Wpf.AvalonDock.dll" />
+            </Component>
+            <Component Id="cmp2A23BAA07F6AEF1BAC39F167324A8F3A" Directory="INSTALLFOLDER" Guid="*">
+                <File Id="filBC3F4C1166E0142D06933250742EA7C2" KeyPath="yes" Source="$(var.DesktopClientSourcePath)\Xceed.Wpf.AvalonDock.Themes.Aero.dll" />
+            </Component>
+            <Component Id="cmpD2BBFD2B0371F68A1185CC644A1BEA64" Directory="INSTALLFOLDER" Guid="*">
+                <File Id="fil4DFF05E2DF20649A72E2FB5FBC3CBA2E" KeyPath="yes" Source="$(var.DesktopClientSourcePath)\Xceed.Wpf.AvalonDock.Themes.Metro.dll" />
+            </Component>
+            <Component Id="cmpFFB651FFCBD1B293A7B0FE113C056F8F" Directory="INSTALLFOLDER" Guid="*">
+                <File Id="filEFDE58C5ABCFCB31E073211560F487D2" KeyPath="yes" Source="$(var.DesktopClientSourcePath)\Xceed.Wpf.AvalonDock.Themes.VS2010.dll" />
+            </Component>
+            <Component Id="cmp2082E6F44E7442A2CF668AC1314841DE" Directory="INSTALLFOLDER" Guid="*">
+                <File Id="fil970A8461CFC3494D8628089C3DDA5992" KeyPath="yes" Source="$(var.DesktopClientSourcePath)\Xceed.Wpf.DataGrid.dll" />
+            </Component>
+            <Component Id="cmpC85BD7478E073743A39F17DF06865203" Directory="INSTALLFOLDER" Guid="*">
+                <File Id="fil3DAD59899DDA1B0FCEDF95F84CB3C475" KeyPath="yes" Source="$(var.DesktopClientSourcePath)\Xceed.Wpf.Toolkit.dll" />
+            </Component>
+            <Component Id="cmp4A52AE4E8DFF44FDFE34B767EAD5FDCA" Directory="dir242DC17B8DFC53C13CAF172FC08B730A" Guid="*">
+                <File Id="fil3CF06E23E11DB87DF5063C98D9515A21" KeyPath="yes" Source="$(var.DesktopClientSourcePath)\de\Microsoft.Expression.Interactions.resources.dll" />
+            </Component>
+            <Component Id="cmp5C894AE3FF956FCDDF4DFFE3BA89B9C1" Directory="dir242DC17B8DFC53C13CAF172FC08B730A" Guid="*">
+                <File Id="filB1C9AEB28739722A7265C14C29D55B54" KeyPath="yes" Source="$(var.DesktopClientSourcePath)\de\Xceed.Wpf.AvalonDock.resources.dll" />
+            </Component>
+            <Component Id="cmp4C210D0BB60694002C0E125B5AED82C0" Directory="dir1710C20C4C4513ACEA8627A52788727F" Guid="*">
+                <File Id="fil14B6311EC5A70EEF93366E30D14A429C" KeyPath="yes" Source="$(var.DesktopClientSourcePath)\en\Microsoft.Expression.Interactions.resources.dll" />
+            </Component>
+            <Component Id="cmp42EE2018C2B8C0B132C5B7FDB466A24F" Directory="dir9AE38F4F5CB5E565E774521E138F44FD" Guid="*">
+                <File Id="fil3A44FC4D1CFAC432CB43F06358F8293E" KeyPath="yes" Source="$(var.DesktopClientSourcePath)\es\Microsoft.Expression.Interactions.resources.dll" />
+            </Component>
+            <Component Id="cmp6EFE3E0288B5FA57D98FB920AB342897" Directory="dir9AE38F4F5CB5E565E774521E138F44FD" Guid="*">
+                <File Id="fil87AEDF35E30560161D787B0A3BF3750B" KeyPath="yes" Source="$(var.DesktopClientSourcePath)\es\Xceed.Wpf.AvalonDock.resources.dll" />
+            </Component>
+            <Component Id="cmpC091C7F4E90831A930ED7F63B31AA52F" Directory="dirB55DFDA91FEE7CCCBC65CA7493B75748" Guid="*">
+                <File Id="fil260EB8D506693725160FACD2D8F0CB73" KeyPath="yes" Source="$(var.DesktopClientSourcePath)\fr\Microsoft.Expression.Interactions.resources.dll" />
+            </Component>
+            <Component Id="cmp3EB7F17B0DCBDF3729FDAAAF0CF6B665" Directory="dirB55DFDA91FEE7CCCBC65CA7493B75748" Guid="*">
+                <File Id="fil894A87B41983376BAAE165DD02D4FB6C" KeyPath="yes" Source="$(var.DesktopClientSourcePath)\fr\Xceed.Wpf.AvalonDock.resources.dll" />
+            </Component>
+            <Component Id="cmpFB118A47202A6B98ED49B3C952C22F35" Directory="dir937629FDAC3D30087170D6DA46E383A6" Guid="*">
+                <File Id="fil0686FF7DCF04C68D53BD45FE0C2A8BF6" KeyPath="yes" Source="$(var.DesktopClientSourcePath)\hu\Xceed.Wpf.AvalonDock.resources.dll" />
+            </Component>
+            <Component Id="cmpDB304B26C1E70DE188F446507D225995" Directory="dir45DE18DD71F3E8DD6BE4A0E2B48778C8" Guid="*">
+                <File Id="filAF6662F276A5F70390C4B052F5FD88F2" KeyPath="yes" Source="$(var.DesktopClientSourcePath)\it\Microsoft.Expression.Interactions.resources.dll" />
+            </Component>
+            <Component Id="cmp0B9527E49327DF46736C8F6F58634C01" Directory="dir45DE18DD71F3E8DD6BE4A0E2B48778C8" Guid="*">
+                <File Id="fil0B4AABB0E6DE194FF7BBE1F51933E675" KeyPath="yes" Source="$(var.DesktopClientSourcePath)\it\Xceed.Wpf.AvalonDock.resources.dll" />
+            </Component>
+            <Component Id="cmpC29393459FDFAC4DEFF49CCCB8021FBE" Directory="dir997B58958EFAE06BB705E870622AB899" Guid="*">
+                <File Id="fil26FE3182FBA34D4C97A9E6BB05210915" KeyPath="yes" Source="$(var.DesktopClientSourcePath)\ja\Microsoft.Expression.Interactions.resources.dll" />
+            </Component>
+            <Component Id="cmpFF629150EC284812701B014D2BDF2720" Directory="dirF152986C1E6339E5EF84FD1370841521" Guid="*">
+                <File Id="filDC6396250ADDE7AEEAA86562219F93DA" KeyPath="yes" Source="$(var.DesktopClientSourcePath)\ko\Microsoft.Expression.Interactions.resources.dll" />
+            </Component>
+            <Component Id="cmp78E3AC4B6177179C5F50ECB1A8B16D85" Directory="dir339F53F3A11C56B053FD1FEC9B438810" Guid="*">
+                <File Id="fil449CD491C0135989D68E91371269A3B8" KeyPath="yes" Source="$(var.DesktopClientSourcePath)\pt-BR\Xceed.Wpf.AvalonDock.resources.dll" />
+            </Component>
+            <Component Id="cmp1540E6C17030090C628A142AB815893D" Directory="dirBD3668345143F8EFDFB86A9B73810966" Guid="*">
+                <File Id="filA53F285204ABC84BDD30D704D3AD1488" KeyPath="yes" Source="$(var.DesktopClientSourcePath)\ro\Xceed.Wpf.AvalonDock.resources.dll" />
+            </Component>
+            <Component Id="cmp5BCA8E7B5DACA2E0F14112B37847EEE3" Directory="dirE9205C68F964857267FD3312DBFF9A91" Guid="*">
+                <File Id="filB9EF2F0A4D634639F158027AB9F2E811" KeyPath="yes" Source="$(var.DesktopClientSourcePath)\ru\Microsoft.Expression.Interactions.resources.dll" />
+            </Component>
+            <Component Id="cmp0D4BE05FC1DE55590C9709CA01911525" Directory="dirE9205C68F964857267FD3312DBFF9A91" Guid="*">
+                <File Id="fil4C2ED72F2BA64BA2A890779CC3B77DA4" KeyPath="yes" Source="$(var.DesktopClientSourcePath)\ru\Xceed.Wpf.AvalonDock.resources.dll" />
+            </Component>
+            <Component Id="cmpC21D9CCB5856693FB3CE2A23AFB7DD83" Directory="dir8FBB04D7AB5FE55FCF40758128EC763E" Guid="*">
+                <File Id="fil75EA045A69F3E238DA47EBBABBF5DCD8" KeyPath="yes" Source="$(var.DesktopClientSourcePath)\sv\Xceed.Wpf.AvalonDock.resources.dll" />
+            </Component>
+            <Component Id="cmp19F6DF8A2ABC78D782D76F1EEC9A5800" Directory="dir43FCCFA109FBF584D9155DCE31E452EB" Guid="*">
+                <File Id="filC7EA62E1AC64247AFBE682E8631402B8" KeyPath="yes" Source="$(var.DesktopClientSourcePath)\x64\SQLite.Interop.dll" />
+            </Component>
+            <Component Id="cmp77484AF39EF2F8BD64E876C33A1C3E49" Directory="dir97F42FF68945B97AAE670945C4FDAE93" Guid="*">
+                <File Id="filD2ACACD0EBAF09B1953E9C3793C13C69" KeyPath="yes" Source="$(var.DesktopClientSourcePath)\x86\SQLite.Interop.dll" />
+            </Component>
+            <Component Id="cmpFACDDFD1F4A29B7B99849D5AE23A853E" Directory="dir4A8DD77DBC79775EC39CACBC8AA06107" Guid="*">
+                <File Id="fil5C2186788437CAAF9A9E06709D15FB94" KeyPath="yes" Source="$(var.DesktopClientSourcePath)\zh-Hans\Microsoft.Expression.Interactions.resources.dll" />
+            </Component>
+            <Component Id="cmp11A3FE50B66CC04F854A4486A5199C89" Directory="dir4A8DD77DBC79775EC39CACBC8AA06107" Guid="*">
+                <File Id="fil6EE1E4B1FB2A7DF0A95E3D283E73ADFA" KeyPath="yes" Source="$(var.DesktopClientSourcePath)\zh-Hans\Xceed.Wpf.AvalonDock.resources.dll" />
+            </Component>
+            <Component Id="cmp382BE9EAE578DB41C7D6B91BCFBEEF2F" Directory="dir083BC4C92455CD933FA93376E7459C85" Guid="*">
+                <File Id="fil42BE776F60F824667CBEAF1ED0B6157A" KeyPath="yes" Source="$(var.DesktopClientSourcePath)\zh-Hant\Microsoft.Expression.Interactions.resources.dll" />
+            </Component>
+        </ComponentGroup>
+    </Fragment>
+</Wix>

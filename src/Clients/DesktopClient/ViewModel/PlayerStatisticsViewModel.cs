@@ -58,6 +58,22 @@ namespace SC2LiquipediaStatistics.DesktopClient.ViewModel
             }
         }
 
+        private bool hasPlayerStatistics;
+        public bool HasPlayerStatistics
+        {
+            get
+            {
+                return hasPlayerStatistics;
+            }
+            set
+            {
+                if (hasPlayerStatistics == value)
+                    return;
+
+                Set(() => HasPlayerStatistics, ref hasPlayerStatistics, value, true);
+            }
+        }
+
         protected PlayerStatistics playerStatistics;
         public PlayerStatistics PlayerStatistics
         {
@@ -139,7 +155,7 @@ namespace SC2LiquipediaStatistics.DesktopClient.ViewModel
 
             IList<Event> events;
 
-            using (var context = new NHibernateSessionContext())
+            using (new NHibernateSessionContext())
             {
                 var domainPlayer = Mapper.Map<Player, SC2DomainEntities.Player>(SelectedPlayer);
                 var domainStatistics = StatisticsService.GeneratePlayerStatistics(domainPlayer, SelectedExpansion.Value);
@@ -148,6 +164,7 @@ namespace SC2LiquipediaStatistics.DesktopClient.ViewModel
                 events = Mapper.Map<IList<SC2DomainEntities.Event>, IList<Event>>(domainEvents);
             }
 
+            HasPlayerStatistics = true;
             EventsParticipated = new ObservableCollection<Event>(events);
         }
 
@@ -159,6 +176,7 @@ namespace SC2LiquipediaStatistics.DesktopClient.ViewModel
             var domainPlayers = SC2Service.FindAllPlayers();
             var players = Mapper.Map<IList<SC2DomainEntities.Player>, IList<Player>>(domainPlayers);
             Players = new ObservableCollection<Player>(players);
+            HasPlayerStatistics = false;
         }
     }
 }

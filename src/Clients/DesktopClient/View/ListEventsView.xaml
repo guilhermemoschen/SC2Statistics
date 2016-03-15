@@ -8,7 +8,8 @@
              mc:Ignorable="d" 
              DataContext="{Binding ListEventsViewModel, Source={StaticResource Locator}}"
              d:DesignHeight="600" d:DesignWidth="800">
-    <Grid Style="{StaticResource ContentRoot}">
+    <StackPanel Style="{StaticResource ContentRoot}">
+        <TextBlock Text="List of Imported Events" Style="{StaticResource Heading1}" Margin="0,0,0,8"/>
         <DataGrid ItemsSource="{Binding Events}" SelectedItem="{Binding SelectedEvent}" IsReadOnly="true" HorizontalAlignment="Left" Margin="0,0,0,0" VerticalAlignment="Top" SelectionMode="Single" AutoGenerateColumns="False">
             <DataGrid.Columns>
                 <mui:DataGridCheckBoxColumn Width="Auto" Binding="{Binding IsActive}" Header="Active"/>
@@ -36,5 +37,5 @@
                 </DataGridTemplateColumn>
             </DataGrid.Columns>
         </DataGrid>
-    </Grid>
+    </StackPanel>
 </Common:ModernUserControl>

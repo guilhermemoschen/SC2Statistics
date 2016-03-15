@@ -8,15 +8,15 @@
              DataContext="{Binding AddEventViewModel, Source={StaticResource Locator}}"
              mc:Ignorable="d" 
              d:DesignHeight="600" d:DesignWidth="800">
-    <ScrollViewer>
+    <ScrollViewer Style="{StaticResource ContentRoot}" VerticalScrollBarVisibility="Auto">
         <StackPanel Style="{StaticResource Form}">
-            <TextBlock Text="Add New Event/Tournament" Style="{StaticResource Heading2}" />
+            <TextBlock Text="Import New SC2 Event from Liquipedia" Style="{StaticResource Heading1}" Margin="0,0,0,8" />
             <StackPanel>
-                <Label Content="Link" />
+                <Label Content="Event Address" />
                 <TextBox Width="300" Text="{Binding EventUrl}"/>
             </StackPanel>
             <StackPanel>
-                <Button Command="{Binding AddNewCommand}" Content="Add Event"/>
+                <Button Command="{Binding AddNewCommand}" Content="Import"/>
             </StackPanel>
         </StackPanel>
     </ScrollViewer>

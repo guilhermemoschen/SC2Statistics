@@ -5,12 +5,23 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:SC2LiquipediaStatistics.DesktopClient.View"
              xmlns:Common="clr-namespace:SC2LiquipediaStatistics.DesktopClient.Common"
+             xmlns:mui="http://firstfloorsoftware.com/ModernUI"
              mc:Ignorable="d" 
              d:DesignHeight="600" d:DesignWidth="800">
     <Grid Style="{StaticResource ContentRoot}">
         <ScrollViewer>
             <StackPanel>
-                <TextBlock Text="Welcome SC2 Player!" Style="{StaticResource Heading1}" Margin="0,0,0,8"/>
+                <TextBlock Text="Welcome to Starcraft 2 Statistics" Style="{StaticResource Heading1}" Margin="0,0,0,8"/>
+                <mui:BBCodeBlock Margin="0,0,0,32" xml:space="preserve">
+This application intend to generate SC2 Player statistics based on [b]Liquipedia[/b] Tournament pages.
+                </mui:BBCodeBlock>
+                <TextBlock Text="Version 0.1.0-beta" Style="{StaticResource Heading2}" />
+                <mui:BBCodeBlock Margin="0,0,0,32" xml:space="preserve">
+This version brings the first release of SC Statistics. The main features are:
+- Manage Events
+- Import Liquipedia Event
+- General Player Statistics
+                </mui:BBCodeBlock>
             </StackPanel>
         </ScrollViewer>
     </Grid>

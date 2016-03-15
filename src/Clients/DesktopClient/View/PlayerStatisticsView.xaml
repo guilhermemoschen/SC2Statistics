@@ -32,15 +32,17 @@
             <Setter Property="Margin" Value="5,0,0,0"/>
             <Setter Property="FontWeight" Value="Bold" />
         </Style>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
     </Common:ModernUserControl.Resources>
     <ScrollViewer>
         <Grid Style="{StaticResource ContentRoot}">
             <Grid.RowDefinitions>
-                <RowDefinition Height="100"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
                 <RowDefinition Height="Auto"></RowDefinition>
                 <RowDefinition Height="*"></RowDefinition>
             </Grid.RowDefinitions>
             <StackPanel Grid.Row="0" Style="{StaticResource Form}">
+                <TextBlock Text="SC2 Player Statistics Generator" Style="{StaticResource Heading1}" Margin="0,0,0,8" />
                 <StackPanel>
                     <Label Content="Select a Player"/>
                     <ComboBox DisplayMemberPath="Name" IsEditable="True" SelectedItem="{Binding SelectedPlayer}" ItemsSource="{Binding Players}" Width="200" Height="30" HorizontalAlignment="Left" VerticalAlignment="Top" /></StackPanel>
@@ -49,10 +51,10 @@
                     <ComboBox SelectedItem="{Binding SelectedExpansion}" ItemsSource="{Binding Expansions}" DisplayMemberPath="Key" Width="200" Height="30" HorizontalAlignment="Left" VerticalAlignment="Top" />
                 </StackPanel>
                 <StackPanel>
-                    <Button Command="{Binding GenerateStatisticsCommand}" Content="Generate Statistics"/>
+                    <Button Command="{Binding GenerateStatisticsCommand}" Content="Generate"/>
                 </StackPanel>
             </StackPanel>
-            <StackPanel Grid.Row="1">
+            <StackPanel Grid.Row="1" Visibility="{Binding HasPlayerStatistics, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <StackPanel Margin="0,0,0,10" Width="{Binding ActualWidth, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type StackPanel}}}">
                     <TextBlock Text="{Binding PlayerStatistics.Player.Name}" HorizontalAlignment="Center" Style="{StaticResource Heading2}" />
                 </StackPanel>
@@ -96,7 +98,7 @@
                     </StackPanel>
                 </WrapPanel>
             </StackPanel>
-            <StackPanel Grid.Row="2" Margin="0,20,0,0">
+            <StackPanel Grid.Row="2" Margin="0,20,0,0" Visibility="{Binding HasPlayerStatistics, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <StackPanel Margin="0,0,0,10" Width="{Binding ActualWidth, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type StackPanel}}}">
                     <TextBlock Text="Events/Tournaments Participated" HorizontalAlignment="Center" Style="{StaticResource Heading2}" />
                 </StackPanel>

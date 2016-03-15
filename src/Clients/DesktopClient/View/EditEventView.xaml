@@ -85,13 +85,13 @@
                 </DataGrid>
             </StackPanel>
             <StackPanel Grid.Row="2" Style="{StaticResource Form}" Margin="0,20,0,0">
-                <TextBlock Text="Add New Sub Event/Tournament" Style="{StaticResource Heading2}" />
+                <TextBlock Text="Import New Sub Liquipedia Event" Style="{StaticResource Heading2}" />
                 <StackPanel>
                     <Label Content="Link" />
                     <TextBox Width="300" Text="{Binding SubEventUrl}"/>
                 </StackPanel>
                 <StackPanel>
-                    <Button Command="{Binding AddNewSubEventCommand}" Content="Add Sub Event"/>
+                    <Button Command="{Binding AddNewSubEventCommand}" Content="Import"/>
                 </StackPanel>
             </StackPanel>
         </Grid>

@@ -116,6 +116,7 @@ namespace SC2LiquipediaStatistics.DesktopClient.ViewModel
 
         public ICommand SaveCommand { get; private set; }
         public ICommand ReloadAllEvenDataCommand { get; private set; }
+        public ICommand ReloadMainEvenDataCommand { get; private set; }
         public ICommand EditSubEventCommand { get; private set; }
         public ICommand DeleteSubEventCommand { get; private set; }
         public ICommand AddNewSubEventCommand { get; private set; }
@@ -136,10 +137,38 @@ namespace SC2LiquipediaStatistics.DesktopClient.ViewModel
 
             SaveCommand = new RelayCommand(SaveEvent);
             NavigatedToCommand = new RelayCommand<object>(SelectEvent);
-            ReloadAllEvenDataCommand = new RelayCommand(ReloadAllEvenData);
+            ReloadAllEvenDataCommand = new RelayCommand(ReloadAllEvent);
+            ReloadMainEvenDataCommand = new RelayCommand(ReloadMainEvent);
             EditSubEventCommand = new RelayCommand(EditSubEvent);
             DeleteSubEventCommand = new RelayCommand(DeleteSelectedSubEvent);
             AddNewSubEventCommand = new RelayCommand(AddNewSubEvent);
+        }
+
+        private void ReloadMainEvent()
+        {
+            ValidationException validationException = null;
+
+            LoadingService.ShowAndExecuteAction(delegate
+            {
+                try
+                {
+                    using (new NHibernateSessionContext())
+                    {
+                        var updatedEvent = ParseService.GetSC2Event(SelectedEvent.LiquipediaReference);
+                        var domainEvent = SC2Service.LoadEvent(SelectedEvent.Id);
+                        domainEvent.Merge(updatedEvent, true, false);
+                        SC2Service.UpdateEvent(domainEvent);
+                        SelectedEvent = Mapper.Map<SC2DomainEntities.Event, Event>(domainEvent);
+                    }
+                }
+                catch (ValidationException ex)
+                {
+                    validationException = ex;
+                }
+            });
+
+            if (validationException != null)
+                ModernDialog.ShowMessage(validationException.GetFormatedMessage(), "Validation Message", MessageBoxButton.OK);
         }
 
         private void AddNewSubEvent()
@@ -183,7 +212,7 @@ namespace SC2LiquipediaStatistics.DesktopClient.ViewModel
             }
         }
 
-        private void ReloadAllEvenData()
+        private void ReloadAllEvent()
         {
             ValidationException validationException = null;
 
@@ -191,12 +220,12 @@ namespace SC2LiquipediaStatistics.DesktopClient.ViewModel
             {
                 try
                 {
-                    using (var context = new NHibernateSessionContext())
+                    using (new NHibernateSessionContext())
                     {
                         
                         var updatedEvent = ParseService.GetSC2EventWithSubEvents(SelectedEvent.LiquipediaReference);
                         var domainEvent = SC2Service.LoadEvent(SelectedEvent.Id);
-                        domainEvent.Merge(updatedEvent);
+                        domainEvent.Merge(updatedEvent, true, true);
                         SC2Service.UpdateEvent(domainEvent);
                         SelectedEvent = Mapper.Map<SC2DomainEntities.Event, Event>(domainEvent);
                     }

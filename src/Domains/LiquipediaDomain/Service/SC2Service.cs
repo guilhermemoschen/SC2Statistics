@@ -61,9 +61,8 @@ namespace SC2Statistics.SC2Domain.Service
             }
             else
             {
-                existentEvent.Merge(sc2Event);
+                existentEvent.Merge(sc2Event, true, true);
                 UpdateEvent(existentEvent);
-                
             }
 
             return existentEvent ?? sc2Event;

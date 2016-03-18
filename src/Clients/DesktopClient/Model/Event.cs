@@ -153,6 +153,8 @@ namespace SC2LiquipediaStatistics.DesktopClient.Model
                 return SubEvents.Any();
             }
         }
+
+        public int TotalMatches { get; set; }
     }
 }
 

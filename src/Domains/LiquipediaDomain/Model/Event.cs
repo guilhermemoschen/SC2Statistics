@@ -17,6 +17,7 @@ namespace SC2Statistics.SC2Domain.Model
         [NotNullValidator]
         public virtual string Name { get; set; }
 
+        [NotNullValidator]
         public virtual string LiquipediaReference { get; set; }
 
         public virtual DateTime? StartDate { get; set; }
@@ -40,7 +41,27 @@ namespace SC2Statistics.SC2Domain.Model
             Matches = new List<Match>();
             SubEvents = new List<Event>();
             IsActive = true;
+            Expansion = Expansion.LegacyOfTheVoid;
         }
+
+        public int GetTotalMatches()
+        {
+            var allSubEvents = GetSubAllEvents(this);
+            return allSubEvents.Sum(x => x.Matches.Count) + Matches.Count;
+        }
+
+        public IList<Event> GetSubAllEvents(Event parentEvent)
+        {
+            var events = new List<Event>();
+            foreach (var subEvent in parentEvent.SubEvents)
+            {
+                events.Add(subEvent);
+                events.AddRange(GetSubAllEvents(subEvent));
+            }
+
+            return events;
+        }
+
 
         public void AddMatch(Match match)
         {
@@ -67,7 +88,7 @@ namespace SC2Statistics.SC2Domain.Model
             SubEvents.Add(subEvent);
         }
 
-        public void Merge(Event eventToMergeFrom)
+        public void Merge(Event eventToMergeFrom, bool mergeMatches, bool mergeSubEvents)
         {
             Name = eventToMergeFrom.Name;
             LiquipediaReference = eventToMergeFrom.LiquipediaReference;
@@ -76,11 +97,23 @@ namespace SC2Statistics.SC2Domain.Model
             LiquipediaTier = eventToMergeFrom.LiquipediaTier;
             PrizePool = eventToMergeFrom.PrizePool;
             Expansion = eventToMergeFrom.Expansion;
-            SubEvents.Clear();
 
-            foreach (var subEvent in eventToMergeFrom.SubEvents)
+            if (mergeMatches)
             {
-                AddSubEvent(subEvent);
+                Matches.Clear();
+                foreach (var match in eventToMergeFrom.Matches)
+                {
+                    AddMatch(match);
+                }
+            }
+
+            if (mergeSubEvents)
+            {
+                SubEvents.Clear();
+                foreach (var subEvent in eventToMergeFrom.SubEvents)
+                {
+                    AddSubEvent(subEvent);
+                }
             }
         }
 

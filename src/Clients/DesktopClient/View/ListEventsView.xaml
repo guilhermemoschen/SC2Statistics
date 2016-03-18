@@ -36,6 +36,9 @@
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
             </DataGrid.Columns>
+            <DataGrid.InputBindings>
+                <MouseBinding MouseAction="LeftDoubleClick" Command="{Binding EditEventCommand}" />
+            </DataGrid.InputBindings>
         </DataGrid>
     </StackPanel>
 </Common:ModernUserControl>

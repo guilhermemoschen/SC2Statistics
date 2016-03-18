@@ -112,9 +112,11 @@ namespace SC2LiquipediaStatistics.DesktopClient.ViewModel
 
             IList<Event> events;
 
-            using (var context = new NHibernateSessionContext())
+            using (new NHibernateSessionContext())
             {
-                var domainEvents = SC2Service.FindMainEvents();
+                var domainEvents = SC2Service.FindMainEvents()
+                    .OrderByDescending(x => x.EndDate)
+                    .ToList();
                 events = Mapper.Map<IList<DomainEntities.Event>, IList<Event>>(domainEvents);
             }
 

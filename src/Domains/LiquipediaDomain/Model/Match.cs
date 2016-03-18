@@ -17,7 +17,6 @@ namespace SC2Statistics.SC2Domain.Model
         public virtual Race Player1Race { get; set; }
         public virtual Race Player2Race { get; set; }
         public virtual MatchType Type { get; set; }
-        public virtual string LiquipediaReference { get; set; }
 
         public Match() { }
 
@@ -63,6 +62,17 @@ namespace SC2Statistics.SC2Domain.Model
                 Winner = Player2;
             else
                 Winner = null;
+        }
+
+        public override string ToString()
+        {
+            return string.Format(
+                "{0} {1} x {2} {3}",
+                (Player1 != null) ? Player1.Name : "NULL",
+                Player1Score,
+                Player2Score,
+                (Player2 != null) ? Player2.Name : "NULL"
+            );
         }
     }
 }

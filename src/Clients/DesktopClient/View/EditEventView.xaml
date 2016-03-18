@@ -48,12 +48,21 @@
                         <TextBox x:Name="TextPrizePool" Width="150" Text="{Binding SelectedEvent.PrizePool}" />
                     </StackPanel>
                     <StackPanel>
+                        <Label Content="Liquipedia Reference" />
+                        <TextBox Width="150" Text="{Binding SelectedEvent.LiquipediaReference}" />
+                    </StackPanel>
+                    <StackPanel>
                         <Label Content="Active" Target="{Binding ElementName=Is}"/>
                         <CheckBox x:Name="IsActive" Width="150" IsChecked="{Binding SelectedEvent.IsActive}"  />
                     </StackPanel>
                     <StackPanel>
+                        <Label Content="Total Matches (with Sub Events)" />
+                        <TextBlock Text="{Binding SelectedEvent.TotalMatches}" />
+                    </StackPanel>
+                    <StackPanel>
                         <Button Command="{Binding SaveCommand}" Content="Save"/>
-                        <Button Command="{Binding ReloadAllEvenDataCommand}" Content="Clear existing values and reload ALL event data" ToolTip="Update Main Event Matches" Margin="10,0,0,0"/>
+                        <Button Command="{Binding ReloadAllEvenDataCommand}" Content="Clear existing values and reload ALL event data" Margin="10,0,0,0"/>
+                        <Button Command="{Binding ReloadMainEvenDataCommand}" Content="Reload only this event data" Margin="10,0,0,0"/>
                     </StackPanel>
                 </StackPanel>
             </StackPanel>
@@ -82,6 +91,9 @@
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
                     </DataGrid.Columns>
+                    <DataGrid.InputBindings>
+                        <MouseBinding MouseAction="LeftDoubleClick" Command="{Binding EditSubEventCommand}" />
+                    </DataGrid.InputBindings>
                 </DataGrid>
             </StackPanel>
             <StackPanel Grid.Row="2" Style="{StaticResource Form}" Margin="0,20,0,0">

@@ -16,7 +16,8 @@ namespace SC2LiquipediaStatistics.DesktopClient.Model.Translator
         protected override void Configure()
         {
             // Domain -> UI
-            CreateMap<SC2DomainEntities.Event, Event>();
+            CreateMap<SC2DomainEntities.Event, Event>()
+                .ForMember(x => x.TotalMatches, opt => opt.ResolveUsing(sc2Event => sc2Event.GetTotalMatches()));
 
             CreateMap<SC2DomainEntities.Event, SubEvent>();
 

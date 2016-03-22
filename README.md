@@ -7,7 +7,7 @@ Click [here](https://github.com/guilhermemoschen/SC2Statistics/releases/tag/v0.2
 #Important
 - This application is still in beta version and contains several bugs, please be patient and report anything that you may find to guilherme.catarina@gmail.com
 - Another important fact, is this application generates simple statistics, therefore if a player played only one match and win, the win rate will be 100%
-- You are free to use/stream/demonstrate/etc this software (Apache 2.0 license), just don't forget to mention me and this project.
+- You are free to use/stream/demonstrate/etc this software (Apache 2.0 license), just don't forget to mention me and this project
 - If you'd like to suggest any new feature, just contact me. This is an open source project, so even you can contribute!
 
 #Contact

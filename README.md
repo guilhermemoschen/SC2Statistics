@@ -14,5 +14,5 @@ Click [here](https://github.com/guilhermemoschen/SC2Statistics/releases/tag/v0.2
 My name is Guilherme Moschen and as you may guess, I also play Starcraft 2. If you'd like to drop some words just contact at guilherme.catarina@gmail.com or face me in battle.net [OceanT] Catarinao - Catarinao#1602.
 
 #Requirements to Run
-- .Net Framework 4.5
-- Windows 7
+- .Net Framework 4.5 (or higher)
+- Windows 7 (or higher)

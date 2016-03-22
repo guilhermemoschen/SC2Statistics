@@ -49,8 +49,17 @@
       <Name>WixUIExtension</Name>
     </WixExtension>
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="FilterOutput.xslt" />
+    <Content Include="License.rtf" />
+  </ItemGroup>
   <Import Project="$(WixTargetsPath)" />
   <Target Name="Harvest">
-    <HeatDirectory Outputfile="Components\DesktopClientComponent.wxs" Directory="..\..\Clients\DesktopClient\bin\$(Configuration)" AutogenerateGuids="true" ComponentGroupname="DesktopClientComponent" PreprocessorVariable="var.DesktopClientSourcePath" SuppressRegistry="true" DirectoryRefId="INSTALLFOLDER" ToolPath="$(WixToolPath)" SuppressRootDirectory="true" />
+    <HeatDirectory Outputfile="Components\DesktopClientComponent.temp.wxs" Directory="..\..\Clients\DesktopClient\bin\$(Configuration)" AutogenerateGuids="true" ComponentGroupname="DesktopClientComponent" PreprocessorVariable="var.DesktopClientSourcePath" SuppressRegistry="true" DirectoryRefId="INSTALLFOLDER" ToolPath="$(WixToolPath)" SuppressRootDirectory="true" />
+    <XslTransformation XslInputPath="FilterOutput.xslt" XmlInputPaths="Components\DesktopClientComponent.temp.wxs" OutputPaths="Components\DesktopClientComponent.wxs" Parameters="$(WixServiceParams)" />
+	<Delete Files="Components\DesktopClientComponent.temp.wxs" />
   </Target>
+  <PropertyGroup>
+    <PostBuildEvent />
+  </PropertyGroup>
 </Project>

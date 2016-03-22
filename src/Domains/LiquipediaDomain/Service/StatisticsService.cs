@@ -80,5 +80,55 @@ namespace SC2Statistics.SC2Domain.Service
 
             return statistics;
         }
+
+        public List<List<Match>> GeneratePlayerPathbyEvent(long playerId, long eventId)
+        {
+            var allMatches = new List<List<Match>>();
+
+            var matches = MatchRepository.FindMatchesByPlayerAndEvent(playerId, eventId);
+            if (!matches.Any())
+                return allMatches;
+
+            var allBracketMatches = matches.Where(x => x.Format == MatchFormat.Bracket).ToList();
+            
+
+            while (allBracketMatches.Any())
+            {
+                var currentMatch = allBracketMatches.First();
+                var bracketMatches = new List<Match>();
+
+                bracketMatches.Add(currentMatch);
+                allBracketMatches.Remove(currentMatch);
+
+                if (currentMatch.Winner.Id != playerId)
+                {
+                    allMatches.Add(bracketMatches);
+                    continue;
+                }
+
+                Match nextMatch;
+                while ((nextMatch = allBracketMatches.FirstOrDefault()) != null)
+                {
+                    bracketMatches.Add(nextMatch);
+                    allBracketMatches.Remove(nextMatch);
+
+                    if (nextMatch.Winner.Id != playerId)
+                    {
+                        break;
+                    }
+                }
+
+                allMatches.Add(bracketMatches);
+            }
+
+            var allGroupMatches = matches.Where(x => x.Format == MatchFormat.Group).ToList();
+
+            foreach (var groupMatches in allGroupMatches.GroupBy(x => x.GroupName))
+            {
+                allMatches.Add(groupMatches.ToList());
+            }
+
+            return allMatches;
+        }
     }
 }

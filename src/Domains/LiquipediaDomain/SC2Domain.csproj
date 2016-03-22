@@ -74,6 +74,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Model\MatchFormat.cs" />
+    <Compile Include="Model\BracketRound.cs" />
     <Compile Include="Model\PlayerStatistics.cs" />
     <Compile Include="Repository\IMatchRepository.cs" />
     <Compile Include="Repository\MatchRepository.cs" />

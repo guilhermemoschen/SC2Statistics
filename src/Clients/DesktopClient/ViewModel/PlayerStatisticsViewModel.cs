@@ -16,6 +16,8 @@ using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.CommandWpf;
 
 using SC2LiquipediaStatistics.DesktopClient.Model;
+using SC2LiquipediaStatistics.DesktopClient.Service;
+using SC2LiquipediaStatistics.DesktopClient.View;
 using SC2LiquipediaStatistics.Utilities.DataBase;
 
 using SC2Statistics.SC2Domain.Service;
@@ -51,7 +53,7 @@ namespace SC2LiquipediaStatistics.DesktopClient.ViewModel
             }
             set
             {
-                if (value == null || (selectedPlayer != null && selectedPlayer.Id == value.Id))
+                if (selectedPlayer == value || value == null)
                     return;
 
                 Set(() => SelectedPlayer, ref selectedPlayer, value, true);
@@ -106,6 +108,22 @@ namespace SC2LiquipediaStatistics.DesktopClient.ViewModel
             }
         }
 
+        protected Event selectedEvent;
+        public Event SelectedEvent
+        {
+            get
+            {
+                return selectedEvent;
+            }
+            set
+            {
+                if (value == null || value == selectedEvent)
+                    return;
+
+                Set(() => SelectedEvent, ref selectedEvent, value, true);
+            }
+        }
+
         protected KeyValuePair<string, SC2DomainEntities.Expansion> selectedExpansion;
         public KeyValuePair<string, SC2DomainEntities.Expansion> SelectedExpansion
         {
@@ -128,21 +146,39 @@ namespace SC2LiquipediaStatistics.DesktopClient.ViewModel
 
         public IStatisticsService StatisticsService { get; protected set; }
 
+        public IModernNavigationService NavigationService { get; protected set; }
+
         public IMapper Mapper { get; protected set; }
 
         public ICommand GenerateStatisticsCommand { get; private set; }
 
-        public PlayerStatisticsViewModel(ISC2Service sc2Service, IStatisticsService statisticsService, IMapper mapper)
+        public ICommand PlayerEventSelected { get; private set; }
+
+        public PlayerStatisticsViewModel(ISC2Service sc2Service, IModernNavigationService navigationService, IStatisticsService statisticsService, IMapper mapper)
         {
             SC2Service = sc2Service;
             StatisticsService = statisticsService;
+            NavigationService = navigationService;
             Mapper = mapper;
 
+            PlayerEventSelected = new RelayCommand(NavigateToPlayerByEvent);
             GenerateStatisticsCommand = new RelayCommand(GenerateStatistics);
+            NavigatedToCommand = new RelayCommand<object>(LoadView);
             Expansions = new List<KeyValuePair<string, SC2DomainEntities.Expansion>>();
             Expansions.Add(new KeyValuePair<string, SC2DomainEntities.Expansion>("Hearth of the Swarm", SC2DomainEntities.Expansion.HeartOfTheSwarm));
             Expansions.Add(new KeyValuePair<string, SC2DomainEntities.Expansion>("Legacy of the Void", SC2DomainEntities.Expansion.LegacyOfTheVoid));
             Expansions.Add(new KeyValuePair<string, SC2DomainEntities.Expansion>("Wings of Liberty", SC2DomainEntities.Expansion.WingsOfLiberty));
+            SelectedExpansion = Expansions[1];
+        }
+
+        private void NavigateToPlayerByEvent()
+        {
+            var parameter = new PlayerByEventStatisticsParameter()
+            {
+                Player = SelectedPlayer,
+                Event = SelectedEvent,
+            };
+            NavigationService.NavigateTo(ViewLocator.PlayerByEventStatisticsView, parameter);
         }
 
         private void GenerateStatistics()
@@ -168,15 +204,18 @@ namespace SC2LiquipediaStatistics.DesktopClient.ViewModel
             EventsParticipated = new ObservableCollection<Event>(events);
         }
 
-        public void View_OnLoad()
+        public void LoadView(object parameter)
         {
-            if (IsInDesignMode)
-                return;
-
             var domainPlayers = SC2Service.FindAllPlayers();
             var players = Mapper.Map<IList<SC2DomainEntities.Player>, IList<Player>>(domainPlayers);
             Players = new ObservableCollection<Player>(players);
             HasPlayerStatistics = false;
+
+            if (SelectedPlayer != null)
+            {
+                SelectedPlayer = players.First(x => x.Id == SelectedPlayer.Id);
+                GenerateStatistics();
+            }
         }
     }
 }

@@ -30,6 +30,22 @@ namespace SC2LiquipediaStatistics.DesktopClient.ViewModel
 {
     public class AddEventViewModel : ModernViewModelBase
     {
+        public EventInput eventInput;
+        public EventInput EventInput
+        {
+            get
+            {
+                return eventInput;
+            }
+            set
+            {
+                if (eventInput == value || value == null)
+                    return;
+
+                Set(() => EventInput, ref eventInput, value, true);
+            }
+        }
+
         public ISC2Service SC2Service { get; protected set; }
 
         public IParseService ParseService { get; protected set; }
@@ -41,22 +57,6 @@ namespace SC2LiquipediaStatistics.DesktopClient.ViewModel
         public ILoadingService LoadingService { get; protected set; }
 
         public ICommand AddNewCommand { get; protected set; }
-
-        private string eventUrl;
-        public string EventUrl
-        {
-            get
-            {
-                return eventUrl;
-            }
-            set
-            {
-                if (value == null || eventUrl == value)
-                    return;
-
-                Set(() => EventUrl, ref eventUrl, value, true);
-            }
-        }
 
         public AddEventViewModel(ISC2Service sc2Service, IParseService parseService, IModernNavigationService navigationService, ILoadingService loadingService, IMapper mapper)
         {
@@ -72,11 +72,14 @@ namespace SC2LiquipediaStatistics.DesktopClient.ViewModel
 
         private void LoadView(object o)
         {
-            EventUrl = string.Empty;
+            EventInput = new EventInput();
         }
 
         private void AddNewEvent()
         {
+            if (!EventInput.IsValid)
+                return;
+
             Event sc2Event = null;
             ValidationException validationException = null;
 
@@ -86,7 +89,7 @@ namespace SC2LiquipediaStatistics.DesktopClient.ViewModel
                 {
                     try
                     {
-                        var domainEvent = ParseService.GetSC2EventWithSubEvents(EventUrl);
+                        var domainEvent = ParseService.GetSC2EventWithSubEvents(EventInput.LiquipediaUrl);
                         domainEvent = SC2Service.CreateEvent(domainEvent);
                         sc2Event = Mapper.Map<SC2DomainEntities.Event, Event>(domainEvent);
                     }

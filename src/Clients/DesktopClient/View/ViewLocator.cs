@@ -10,6 +10,7 @@ namespace SC2LiquipediaStatistics.DesktopClient.View
     {
         public const string ListEventsView = "ListEventsView";
         public const string PlayerStatisticsView = "PlayerStatisticsView";
+        public const string PlayerByEventStatisticsView = "PlayerByEventStatisticsView";
         public const string EditEventView = "EditEventView";
         public const string HomeView = "HomeView";
     }

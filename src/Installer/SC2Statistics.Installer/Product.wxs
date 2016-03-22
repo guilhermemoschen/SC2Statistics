@@ -1,15 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
-	<Product Id="55d550c2-b88a-4632-951f-dab7f3d8d979" Name="Starcraft 2 Statistics Installer" Language="1033" Version="0.1.0.0" Manufacturer="Guilherme Moschen" UpgradeCode="dd4b32d3-0de9-4c10-bae5-237fe61a2b6c">
-		<Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
+  <Product Id="55d550c2-b88a-4632-951f-dab7f3d8d979" Name="Starcraft 2 Statistics Installer" Language="1033" Version="0.1.0.0" Manufacturer="Guilherme Moschen" UpgradeCode="dd4b32d3-0de9-4c10-bae5-237fe61a2b6c">
+    <Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
 
-		<MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
+    <MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
     <MediaTemplate EmbedCab="yes" />
     <UIRef Id="WixUI_Minimal" />
 
-		<Feature Id="ProductFeature" Title="Starcraft 2 Statistics Installer" Level="1">
-			<ComponentGroupRef Id="ProductComponents" />
+    <Feature Id="ProductFeature" Title="Starcraft 2 Statistics Installer" Level="1">
+      <ComponentGroupRef Id="ProductComponents" />
       <ComponentRef Id="DataBaseComponent"/>
+      <ComponentRef Id="ApplicationShortcut" />
+      <ComponentRef Id="ApplicationShortcutDesktop" />
     </Feature>
 
     <Property Id="WIXUI_INSTALLDIR" Value="INSTALLDIR" />
@@ -18,11 +20,13 @@
     <Condition Message="This setup requires Microsoft .NET Framework 4.0 Full or 4.5 package or greater needs to be installed for this installation to continue.">
       <![CDATA[Installed OR NETFRAMEWORK40FULL OR NETFRAMEWORK45]]>
     </Condition>
-	</Product>
 
-	<Fragment>
-		<Directory Id="TARGETDIR" Name="SourceDir">
-			<Directory Id="ProgramFilesFolder">
+    <WixVariable Id="WixUILicenseRtf" Value="License.rtf" />
+  </Product>
+
+  <Fragment>
+    <Directory Id="TARGETDIR" Name="SourceDir">
+      <Directory Id="ProgramFilesFolder">
         <Directory Id="INSTALLFOLDER" Name="SC2Statistics" />
       </Directory>
       <Directory Id="AppDataFolder">
@@ -30,12 +34,33 @@
           <Directory Id="DataBaseFolder" Name="DataBase" />
         </Directory>
       </Directory>
-		</Directory>
-	</Fragment>
+      <Directory Id="ProgramMenuFolder">
+        <Directory Id="ApplicationProgramsFolder" Name="SC2Statistics"></Directory>
+        <Directory Id="DesktopFolder" Name="Desktop"></Directory>
+      </Directory>
+    </Directory>
+  </Fragment>
 
-	<Fragment>
-		<ComponentGroup Id="ProductComponents" Directory="INSTALLFOLDER">
+  <Fragment>
+    <ComponentGroup Id="ProductComponents" Directory="INSTALLFOLDER">
       <ComponentGroupRef Id="DesktopClientComponent" />
     </ComponentGroup>
-	</Fragment>
+  </Fragment>
+
+  <Fragment>
+    <DirectoryRef Id="ApplicationProgramsFolder">
+      <Component Id="ApplicationShortcut" Guid="52DCBCBC-9707-46A9-A90C-E6726BCFAF6C">
+        <Shortcut Id="ApplicationStartMenuShortcut" Name="SC2 Statistics" Description="SC2 Statistics" Target="[INSTALLFOLDER]DesktopClient.exe" WorkingDirectory="INSTALLFOLDER" />
+        <RemoveFolder Id="RemoveApplicationProgramsFolder" Directory="ApplicationProgramsFolder" On="uninstall" />
+        <RegistryValue Root="HKCU" Key="Software\SC2Statistics" Name="installed" Type="integer" Value="1" KeyPath="yes" />
+      </Component>
+    </DirectoryRef>
+    <DirectoryRef Id="DesktopFolder">
+      <Component Id="ApplicationShortcutDesktop" Guid="8A086979-6EE2-41B2-84F3-B4B781116D89">
+        <Shortcut Id="ApplicationDesktopShortcut" Name="SC2 Statistics" Description="SC2 Statistics" Target="[INSTALLFOLDER]DesktopClient.exe" WorkingDirectory="INSTALLFOLDER" />
+        <RemoveFolder Id="RemoveDesktopFolder" Directory="DesktopFolder" On="uninstall" />
+        <RegistryValue Root="HKCU" Key="Software\SC2Statistics" Name="installed" Type="integer" Value="1" KeyPath="yes" />
+      </Component>
+    </DirectoryRef>
+  </Fragment>
 </Wix>

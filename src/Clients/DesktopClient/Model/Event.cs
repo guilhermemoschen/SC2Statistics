@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,8 +13,13 @@ using SC2Statistics.SC2Domain.Model;
 
 namespace SC2LiquipediaStatistics.DesktopClient.Model
 {
-    public class Event : ObservableObject
+    public class Event : ValidatableObject
     {
+        public Event()
+        {
+            ValidateObject();
+        }
+
         public long Id { get; set; }
 
         private bool isActive;
@@ -26,11 +34,12 @@ namespace SC2LiquipediaStatistics.DesktopClient.Model
                 if (isActive == value)
                     return;
 
-                Set(() => IsActive, ref isActive, value);
+                ValidateAndSet(() => IsActive, ref isActive, value);
             }
         }
 
         private string name;
+        [Required(ErrorMessage = "The event name is mandatory.")]
         public string Name
         {
             get
@@ -42,11 +51,12 @@ namespace SC2LiquipediaStatistics.DesktopClient.Model
                 if (name == value)
                     return;
 
-                Set(() => Name, ref name, value);
+                ValidateAndSet(() => Name, ref name, value);
             }
         }
 
         private string liquipediaReference;
+        [Required(ErrorMessage = "The Liquipedia Reference is mandatory.")]
         public string LiquipediaReference
         {
             get
@@ -58,7 +68,7 @@ namespace SC2LiquipediaStatistics.DesktopClient.Model
                 if (liquipediaReference == value)
                     return;
 
-                Set(() => LiquipediaReference, ref liquipediaReference, value);
+                ValidateAndSet(() => LiquipediaReference, ref liquipediaReference, value);
             }
         }
 
@@ -74,7 +84,7 @@ namespace SC2LiquipediaStatistics.DesktopClient.Model
                 if (startDate == value)
                     return;
 
-                Set(() => StartDate, ref startDate, value);
+                ValidateAndSet(() => StartDate, ref startDate, value);
             }
         }
 
@@ -90,7 +100,7 @@ namespace SC2LiquipediaStatistics.DesktopClient.Model
                 if (endDate == value)
                     return;
 
-                Set(() => EndDate, ref endDate, value);
+                ValidateAndSet(() => EndDate, ref endDate, value);
             }
         }
 
@@ -106,7 +116,7 @@ namespace SC2LiquipediaStatistics.DesktopClient.Model
                 if (liquipediaTier == value)
                     return;
 
-                Set(() => LiquipediaTier, ref liquipediaTier, value);
+                ValidateAndSet(() => LiquipediaTier, ref liquipediaTier, value);
             }
         }
 
@@ -122,7 +132,7 @@ namespace SC2LiquipediaStatistics.DesktopClient.Model
                 if (prizePool == value)
                     return;
 
-                Set(() => PrizePool, ref prizePool, value);
+                ValidateAndSet(() => PrizePool, ref prizePool, value);
             }
         }
 
@@ -138,7 +148,7 @@ namespace SC2LiquipediaStatistics.DesktopClient.Model
                 if (expansion == value)
                     return;
 
-                Set(() => Expansion, ref expansion, value);
+                ValidateAndSet(() => Expansion, ref expansion, value);
             }
         }
 
@@ -157,4 +167,3 @@ namespace SC2LiquipediaStatistics.DesktopClient.Model
         public int TotalMatches { get; set; }
     }
 }
-

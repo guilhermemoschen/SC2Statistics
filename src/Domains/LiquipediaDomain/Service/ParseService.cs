@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
@@ -10,7 +11,7 @@ using HtmlAgilityPack;
 
 using Microsoft.Practices.EnterpriseLibrary.Validation;
 
-using NHibernate.Dialect;
+using NHibernate.Mapping.ByCode.Impl;
 
 using SC2LiquipediaStatistics.Utilities.Domain;
 using SC2LiquipediaStatistics.Utilities.Log;
@@ -29,37 +30,11 @@ namespace SC2Statistics.SC2Domain.Service
     {
         #region REGEX
 
-        public const string ValidateLiquipediaLink = @"^(https?\:\/\/)?wiki\.teamliquid\.net\/starcraft2\/.+";
-
-        public const string FindPrizePool = @"(?<=Prize pool:\<\/div\>\s).*?(?=\<\/)";
-
-        public const string FindLiquepediaTier = @"Liquipedia Tier:\<\/div\>[\s\S]*?\<\/";
-
-        public const string FindGameVersion = @"Game Version:\<\/div\>[\s\S]*?\<\/";
-
-        public const string FindEndDate = @"(?<=End Date:\<\/div\>)[\s\S]*?(?=\<\/)";
-
-        public const string FindStartDate = @"(?<=Start Date:\<\/div\>)[\s\S]*?(?=\<\/)";
-
-        public const string FindEventName = @"(?<=\>).*(?=\<\/h1)";
-
-        public const string FindGroupsTables = @"\<table.+matchlist[\s\S]*?<\/table\>";
-
-        public const string FindGroupsTablesRows = @"(\<tr[^>]*?\>)\s?<td([\s\S](?!<tr))*\<\/tr\>";
+        public const string ValidateLiquipediaUrl = @"^(https?\:\/\/)?wiki\.teamliquid\.net\/starcraft2\/.+";
 
         public const string FindIfIsVodRow = @"[Vv]od\d?\.png";
 
         public const string FindIfIsGamesRow = "<div";
-
-        public const string FindPlayersNamesFromGroupMatchRow = @"\w+(?=<\/span)";
-
-        public const string FindIfBracketMatchIsFinished = @"\<div.*?bracket-cell.*?font-weight:bold";
-
-        public const string FindIfIsGroupMatchFinished = @"\<td.*?matchlistslot.*?font-weight:bold";
-
-        public const string FindIfPlayerOneWonTheMap = @"left.*?\>.*?GreenCheck.*?right";
-
-        public const string FindMapName = @"[\s\S]*?\<div.*?href.*?\>[\s]?";
 
         #endregion
 
@@ -87,7 +62,7 @@ namespace SC2Statistics.SC2Domain.Service
             if (url == null)
                 throw new ArgumentNullException("url");
 
-            if (!Regex.IsMatch(url, ValidateLiquipediaLink))
+            if (!Regex.IsMatch(url, ValidateLiquipediaUrl))
             {
                 throw new ValidationException("The URL is not a valid Liquipedia address.");
             }
@@ -245,7 +220,7 @@ namespace SC2Statistics.SC2Domain.Service
             return node
                 .ParentNode
                 .SelectSingleNode("div[2]")
-                .InnerText;
+                .GetCleanedInnerText();
         }
 
         private LiquipediaTier GetEventTier(HtmlNode infoBoxNode)
@@ -259,7 +234,7 @@ namespace SC2Statistics.SC2Domain.Service
             var result = node
                 .ParentNode
                 .SelectSingleNode("div[2]")
-                .InnerText;
+                .GetCleanedInnerText();
 
             if (result.Contains("Premier"))
                 return LiquipediaTier.Premier;
@@ -302,7 +277,7 @@ namespace SC2Statistics.SC2Domain.Service
             var result = node
                 .ParentNode
                 .SelectSingleNode("div[2]")
-                .InnerText;
+                .GetCleanedInnerText();
 
             if (result.Contains("Legacy of the Void"))
                 return Expansion.LegacyOfTheVoid;
@@ -327,7 +302,7 @@ namespace SC2Statistics.SC2Domain.Service
             var result = node
                 .ParentNode
                 .SelectSingleNode("div[2]")
-                .InnerText;
+                .GetCleanedInnerText();
 
             var endDate = Regex.Match(result, @"\d{4}-\d{2}-\d{2}").Value;
 
@@ -350,7 +325,7 @@ namespace SC2Statistics.SC2Domain.Service
             var result = node
                 .ParentNode
                 .SelectSingleNode("div[2]")
-                .InnerText;
+                .GetCleanedInnerText();
 
             var startDate = Regex.Match(result, @"\d{4}-\d{2}-\d{2}").Value;
 
@@ -371,7 +346,7 @@ namespace SC2Statistics.SC2Domain.Service
                 return null;
 
             return node
-                .InnerText
+                .GetCleanedInnerText()
                 .Replace("[e]", string.Empty)
                 .Replace("[h]", string.Empty);
         }
@@ -392,19 +367,149 @@ namespace SC2Statistics.SC2Domain.Service
                 }
             }
 
-            foreach (var bracketGame in GetBracketGames(contentNode))
+            foreach (var bracketGame in GetBrackets(contentNode))
             {
-                var match = ConvertBacketGameToMatch(bracketGame);
-                if (match != null)
+                var bracketMatchesPerRound = new List<IEnumerable<Match>>();
+                foreach (var column in GetBracketGamesPerColumn(bracketGame))
                 {
-                    matches.Add(match);
+                    var matchesPerRound = ConvertBracketGamesPerRound(column);
+                    if (matchesPerRound != null)
+                        bracketMatchesPerRound.Add(matchesPerRound);
+                }
+
+                var allBracketMatches = DefineNextMatchForBracketMatches(bracketMatchesPerRound);
+                if (allBracketMatches != null && allBracketMatches.Any())
+                {
+                    matches.AddRange(allBracketMatches);
                 }
             }
 
             return matches;
         }
 
-        private Match ConvertBacketGameToMatch(HtmlNode bracketGameNode)
+        public IEnumerable<Match> ConvertBracketGamesPerRound(HtmlNode columnNode)
+        {
+            var matches = new Collection<Match>();
+
+            var sameRoundGames = new List<HtmlNode>();
+            var bracketGamesNodes = columnNode.SelectSubNodes("//div[@class='bracket-game']");
+            if (bracketGamesNodes == null)
+                return null;
+
+            sameRoundGames.AddRange(bracketGamesNodes.Where(IsBracketGameNodeValid));
+
+            var columnHeader = columnNode.SelectSingleSubNode("//div[@class='bracket-header']").GetCleanedInnerText();
+
+            foreach (var matchNode in sameRoundGames)
+            {
+                var match = ConvertBracketGameToMatch(matchNode, ConvertStringToBracketRound(columnHeader));
+                if (match != null)
+                    matches.Add(match);
+            }
+
+            return matches;
+        }
+
+        private BracketRound ConvertStringToBracketRound(string text)
+        {
+            if (string.IsNullOrEmpty(text))
+                return BracketRound.Undefined;
+
+            text = text.Trim();
+
+            if (Regex.IsMatch(text, @"round.*?128", RegexOptions.IgnoreCase))
+                return BracketRound.RoundOf128;
+
+            if (Regex.IsMatch(text, @"round.*?64", RegexOptions.IgnoreCase))
+                return BracketRound.RoundOf64;
+
+            if (Regex.IsMatch(text, @"round.*?32", RegexOptions.IgnoreCase))
+                return BracketRound.RoundOf32;
+
+            if (Regex.IsMatch(text, @"round.*?16", RegexOptions.IgnoreCase))
+                return BracketRound.RoundOf16;
+
+            if (Regex.IsMatch(text, @"round.*?8", RegexOptions.IgnoreCase) || Regex.IsMatch(text, @"quarterfinals", RegexOptions.IgnoreCase))
+                return BracketRound.RoundOf8;
+
+            if (Regex.IsMatch(text, @"semifinals", RegexOptions.IgnoreCase))
+                return BracketRound.RoundOf4;
+
+            if (Regex.IsMatch(text, @"winner.*?final", RegexOptions.IgnoreCase))
+                return BracketRound.WinnersFinals;
+
+            if (Regex.IsMatch(text, @"loser.*?final", RegexOptions.IgnoreCase))
+                return BracketRound.LosersFinals;
+
+            if (Regex.IsMatch(text, @"grand.*?final", RegexOptions.IgnoreCase) || Regex.IsMatch(text, @"^final", RegexOptions.IgnoreCase))
+                return BracketRound.GrandFinals;
+
+            if (Regex.IsMatch(text, @"loser.*?round.*?1$", RegexOptions.IgnoreCase))
+                return BracketRound.LoeserRound1;
+
+            if (Regex.IsMatch(text, @"loser.*?round.*?2$", RegexOptions.IgnoreCase))
+                return BracketRound.LoeserRound2;
+
+            if (Regex.IsMatch(text, @"loser.*?round.*?3$", RegexOptions.IgnoreCase))
+                return BracketRound.LoeserRound3;
+
+            if (Regex.IsMatch(text, @"loser.*?round.*?4$", RegexOptions.IgnoreCase))
+                return BracketRound.LoeserRound4;
+
+            if (Regex.IsMatch(text, @"loser.*?round.*?5$", RegexOptions.IgnoreCase))
+                return BracketRound.LoeserRound5;
+
+            if (Regex.IsMatch(text, @"loser.*?round.*?6$", RegexOptions.IgnoreCase))
+                return BracketRound.LoeserRound6;
+
+            if (Regex.IsMatch(text, @"loser.*?round.*?7$", RegexOptions.IgnoreCase))
+                return BracketRound.LoeserRound7;
+
+            if (Regex.IsMatch(text, @"loser.*?round.*?8$", RegexOptions.IgnoreCase))
+                return BracketRound.LoeserRound8;
+
+            if (Regex.IsMatch(text, @"loser.*?round.*?9$", RegexOptions.IgnoreCase))
+                return BracketRound.LoeserRound9;
+
+            if (Regex.IsMatch(text, @"loser.*?round.*?10$", RegexOptions.IgnoreCase))
+                return BracketRound.LoeserRound10;
+
+            if (Regex.IsMatch(text, @"loser.*?semifinals$", RegexOptions.IgnoreCase))
+                return BracketRound.LoserSemifinals;
+
+            if (Regex.IsMatch(text, @"from.*?winner.*?bracket", RegexOptions.IgnoreCase))
+                return BracketRound.FromWinnerBracket;
+
+            if (Regex.IsMatch(text, @"from.*?loser.*?bracket", RegexOptions.IgnoreCase))
+                return BracketRound.FromLoserBracket;
+
+            return BracketRound.Undefined;
+        }
+
+        public IEnumerable<Match> DefineNextMatchForBracketMatches(IList<IEnumerable<Match>> matchesPerColumn)
+        {
+            // define next matches
+            for (var round = 0; round < matchesPerColumn.Count; round++)
+            {
+                if (round + 1 >= matchesPerColumn.Count)
+                    break;
+
+                foreach (var match in matchesPerColumn[round])
+                {
+                    match.NextMatch = FindNextBracketMatch(match.Winner, matchesPerColumn[round + 1]);
+                }
+            }
+
+            return matchesPerColumn.SelectMany(x => x);
+        }
+
+        private Match FindNextBracketMatch(Player winner, IEnumerable<Match> nextRound)
+        {
+            return nextRound
+                .FirstOrDefault(match => match.Player1.Id == winner.Id || match.Player2.Id == winner.Id);
+        }
+
+        private Match ConvertBracketGameToMatch(HtmlNode bracketGameNode, BracketRound round)
         {
             var rows = bracketGameNode.SelectSubNodes("//div[contains(@class, 'bracket-cell')]");
 
@@ -423,83 +528,36 @@ namespace SC2Statistics.SC2Domain.Service
                 string.IsNullOrEmpty(player1Score) || string.IsNullOrEmpty(player2Score))
                 return null;
 
-            var match = new Match(
+            var match = Match.CreateBracketMatch(
                 null,
-                null,
-                PlayerRespository.FindOrCreate(player1Name),
-                player1Score,
+                PlayerRespository.FindOrCreate(player1Name), 
+                player1Score, 
                 ConvertToRace(player1Row.InnerHtml),
                 PlayerRespository.FindOrCreate(player2Name),
                 player2Score,
-                ConvertToRace(player2Row.InnerHtml)
+                ConvertToRace(player2Row.InnerHtml),
+                round,
+                null
             );
 
             return match.Winner == null ? null : match;
         }
 
-        private IEnumerable<HtmlNode> GetBracketGames(HtmlNode contentNode)
+        private IEnumerable<HtmlNode> GetBrackets(HtmlNode contentNode)
         {
-            var bracketGameNodes = new List<HtmlNode>();
-
             var bracketNodes = contentNode.SelectSubNodes("//div[@class='bracket']");
-            if (bracketNodes == null)
-                return bracketGameNodes;
+            return bracketNodes ?? Enumerable.Empty<HtmlNode>();
+        }
 
-            foreach (var bracketNode in bracketNodes)
-            {
-                var bracketGamesNodes = bracketNode.SelectSubNodes("//div[@class='bracket-game']");
-                if (bracketGamesNodes != null)
-                    bracketGameNodes.AddRange(bracketGamesNodes);
-            }
-
-            
-            return bracketGameNodes.Where(IsBracketGameNodeValid);
+        private IEnumerable<HtmlNode> GetBracketGamesPerColumn(HtmlNode bracketNode)
+        {
+            return bracketNode.SelectSubNodes("//div[@class='bracket-column']");
         }
 
         private bool IsBracketGameNodeValid(HtmlNode htmlNode)
         {
             return !htmlNode.InnerHtml.Contains("bracket-player-middle") &&
                 !htmlNode.InnerHtml.Contains("<div class=\"bracket-score\" style=\"width:21px;\">Q</div>");
-        }
-
-        private string RemoveSinglePlayerBracket(string html)
-        {
-            if (string.IsNullOrEmpty(html))
-                return null;
-
-            var cleanHtml = html;
-
-            var singleBracketIndex = cleanHtml.IndexOf("<div class=\"bracket-player-middle\"");
-
-            while (singleBracketIndex != -1)
-            {
-                var bracketGameIndex = cleanHtml.LastIndexOf("<div class=\"bracket-game\">", singleBracketIndex);
-                cleanHtml = RemoveBracketGame(bracketGameIndex, cleanHtml);
-                singleBracketIndex = cleanHtml.IndexOf("<div class=\"bracket-player-middle\"");
-            }
-
-            return cleanHtml;
-        }
-
-        private string RemoveBracketGame(int bracketGameIndex, string html)
-        {
-            var openDiv = "<div";
-            var closeDiv = "</div>";
-            var divDepth = 0;
-
-            for (var i = bracketGameIndex + 1; i < html.Length; i++)
-            {
-                if (html.Substring(i, openDiv.Length) == openDiv)
-                    divDepth++;
-
-                if (html.Substring(i, closeDiv.Length) == closeDiv)
-                    divDepth--;
-
-                if (divDepth < 0)
-                    return html.Remove(bracketGameIndex, i - bracketGameIndex + closeDiv.Length);
-            }
-
-            return html;
         }
 
         private bool IsBracketMatchFinished(HtmlNode player1Node, HtmlNode player2Node)
@@ -528,9 +586,9 @@ namespace SC2Statistics.SC2Domain.Service
 
         private IEnumerable<HtmlNode> GetGroupsTables(HtmlNode contentNode)
         {
-            var groups = contentNode.SelectSubNodes("//table[@class='oldtable table table-bordered grouptable']");
+            var groups = contentNode.SelectSubNodes("//table[@class='oldtable table table-bordered grouptable' and contains(@style, 'width: 300px')]");
             if (groups == null)
-                return new HtmlNode[0];
+                return Enumerable.Empty<HtmlNode>();
 
             return groups.Select(x => x.ParentNode.ParentNode);
         }
@@ -538,11 +596,16 @@ namespace SC2Statistics.SC2Domain.Service
         private IEnumerable<Match> ConvertGroupTableToMatches(HtmlNode groupNode)
         {
             if (groupNode == null)
-                return new Match[0];
+                return Enumerable.Empty<Match>();
 
             var matches = new List<Match>();
 
             var trs = groupNode.SelectSubNodes("/table/tr");
+
+            string groupName = null;
+            var groupNameNode = groupNode.SelectSingleSubNode("//table[contains(@class, 'grouptable')]//th");
+            if (groupNameNode != null)
+                groupName = groupNameNode.GetCleanedInnerText();
 
             for (var i = 1; i < trs.Count; i++)
             {
@@ -569,7 +632,7 @@ namespace SC2Statistics.SC2Domain.Service
                     }
                 }
 
-                var match = ConvertGroupGameToMatch(matchRow, gamesRow, vodsRow);
+                var match = ConvertGroupGameToMatch(groupName, matchRow, gamesRow, vodsRow);
                 if (match != null)
                     matches.Add(match);
             }
@@ -587,7 +650,7 @@ namespace SC2Statistics.SC2Domain.Service
             return html.Contains(FindIfIsGamesRow);
         }
 
-        private Match ConvertGroupGameToMatch(HtmlNode matchNode, HtmlNode gamesNode, HtmlNode vodsNode)
+        private Match ConvertGroupGameToMatch(string groupName, HtmlNode matchNode, HtmlNode gamesNode, HtmlNode vodsNode)
         {
             if (matchNode == null)
                 return null;
@@ -604,23 +667,13 @@ namespace SC2Statistics.SC2Domain.Service
                 || string.IsNullOrEmpty(player1Score) || string.IsNullOrEmpty(player2Score))
                 return null;
 
-            var match = new Match(
-                null,
-                null,
-                PlayerRespository.FindOrCreate(player1Name),
-                player1Score,
-                GetPlayer1Race(matchNode),
-                PlayerRespository.FindOrCreate(player2Name),
-                player2Score,
-                GetPlayer2Race(matchNode)
-            );
+            var player1 = PlayerRespository.FindOrCreate(player1Name);
+            var player2 = PlayerRespository.FindOrCreate(player2Name);
 
-            if (match.Winner == null)
-                return null;
-
+            IEnumerable<Game> games = null;
             if (gamesNode != null)
             {
-                match.Games = ConvertGamesRow(gamesNode, match);
+                games = ConvertGamesRow(gamesNode, player1, player2);
             }
 
             if (vodsNode != null)
@@ -628,19 +681,31 @@ namespace SC2Statistics.SC2Domain.Service
                 // TODO
             }
 
-            return match;
+            var match = Match.CreateGroupMatch(
+                groupName,
+                null,
+                player1,
+                player1Score,
+                GetPlayer1Race(matchNode),
+                player2,
+                player2Score,
+                GetPlayer2Race(matchNode),
+                games
+            );
+
+            return match.Winner == null ? null : match;
         }
 
         private string GetGroupGamePlayer1Score(HtmlNode matchNode)
         {
             var node = matchNode.SelectSingleNode("td[not(@class = 'matchlistslot')][1]");
-            return node != null ? node.InnerText : null;
+            return node != null ? node.GetCleanedInnerText() : null;
         }
 
         private string GetGroupGamePlayer2Score(HtmlNode matchNode)
         {
             var node = matchNode.SelectSingleNode("td[not(@class = 'matchlistslot')][2]");
-            return node != null ? node.InnerText : null;
+            return node != null ? node.GetCleanedInnerText() : null;
         }
 
         private string GetGroupGamePlayer1Name(HtmlNode matchNode)
@@ -649,7 +714,7 @@ namespace SC2Statistics.SC2Domain.Service
             if (node == null)
                 return null;
 
-            return Regex.Replace(node.InnerText, "&.*;", string.Empty);
+            return node.GetCleanedInnerText();
         }
 
         private string GetGroupGamePlayer2Name(HtmlNode matchNode)
@@ -658,7 +723,7 @@ namespace SC2Statistics.SC2Domain.Service
             if (node == null)
                 return null;
 
-            return Regex.Replace(node.InnerText, "&.*;", string.Empty);
+            return node.GetCleanedInnerText();
         }
 
         private bool IsGroupGameMatchValid(HtmlNode matchNode)
@@ -666,24 +731,21 @@ namespace SC2Statistics.SC2Domain.Service
             return matchNode.InnerHtml.Contains("font-weight:bold");
         }
 
-        private IList<Game> ConvertGamesRow(HtmlNode gamesNode, Match match)
+        private IList<Game> ConvertGamesRow(HtmlNode gamesNode, Player player1, Player player2)
         {
             var games = new List<Game>();
-
-
             var mapsNodes = gamesNode.SelectSubNodes("/td/div");
 
             foreach (var mapNode in mapsNodes)
             {
-                var mapName = mapNode.SelectSingleNode("a").InnerText;
+                var mapName = mapNode.SelectSingleNode("a").GetCleanedInnerText();
                 var winnerIndex = mapNode.SelectSubNodes("//div[contains(@style, 'float:right')]/img") == null ? 1 : 2;
 
                 games.Add(new Game
                 {
                     Map = mapName,
                     Number = games.Count + 1,
-                    Winner = winnerIndex == 1 ? match.Player1 : match.Player2,
-                    Match = match
+                    Winner = winnerIndex == 1 ? player1 : player2,
                 });
             }
 

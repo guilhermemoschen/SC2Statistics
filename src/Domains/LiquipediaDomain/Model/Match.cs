@@ -17,41 +17,32 @@ namespace SC2Statistics.SC2Domain.Model
         public virtual Race Player1Race { get; set; }
         public virtual Race Player2Race { get; set; }
         public virtual MatchType Type { get; set; }
+        public virtual BracketRound BracketRound { get; set; }
+        public virtual MatchFormat Format { get; set; }
+        public virtual Match NextMatch { get; set; }
+        public virtual string GroupName { get; set; }
 
-        public Match() { }
-
-        public Match(Event eventPlayed, DateTime? date, Player player1, string player1Score, Race player1Race, Player player2, string player2Score, Race player2Race)
+        public Match()
         {
-            Event = eventPlayed;
-            Date = date;
-            Player1 = player1;
-            Player1Race = player1Race;
-
-            Player2 = player2;
-            Player2Race = player2Race;
-
-            int score1;
-            if (int.TryParse(player1Score, out score1))
-            {
-                Player1Score = score1;
-            }
-            else if (player1Score.Equals("w", StringComparison.CurrentCultureIgnoreCase))
-                Player1Score = 1;
-
-
-            int score2;
-            if (int.TryParse(player2Score, out score2))
-            {
-                Player2Score = score2;
-            }
-            else if (player2Score.Equals("w", StringComparison.CurrentCultureIgnoreCase))
-                Player2Score = 1;
-
-            DefineWinner();
-
             Games = new List<Game>();
             // Only 1x1 is available right now
             Type = MatchType.OneXOne;
+            BracketRound = BracketRound.Undefined;
+            Format = MatchFormat.Undefined;
+        }
+
+        private static int ParsePlayerScore(string score)
+        {
+            int playerScore;
+            if (int.TryParse(score, out playerScore))
+            {
+                return playerScore;
+            }
+
+            if (score.Equals("w", StringComparison.CurrentCultureIgnoreCase))
+                return 1;
+
+            return 0;
         }
 
         public void DefineWinner()
@@ -73,6 +64,71 @@ namespace SC2Statistics.SC2Domain.Model
                 Player2Score,
                 (Player2 != null) ? Player2.Name : "NULL"
             );
+        }
+
+        public void AddGame(Game game)
+        {
+            if (Games.Contains(game))
+                return;
+
+            game.Match = this;
+            Games.Add(game);
+        }
+
+        public static Match CreateBracketMatch(DateTime? date, Player player1, string player1Score, Race player1Race, Player player2, string player2Score, Race player2Race, BracketRound round, IEnumerable<Game> games)
+        {
+            var match = new Match()
+            {
+                Date = null,
+                Player1 = player1,
+                Player1Race = player1Race,
+                Player1Score = ParsePlayerScore(player1Score),
+                Player2 = player2,
+                Player2Score = ParsePlayerScore(player2Score),
+                Player2Race = player2Race,
+                Format = MatchFormat.Bracket,
+                BracketRound = round,
+            };
+
+            if (games != null)
+            {
+                foreach (var game in games)
+                {
+                    match.AddGame(game);
+                }
+            }
+
+            match.DefineWinner();
+
+            return match;
+        }
+
+        public static Match CreateGroupMatch(string groupName, DateTime? date, Player player1, string player1Score, Race player1Race, Player player2, string player2Score, Race player2Race, IEnumerable<Game> games)
+        {
+            var match = new Match()
+            {
+                GroupName = groupName,
+                Date = null,
+                Player1 = player1,
+                Player1Race = player1Race,
+                Player1Score = ParsePlayerScore(player1Score),
+                Player2 = player2,
+                Player2Score = ParsePlayerScore(player2Score),
+                Player2Race = player2Race,
+                Format = MatchFormat.Group,
+            };
+
+            if (games != null)
+            {
+                foreach (var game in games)
+                {
+                    match.AddGame(game);
+                }
+            }
+
+            match.DefineWinner();
+
+            return match;
         }
     }
 }

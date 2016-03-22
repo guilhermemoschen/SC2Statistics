@@ -8,15 +8,25 @@
              DataContext="{Binding AddEventViewModel, Source={StaticResource Locator}}"
              mc:Ignorable="d" 
              d:DesignHeight="600" d:DesignWidth="800">
-    <ScrollViewer Style="{StaticResource ContentRoot}" VerticalScrollBarVisibility="Auto">
+    <ScrollViewer Style="{StaticResource ContentRoot}" VerticalScrollBarVisibility="Auto" >
         <StackPanel Style="{StaticResource Form}">
             <TextBlock Text="Import New SC2 Event from Liquipedia" Style="{StaticResource Heading1}" Margin="0,0,0,8" />
-            <StackPanel>
+            <StackPanel FocusManager.FocusedElement="{Binding ElementName=LiquepediaUrl}">
                 <Label Content="Event Address" />
-                <TextBox Width="300" Text="{Binding EventUrl}"/>
+                <TextBox x:Name="LiquepediaUrl" Width="300" Text="{Binding EventInput.LiquipediaUrl}" TabIndex="1"/>
             </StackPanel>
             <StackPanel>
-                <Button Command="{Binding AddNewCommand}" Content="Import"/>
+                <Button Command="{Binding AddNewCommand}" Content="Import" TabIndex="2"/>
+            </StackPanel>
+            <StackPanel>
+                <mui:BBCodeBlock Margin="0,0,0,32" xml:space="preserve">
+Before you add new Events, please keep in mind:
+- Do NOT add any Archon Events
+- Do NOT add any Team Events
+- The Event Address must be something like: http://wiki.teamliquid.net/starcraft2/[b]Ting_Open[/b]
+
+For more details, visit [url=https://github.com/guilhermemoschen/SC2Statistics]this link[/url].
+                </mui:BBCodeBlock>
             </StackPanel>
         </StackPanel>
     </ScrollViewer>

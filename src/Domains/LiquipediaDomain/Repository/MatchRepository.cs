@@ -24,5 +24,15 @@ namespace SC2Statistics.SC2Domain.Repository
                 )
                 .ToList();
         }
+
+        public IList<Match> FindMatchesByPlayerAndEvent(long playerId, long eventId)
+        {
+            return Session.Query<Match>()
+                .Where(x =>
+                    (x.Event.Id == eventId) &&
+                    (x.Player1.Id == playerId || x.Player2.Id == playerId)
+                )
+                .ToList();
+        }
     }
 }

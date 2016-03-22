@@ -21,6 +21,19 @@ namespace SC2Statistics.SC2Domain.Repository.Maps
             Property(x => x.Player1Score, mapper => mapper.NotNullable(true));
             Property(x => x.Player2Score, mapper => mapper.NotNullable(true));
             Property(x => x.Type, mapper => { mapper.NotNullable(true); mapper.Type<EnumStringType<MatchType>>(); });
+            Property(x => x.BracketRound, mapper => { mapper.NotNullable(false); mapper.Type<EnumStringType<BracketRound>>(); });
+            Property(x => x.Format, mapper => { mapper.NotNullable(true); mapper.Type<EnumStringType<MatchFormat>>(); });
+            Property(x => x.GroupName, mapper => { mapper.NotNullable(false); });
+
+            ManyToOne(
+                x => x.NextMatch,
+                mapper =>
+                {
+                    mapper.Column("FK_NextMatch");
+                    mapper.NotNullable(false);
+                    mapper.Cascade(Cascade.None);
+                }
+            );
 
             ManyToOne(
                 x => x.Player1,

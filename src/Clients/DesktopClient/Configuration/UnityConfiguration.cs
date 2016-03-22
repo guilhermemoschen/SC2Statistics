@@ -22,6 +22,7 @@ namespace SC2LiquipediaStatistics.DesktopClient.Configuration
             Container.Instance.RegisterType<PlayerStatisticsViewModel>();
             Container.Instance.RegisterType<MainViewModel>();
             Container.Instance.RegisterType<LoadingViewModel>();
+            Container.Instance.RegisterType<PlayerByEventStatisticsViewModel>();
 
             // Services
             Container.Instance.RegisterType<IEventsListService, EventsListService>();

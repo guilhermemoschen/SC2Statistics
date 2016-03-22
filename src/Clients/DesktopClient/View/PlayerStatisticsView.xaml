@@ -102,10 +102,26 @@
                 <StackPanel Margin="0,0,0,10" Width="{Binding ActualWidth, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type StackPanel}}}">
                     <TextBlock Text="Events/Tournaments Participated" HorizontalAlignment="Center" Style="{StaticResource Heading2}" />
                 </StackPanel>
-                <DataGrid ItemsSource="{Binding EventsParticipated}" IsReadOnly="true" HorizontalAlignment="Left" VerticalAlignment="Top" SelectionMode="Single" AutoGenerateColumns="False">
+                <DataGrid ItemsSource="{Binding EventsParticipated}" SelectedItem="{Binding SelectedEvent}" IsReadOnly="true" HorizontalAlignment="Left" VerticalAlignment="Top" SelectionMode="Single" AutoGenerateColumns="False">
                     <DataGrid.Columns>
                         <DataGridTextColumn Width="*" Binding="{Binding Name}" Header="Name"/>
+                        <DataGridTemplateColumn Width="Auto" Header="Actions">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
+                                        <Button Margin="0" Padding="0" BorderThickness="0" Width="24" Height="24" Cursor="Hand" Command="{Binding DataContext.PlayerEventSelected, RelativeSource = {RelativeSource FindAncestor, AncestorType={x:Type DataGrid}}}">
+                                            <Button.Background>
+                                                <ImageBrush ImageSource="/DesktopClient;component/Assets/ic_search_black_24dp_1x.png"/>
+                                            </Button.Background>
+                                        </Button>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
                     </DataGrid.Columns>
+                    <DataGrid.InputBindings>
+                        <MouseBinding MouseAction="LeftDoubleClick" Command="{Binding PlayerEventSelected}" />
+                    </DataGrid.InputBindings>
                 </DataGrid>
             </StackPanel>
         </Grid>

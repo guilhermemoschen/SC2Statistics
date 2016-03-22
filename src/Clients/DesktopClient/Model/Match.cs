@@ -25,6 +25,19 @@ namespace SC2LiquipediaStatistics.DesktopClient.Model
         public Race Player2Race { get; set; }
         public MatchType Type { get; set; }
         public string LiquipediaReference { get; set; }
+        public BracketRound BracketRound { get; set; }
+        public MatchFormat Format { get; set; }
+        public string GroupName { get; set; }
+
+        public bool IsPlayer1Winner
+        {
+            get { return Player1.Id == Winner.Id; }
+        }
+
+        public bool IsPlayer2Winner
+        {
+            get { return Player2.Id == Winner.Id; }
+        }
 
         public Match() { }
     }

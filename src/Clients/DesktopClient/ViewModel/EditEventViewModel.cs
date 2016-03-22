@@ -71,19 +71,19 @@ namespace SC2LiquipediaStatistics.DesktopClient.ViewModel
             }
         }
 
-        public string subEventUrl;
-        public string SubEventUrl
+        public EventInput subEventInput;
+        public EventInput SubEventInput
         {
             get
             {
-                return subEventUrl;
+                return subEventInput;
             }
             set
             {
-                if (subEventUrl == value || value == null)
+                if (subEventInput == value || value == null)
                     return;
 
-                Set(() => SubEventUrl, ref subEventUrl, value, true);
+                Set(() => SubEventInput, ref subEventInput, value, true);
             }
         }
 
@@ -135,13 +135,18 @@ namespace SC2LiquipediaStatistics.DesktopClient.ViewModel
             Expansions.Add(new KeyValuePair<string, SC2DomainEntities.Expansion>("Wings of Liberty", SC2DomainEntities.Expansion.WingsOfLiberty));
             Expansions.Add(new KeyValuePair<string, SC2DomainEntities.Expansion>("Undefined", SC2DomainEntities.Expansion.Undefined));
 
-            SaveCommand = new RelayCommand(SaveEvent);
+            SaveCommand = new RelayCommand(SaveEvent, CanSaveEvent);
             NavigatedToCommand = new RelayCommand<object>(SelectEvent);
             ReloadAllEvenDataCommand = new RelayCommand(ReloadAllEvent);
             ReloadMainEvenDataCommand = new RelayCommand(ReloadMainEvent);
             EditSubEventCommand = new RelayCommand(EditSubEvent);
             DeleteSubEventCommand = new RelayCommand(DeleteSelectedSubEvent);
             AddNewSubEventCommand = new RelayCommand(AddNewSubEvent);
+        }
+
+        private bool CanSaveEvent()
+        {
+            return SelectedEvent != null && !SelectedEvent.HasErrors;
         }
 
         private void ReloadMainEvent()
@@ -173,6 +178,9 @@ namespace SC2LiquipediaStatistics.DesktopClient.ViewModel
 
         private void AddNewSubEvent()
         {
+            if (!SubEventInput.IsValid)
+                return;
+
             ValidationException validationException = null;
 
             LoadingService.ShowAndExecuteAction(delegate
@@ -181,7 +189,7 @@ namespace SC2LiquipediaStatistics.DesktopClient.ViewModel
                 {
                     try
                     {
-                        var subEvent = ParseService.GetSC2EventWithSubEvents(SubEventUrl);
+                        var subEvent = ParseService.GetSC2EventWithSubEvents(SubEventInput.LiquipediaUrl);
                         var mainEvent = SC2Service.LoadEvent(SelectedEvent.Id);
                         mainEvent.AddSubEvent(subEvent);
                         SC2Service.UpdateEvent(mainEvent);
@@ -199,7 +207,7 @@ namespace SC2LiquipediaStatistics.DesktopClient.ViewModel
                 return;
             }
 
-            SubEventUrl = String.Empty;
+            SubEventInput = new EventInput();
             ReloadSelectedEvent(SelectedEvent.Id);
         }
 
@@ -247,10 +255,15 @@ namespace SC2LiquipediaStatistics.DesktopClient.ViewModel
             {
                 SelectedExpansion = Expansions.First(x => x.Value == SelectedEvent.Expansion);
             }
+
+            SubEventInput = new EventInput();
         }
 
         private void SaveEvent()
         {
+            if (!SelectedEvent.IsValid)
+                return;
+
             using (new NHibernateSessionContext())
             {
                 var domainEvent = SC2Service.LoadEvent(SelectedEvent.Id);

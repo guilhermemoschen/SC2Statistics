@@ -28,6 +28,14 @@ namespace SC2LiquipediaStatistics.DesktopClient.ViewModel
             }
         }
 
+        public PlayerByEventStatisticsViewModel PlayerByEventStatisticsViewModel
+        {
+            get
+            {
+                return Container.Resolve<PlayerByEventStatisticsViewModel>();
+            }
+        }
+
         public AddEventViewModel AddEventViewModel
         {
             get

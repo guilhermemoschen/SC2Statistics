@@ -12,6 +12,15 @@
              d:DesignHeight="600" d:DesignWidth="800">
     <Common:ModernUserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+
+        <Style TargetType="{x:Type TextBox}">
+            <Style.Triggers>
+                <Trigger Property="Validation.HasError" Value="true">
+                    <Setter Property="ToolTip" Value="{Binding RelativeSource={x:Static RelativeSource.Self}, Path=(Validation.Errors)[0].ErrorContent}"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
     </Common:ModernUserControl.Resources>
     <ScrollViewer Style="{StaticResource ContentRoot}" VerticalScrollBarVisibility="Auto">
         <Grid>
@@ -25,44 +34,44 @@
                 <StackPanel Orientation="Vertical">
                     <StackPanel>
                         <Label Content="Name" Target="{Binding ElementName=TextName}"/>
-                        <TextBox x:Name="TextName" Width="150" Text="{Binding SelectedEvent.Name}" />
+                        <TextBox x:Name="TextName" Width="150" Text="{Binding SelectedEvent.Name}" TabIndex="1" />
                     </StackPanel>
                     <StackPanel>
                         <Label Content="Start Date" Target="{Binding ElementName=DatePickerStartDate}"/>
-                        <DatePicker x:Name="DatePickerStartDate" Width="150" SelectedDate="{Binding SelectedEvent.StartDate}" />
+                        <DatePicker x:Name="DatePickerStartDate" Width="150" SelectedDate="{Binding SelectedEvent.StartDate}" IsTabStop="True" TabIndex="2" />
                     </StackPanel>
                     <StackPanel>
                         <Label Content="End Date" Target="{Binding ElementName=DatePickerEndDate}"/>
-                        <DatePicker x:Name="DatePickerEndDate" Width="150" SelectedDate="{Binding SelectedEvent.EndDate}" />
+                        <DatePicker x:Name="DatePickerEndDate" Width="150" SelectedDate="{Binding SelectedEvent.EndDate}" IsTabStop="True" TabIndex="3" />
                     </StackPanel>
                     <StackPanel>
                         <Label Content="SC2 Expansion"/>
-                        <ComboBox SelectedItem="{Binding SelectedExpansion}" ItemsSource="{Binding Expansions}" DisplayMemberPath="Key" Width="150" />
+                        <ComboBox KeyboardNavigation.TabNavigation="None" SelectedItem="{Binding SelectedExpansion, ValidatesOnDataErrors=True}" ItemsSource="{Binding Expansions}" DisplayMemberPath="Key" Width="150" TabIndex="4" />
                     </StackPanel>
                     <StackPanel>
                         <Label Content="Tier" />
-                        <ComboBox Width="150" SelectedItem="{Binding SelectedEvent.LiquipediaTier}" ItemsSource="{Binding LiquipediaTiers}" />
+                        <ComboBox KeyboardNavigation.TabNavigation="None" Width="150" SelectedItem="{Binding SelectedEvent.LiquipediaTier, ValidatesOnDataErrors=True}" ItemsSource="{Binding LiquipediaTiers}" TabIndex="5" />
                     </StackPanel>
                     <StackPanel>
                         <Label Content="Prize Pool" Target="{Binding ElementName=TextPrizePool}"/>
-                        <TextBox x:Name="TextPrizePool" Width="150" Text="{Binding SelectedEvent.PrizePool}" />
+                        <TextBox x:Name="TextPrizePool" Width="150" Text="{Binding SelectedEvent.PrizePool}" TabIndex="6" />
                     </StackPanel>
                     <StackPanel>
                         <Label Content="Liquipedia Reference" />
-                        <TextBox Width="150" Text="{Binding SelectedEvent.LiquipediaReference}" />
+                        <TextBox Width="150" Text="{Binding SelectedEvent.LiquipediaReference, ValidatesOnDataErrors=True}" TabIndex="7" />
                     </StackPanel>
                     <StackPanel>
                         <Label Content="Active" Target="{Binding ElementName=Is}"/>
-                        <CheckBox x:Name="IsActive" Width="150" IsChecked="{Binding SelectedEvent.IsActive}"  />
+                        <CheckBox x:Name="IsActive" Width="150" IsChecked="{Binding SelectedEvent.IsActive}" TabIndex="8"  />
                     </StackPanel>
                     <StackPanel>
                         <Label Content="Total Matches (with Sub Events)" />
                         <TextBlock Text="{Binding SelectedEvent.TotalMatches}" />
                     </StackPanel>
                     <StackPanel>
-                        <Button Command="{Binding SaveCommand}" Content="Save"/>
-                        <Button Command="{Binding ReloadAllEvenDataCommand}" Content="Clear existing values and reload ALL event data" Margin="10,0,0,0"/>
-                        <Button Command="{Binding ReloadMainEvenDataCommand}" Content="Reload only this event data" Margin="10,0,0,0"/>
+                        <Button Command="{Binding SaveCommand}" Content="Save" TabIndex="9"/>
+                        <Button Command="{Binding ReloadAllEvenDataCommand}" Content="Clear existing values and reload ALL event data" Margin="10,0,0,0" TabIndex="10"/>
+                        <Button Command="{Binding ReloadMainEvenDataCommand}" Content="Reload only this event data" Margin="10,0,0,0" TabIndex="11"/>
                     </StackPanel>
                 </StackPanel>
             </StackPanel>
@@ -100,10 +109,10 @@
                 <TextBlock Text="Import New Sub Liquipedia Event" Style="{StaticResource Heading2}" />
                 <StackPanel>
                     <Label Content="Link" />
-                    <TextBox Width="300" Text="{Binding SubEventUrl}"/>
+                    <TextBox Width="300" Text="{Binding SubEventInput.LiquipediaUrl}" TabIndex="12"/>
                 </StackPanel>
                 <StackPanel>
-                    <Button Command="{Binding AddNewSubEventCommand}" Content="Import"/>
+                    <Button Command="{Binding AddNewSubEventCommand}" Content="Import" TabIndex="13"/>
                 </StackPanel>
             </StackPanel>
         </Grid>

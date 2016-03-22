@@ -11,7 +11,7 @@ Click [here](https://github.com/guilhermemoschen/SC2Statistics/releases/tag/v0.2
 - If you'd like to suggest any new feature, just contact me. This is an open source project, so even you can contribute!
 
 #Contact
-My name is Guilherme Moschen and as you may guess, I also play Starcraft 2. If you'd like to drop some words just contact at guilherme.catarina@gmail.com or face me in battle.net [[OceanT] Catarinao](http://us.battle.net/sc2/en/profile/34349/2/Catarinao/).
+My name is Guilherme Moschen and as you may guess, I also play Starcraft 2. If you'd like to drop some words just contact at guilherme.catarina@gmail.com or face me in battle.net [OceanT] Catarinao - Catarinao#1602.
 
 #Requirements to Run
 - .Net Framework 4.5

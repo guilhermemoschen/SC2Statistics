@@ -37,20 +37,20 @@ namespace SC2LiquipediaStatistics.DesktopClient.Configuration
             Container.Instance.RegisterType<IDownloader, Downloader>();
             Container.Instance.RegisterType<ILogger, MessageLogger>();
 
-            ConfigureSC2Domain(Container.Instance);
+            ConfigureStatisticDomain(Container.Instance);
             ConfigureAligulacProxy(Container.Instance);
         }
 
-        public static void ConfigureSC2Domain(IUnityContainer container)
+        public static void ConfigureStatisticDomain(IUnityContainer container)
         {
             // Repositories
             container.RegisterType<IPlayerRespository, PlayerRespository>();
             container.RegisterType<IEventRepository, EventRepository>();
             container.RegisterType<IMatchRepository, MatchRepository>();
+            container.RegisterType<IAligulacSynchronizationRepository, AligulacSynchronizationRepository>();
 
             // Services
-            container.RegisterType<ISC2Service, SC2Service>();
-            container.RegisterType<IStatisticsService, StatisticsService>();
+            container.RegisterType<IStatisticService, StatisticService>();
         }
 
         public static void ConfigureAligulacProxy(IUnityContainer container)

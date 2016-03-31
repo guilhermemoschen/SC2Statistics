@@ -20,18 +20,18 @@ namespace SC2LiquipediaStatistics.DesktopClient.Common
 {
     public class PlayerSuggestionProvider : ISuggestionProvider
     {
-        public ISC2Service SC2Service { get; set; }
+        public IStatisticService StatisticService { get; set; }
         public IMapper Mapper { get; set; }
 
-        public PlayerSuggestionProvider(ISC2Service sc2Service, IMapper mapper)
+        public PlayerSuggestionProvider(IStatisticService statisticService, IMapper mapper)
         {
-            SC2Service = sc2Service;
+            StatisticService = statisticService;
             Mapper = mapper;
         }
 
         public IEnumerable GetSuggestions(string filter)
         {
-            var domainPlayers = SC2Service.FindPlayers(filter);
+            var domainPlayers = StatisticService.FindPlayers(filter);
             return Mapper.Map<IEnumerable<SC2DomainEntities.Player>, IEnumerable<Player>>(domainPlayers);
         }
     }

@@ -46,7 +46,7 @@ namespace SC2Statistics.Proxy.Aligulac
         {
             var players = new List<Player>();
 
-            Logger.Info("Getting new players...");
+            Logger.Info("Finding new players");
             var json = JObject.Parse(GetJson(
                 PlayerObjectName,
                 null,
@@ -57,6 +57,8 @@ namespace SC2Statistics.Proxy.Aligulac
             ));
 
             players.AddRange(GetAllNextObjects<Player>(json));
+
+            Logger.Info("Finished");
 
             return Mapper.Map<IEnumerable<Player>, IEnumerable<DomainEntities.Player>>(players);
         }
@@ -122,7 +124,7 @@ namespace SC2Statistics.Proxy.Aligulac
                     var limit = json["meta"]["limit"].Value<int>();
                     var total = json["meta"]["total_count"].Value<int>();
                     var offset = json["meta"]["offset"].Value<int>();
-                    Logger.Info($"Getting next {limit} of {offset + limit}/{total}");
+                    Logger.Info($"{offset + limit}/{total}");
                     json = JObject.Parse(GetJson(nextAddress));
                     list.AddRange(JsonConvert.DeserializeObject<IEnumerable<T>>(json["objects"].ToString()));
                 }

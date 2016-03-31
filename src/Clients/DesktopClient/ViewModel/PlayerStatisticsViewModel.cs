@@ -132,9 +132,7 @@ namespace SC2LiquipediaStatistics.DesktopClient.ViewModel
 
         public IList<KeyValuePair<string, SC2DomainEntities.Expansion>> Expansions { get; set; }
 
-        public ISC2Service SC2Service { get; protected set; }
-
-        public IStatisticsService StatisticsService { get; protected set; }
+        public IStatisticService StatisticService { get; protected set; }
 
         public IModernNavigationService NavigationService { get; protected set; }
 
@@ -144,16 +142,14 @@ namespace SC2LiquipediaStatistics.DesktopClient.ViewModel
 
         public ICommand GenerateStatisticsCommand { get; private set; }
 
-        public PlayerStatisticsViewModel(ISC2Service sc2Service, IModernNavigationService navigationService, IStatisticsService statisticsService, ILoadingService loadingService, IMapper mapper)
+        public PlayerStatisticsViewModel(IStatisticService statisticService, IModernNavigationService navigationService, ILoadingService loadingService, IMapper mapper)
         {
-            SC2Service = sc2Service;
-            StatisticsService = statisticsService;
+            StatisticService = statisticService;
             NavigationService = navigationService;
             LoadingService = loadingService;
             Mapper = mapper;
 
             GenerateStatisticsCommand = new RelayCommand(GenerateStatistics);
-            NavigatedToCommand = new RelayCommand<object>(LoadView);
             Expansions = new List<KeyValuePair<string, SC2DomainEntities.Expansion>>();
             Expansions.Add(new KeyValuePair<string, SC2DomainEntities.Expansion>("Hearth of the Swarm", SC2DomainEntities.Expansion.HeartOfTheSwarm));
             Expansions.Add(new KeyValuePair<string, SC2DomainEntities.Expansion>("Legacy of the Void", SC2DomainEntities.Expansion.LegacyOfTheVoid));
@@ -161,7 +157,6 @@ namespace SC2LiquipediaStatistics.DesktopClient.ViewModel
             SelectedExpansion = Expansions[1];
 
             SuggestionProvider = Container.Resolve<PlayerSuggestionProvider>();
-            SelectedPlayer = new Player();
         }
 
         private void GenerateStatistics()
@@ -169,6 +164,12 @@ namespace SC2LiquipediaStatistics.DesktopClient.ViewModel
             if (SelectedExpansion.Value != SC2DomainEntities.Expansion.LegacyOfTheVoid)
             {
                 ModernDialog.ShowMessage("Only Legacy of the Void is available.", "Sorry", MessageBoxButton.OK);
+                return;
+            }
+
+            if (SelectedPlayer == null)
+            {
+                ModernDialog.ShowMessage("Please, select a player.\nYou have to click in the search results.", "Attention", MessageBoxButton.OK);
                 return;
             }
 
@@ -180,8 +181,8 @@ namespace SC2LiquipediaStatistics.DesktopClient.ViewModel
                 {
                     try
                     {
-                        SC2Service.LoadLatestPlayerMatches(SelectedPlayer.AligulacId, SC2DomainEntities.Expansion.LegacyOfTheVoid);
-                        var domainStatistics = StatisticsService.GeneratePlayerStatistics(SelectedPlayer.Id, SelectedExpansion.Value);
+                        StatisticService.LoadLatestPlayerMatches(SelectedPlayer.AligulacId, SC2DomainEntities.Expansion.LegacyOfTheVoid);
+                        var domainStatistics = StatisticService.GeneratePlayerStatistics(SelectedPlayer.Id, SelectedExpansion.Value);
                         PlayerStatistics = Mapper.Map<SC2DomainEntities.PlayerStatistics, PlayerStatistics>(domainStatistics);
                         PlayerStatistics.Player = SelectedPlayer;
                     }
@@ -200,18 +201,6 @@ namespace SC2LiquipediaStatistics.DesktopClient.ViewModel
             {
                 HasPlayerStatistics = true;
             }
-        }
-
-        public void LoadView(object parameter)
-        {
-            HasPlayerStatistics = false;
-            
-
-            //if (SelectedPlayer != null)
-            //{
-            //    SelectedPlayer = players.First(x => x.AligulacId == SelectedPlayer.AligulacId);
-            //    GenerateStatistics();
-            //}
         }
     }
 }

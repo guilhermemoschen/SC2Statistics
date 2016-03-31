@@ -54,11 +54,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ISC2Service.cs" />
-    <Compile Include="IStatisticsService.cs" />
+    <Compile Include="IStatisticService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SC2Service.cs" />
-    <Compile Include="StatisticsService.cs" />
+    <Compile Include="StatisticService.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\ProxyComponents\AligulacProxy\AligulacProxy.csproj">

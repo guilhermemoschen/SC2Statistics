@@ -29,7 +29,7 @@ namespace SC2LiquipediaStatistics.DesktopClient.ViewModel
 {
     public class EditEventViewModel : ModernViewModelBase
     {
-        public ISC2Service SC2Service { get; private set; }
+        public IStatisticService StatisticService { get; private set; }
 
         public IModernNavigationService NavigationService { get; private set; }
 
@@ -115,9 +115,9 @@ namespace SC2LiquipediaStatistics.DesktopClient.ViewModel
         public ICommand SaveCommand { get; private set; }
         public ICommand EditSubEventCommand { get; private set; }
 
-        public EditEventViewModel(ISC2Service sc2Service, IModernNavigationService navigationService, ILoadingService loadingService, IMapper mapper)
+        public EditEventViewModel(IStatisticService statisticService, IModernNavigationService navigationService, ILoadingService loadingService, IMapper mapper)
         {
-            SC2Service = sc2Service;
+            StatisticService = statisticService;
             NavigationService = navigationService;
             LoadingService = loadingService;
             Mapper = mapper;
@@ -142,7 +142,7 @@ namespace SC2LiquipediaStatistics.DesktopClient.ViewModel
         {
             using (new NHibernateSessionContext())
             {
-                var domainSubEvent = SC2Service.LoadEvent(SelectedSubEvent.Id);
+                var domainSubEvent = StatisticService.LoadEvent(SelectedSubEvent.Id);
                 SelectedEvent = Mapper.Map<SC2DomainEntities.Event, Event>(domainSubEvent);
             }
         }
@@ -165,7 +165,7 @@ namespace SC2LiquipediaStatistics.DesktopClient.ViewModel
 
             using (new NHibernateSessionContext())
             {
-                var domainEvent = SC2Service.LoadEvent(SelectedEvent.Id);
+                var domainEvent = StatisticService.LoadEvent(SelectedEvent.Id);
                 domainEvent = Mapper.Map(SelectedEvent, domainEvent);
                 
                 // TODO: Update IsActive in the Grid
@@ -191,7 +191,7 @@ namespace SC2LiquipediaStatistics.DesktopClient.ViewModel
         {
             using (new NHibernateSessionContext())
             {
-                var domainEvent = SC2Service.LoadEvent(selectedEventId);
+                var domainEvent = StatisticService.LoadEvent(selectedEventId);
                 SelectedEvent = Mapper.Map<SC2DomainEntities.Event, Event>(domainEvent);
             }
         }

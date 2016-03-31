@@ -1,11 +1,13 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 using SC2Statistics.StatisticDomain.Model;
 
 namespace SC2Statistics.StatisticDomain.Service
 {
-    public interface ISC2Service
+    public interface IStatisticService
     {
+        PlayerStatistics GeneratePlayerStatistics(long playerId, Expansion expansion);
+
         Event CreateEvent(Event sc2Event);
 
         IEnumerable<Player> FindPlayers(string tag, int pageIndex = 0, int pageSize = 20);

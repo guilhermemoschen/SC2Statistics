@@ -69,15 +69,15 @@ namespace SC2LiquipediaStatistics.DesktopClient.ViewModel
         public ICommand EditEventCommand { get; private set; }
         public ICommand DeleteEventCommand { get; private set; }
 
-        public ISC2Service SC2Service { get; private set; }
+        public IStatisticService StatisticService { get; private set; }
 
         public IModernNavigationService NavigationService { get; private set; }
 
         public IMapper Mapper { get; protected set; }
 
-        public ListEventsViewModel(ISC2Service sc2Service, IModernNavigationService navigationService, IMapper mapper)
+        public ListEventsViewModel(IStatisticService statisticService, IModernNavigationService navigationService, IMapper mapper)
         {
-            SC2Service = sc2Service;
+            StatisticService = statisticService;
             NavigationService = navigationService;
             Mapper = mapper;
 

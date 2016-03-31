@@ -29,7 +29,7 @@ namespace SC2LiquipediaStatistics.DesktopClient.ViewModel
     {
         public ICommand UpdatePlayersCommand { get; private set; }
 
-        public ISC2Service SC2Service { get; private set; }
+        public IStatisticService StatisticService { get; private set; }
 
         public ILoadingService LoadingService { get; private set; }
 
@@ -73,9 +73,9 @@ namespace SC2LiquipediaStatistics.DesktopClient.ViewModel
 
         private int currentPageIndex = 0;
 
-        public ListPlayersViewModel(ISC2Service sc2Service, IMapper mapper, ILoadingService loadingService)
+        public ListPlayersViewModel(IStatisticService statisticService, IMapper mapper, ILoadingService loadingService)
         {
-            SC2Service = sc2Service;
+            StatisticService = statisticService;
             Mapper = mapper;
             LoadingService = loadingService;
 
@@ -123,9 +123,9 @@ namespace SC2LiquipediaStatistics.DesktopClient.ViewModel
                 IEnumerable<DomainEntities.Player> domainPlayers;
 
                 if (string.IsNullOrEmpty(FilterCriteria))
-                    domainPlayers = SC2Service.FindAllPlayers(currentPageIndex, 20);
+                    domainPlayers = StatisticService.FindAllPlayers(currentPageIndex, 20);
                 else
-                    domainPlayers = SC2Service.FindPlayers(FilterCriteria, currentPageIndex, 20);
+                    domainPlayers = StatisticService.FindPlayers(FilterCriteria, currentPageIndex, 20);
 
                 allPlayers = Mapper.Map<IEnumerable<DomainEntities.Player>, IEnumerable<Player>>(domainPlayers);
             }
@@ -143,7 +143,7 @@ namespace SC2LiquipediaStatistics.DesktopClient.ViewModel
                 {
                     try
                     {
-                        SC2Service.UpdateAllPlayers();
+                        StatisticService.UpdateAllPlayers();
                     }
                     catch (ValidationException ex)
                     {
@@ -156,6 +156,8 @@ namespace SC2LiquipediaStatistics.DesktopClient.ViewModel
             {
                 ModernDialog.ShowMessage(validationException.GetFormatedMessage(), "Validation Message", MessageBoxButton.OK);
             }
+
+            FindPlayers();
         }
     }
 }

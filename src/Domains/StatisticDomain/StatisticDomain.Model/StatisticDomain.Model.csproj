@@ -49,6 +49,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AligulacSynchronization.cs" />
     <Compile Include="Common\Converter.cs" />
     <Compile Include="Event.cs" />
     <Compile Include="Expansion.cs" />

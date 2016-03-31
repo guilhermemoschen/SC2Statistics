@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using System.Windows.Data;
 using System.Windows.Media;
 
-using SC2Statistics.SC2Domain.Model;
+using SC2Statistics.StatisticDomain.Model;
 
 namespace SC2LiquipediaStatistics.DesktopClient.Common
 {

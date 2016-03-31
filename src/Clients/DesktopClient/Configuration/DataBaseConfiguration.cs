@@ -6,8 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using SC2Statistics.SC2Domain.Model;
-using SC2Statistics.SC2Domain.Repository.Maps;
+using SC2Statistics.StatisticDomain.Database.Mapping;
 using SC2Statistics.Utilities.DataBase;
 
 namespace SC2LiquipediaStatistics.DesktopClient.Configuration

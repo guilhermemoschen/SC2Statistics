@@ -18,7 +18,7 @@ using SC2LiquipediaStatistics.Utilities.Log;
 
 using SC2Statistics.Proxy.Aligulac.Contracts;
 
-using DomainEntities = SC2Statistics.SC2Domain.Model;
+using DomainEntities = SC2Statistics.StatisticDomain.Model;
 
 namespace SC2Statistics.Proxy.Aligulac
 {

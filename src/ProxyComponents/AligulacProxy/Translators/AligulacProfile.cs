@@ -1,10 +1,9 @@
 ﻿using AutoMapper;
 
 using SC2Statistics.Proxy.Aligulac.Contracts;
-using SC2Statistics.SC2Domain.Common;
 
-using Converter = SC2Statistics.SC2Domain.Common.Converter;
-using DomainEntities = SC2Statistics.SC2Domain.Model;
+using Converter = SC2Statistics.StatisticDomain.Model.Common.Converter;
+using DomainEntities = SC2Statistics.StatisticDomain.Model;
 
 namespace SC2Statistics.Proxy.Aligulac.Translators
 {

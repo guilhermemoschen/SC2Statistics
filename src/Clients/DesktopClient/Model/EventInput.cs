@@ -5,8 +5,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using SC2Statistics.SC2Domain.Service;
-
 namespace SC2LiquipediaStatistics.DesktopClient.Model
 {
     public class EventInput : ValidatableObject

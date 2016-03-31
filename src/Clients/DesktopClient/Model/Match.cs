@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 using GalaSoft.MvvmLight;
 
-using SC2Statistics.SC2Domain.Model;
+using SC2Statistics.StatisticDomain.Model;
 
 namespace SC2LiquipediaStatistics.DesktopClient.Model
 {
@@ -23,9 +23,6 @@ namespace SC2LiquipediaStatistics.DesktopClient.Model
         public int Player2Score { get; set; }
         public Race Player1Race { get; set; }
         public Race Player2Race { get; set; }
-        public MatchType Type { get; set; }
-        public BracketRound BracketRound { get; set; }
-        public MatchFormat Format { get; set; }
         public string GroupName { get; set; }
 
         public bool IsPlayer1Winner

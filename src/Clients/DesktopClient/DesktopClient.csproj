@@ -292,13 +292,17 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Domains\LiquipediaDomain\SC2Domain.csproj">
-      <Project>{1BC74F48-67F5-487F-886F-F901100803BB}</Project>
-      <Name>SC2Domain</Name>
+    <ProjectReference Include="..\..\Domains\StatisticDomain\StatisticDomain.Database\StatisticDomain.Database.csproj">
+      <Project>{b3d8f8e2-73de-41a4-bd25-8070f0ad2d75}</Project>
+      <Name>StatisticDomain.Database</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Domains\StatisticDomain\SC2Domain.Model\SC2Domain.Model.csproj">
-      <Project>{33FE332A-21EF-43EF-94E9-73B1D7121A54}</Project>
-      <Name>SC2Domain.Model</Name>
+    <ProjectReference Include="..\..\Domains\StatisticDomain\StatisticDomain.Model\StatisticDomain.Model.csproj">
+      <Project>{33fe332a-21ef-43ef-94e9-73b1d7121a54}</Project>
+      <Name>StatisticDomain.Model</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Domains\StatisticDomain\StatisticDomain.Service\StatisticDomain.Service.csproj">
+      <Project>{46FDCCF6-5D79-40E0-88EF-C64E3EDA0454}</Project>
+      <Name>StatisticDomain.Service</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\ProxyComponents\AligulacProxy\AligulacProxy.csproj">
       <Project>{BE2ECDAA-641C-4039-AD6F-1D7FA19A220A}</Project>

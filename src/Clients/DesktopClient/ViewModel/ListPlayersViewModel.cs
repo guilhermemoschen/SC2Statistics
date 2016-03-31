@@ -19,9 +19,9 @@ using SC2LiquipediaStatistics.DesktopClient.Service;
 using SC2LiquipediaStatistics.Utilities.DataBase;
 using SC2LiquipediaStatistics.Utilities.Domain;
 
-using SC2Statistics.SC2Domain.Service;
+using SC2Statistics.StatisticDomain.Service;
 
-using DomainEntities = SC2Statistics.SC2Domain.Model;
+using DomainEntities = SC2Statistics.StatisticDomain.Model;
 
 namespace SC2LiquipediaStatistics.DesktopClient.ViewModel
 {

@@ -10,11 +10,11 @@ using AutoMapper;
 using SC2LiquipediaStatistics.DesktopClient.Model;
 using SC2LiquipediaStatistics.Utilities.Unity;
 
-using SC2Statistics.SC2Domain.Service;
+using SC2Statistics.StatisticDomain.Service;
 
 using WpfControls.Editors;
 
-using SC2DomainEntities = SC2Statistics.SC2Domain.Model;
+using SC2DomainEntities = SC2Statistics.StatisticDomain.Model;
 
 namespace SC2LiquipediaStatistics.DesktopClient.Common
 {

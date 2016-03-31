@@ -2,7 +2,7 @@
 
 using SC2LiquipediaStatistics.Utilities.Domain;
 
-using SC2Statistics.SC2Domain.Model;
+using SC2Statistics.StatisticDomain.Model;
 
 namespace SC2Statistics.Proxy.Aligulac.Contracts
 {

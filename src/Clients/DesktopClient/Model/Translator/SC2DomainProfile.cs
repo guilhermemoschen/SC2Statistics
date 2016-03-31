@@ -8,7 +8,7 @@ using AutoMapper;
 
 using SC2LiquipediaStatistics.Utilities.Unity;
 
-using SC2DomainEntities = SC2Statistics.SC2Domain.Model;
+using SC2DomainEntities = SC2Statistics.StatisticDomain.Model;
 
 namespace SC2LiquipediaStatistics.DesktopClient.Model.Translator
 {

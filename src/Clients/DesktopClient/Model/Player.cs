@@ -2,7 +2,7 @@
 
 using GalaSoft.MvvmLight;
 
-using SC2Statistics.SC2Domain.Model;
+using SC2Statistics.StatisticDomain.Model;
 
 namespace SC2LiquipediaStatistics.DesktopClient.Model
 {

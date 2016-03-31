@@ -8,8 +8,8 @@ using SC2LiquipediaStatistics.Utilities.Unity;
 using SC2LiquipediaStatistics.Utilities.Web;
 
 using SC2Statistics.Proxy.Aligulac;
-using SC2Statistics.SC2Domain.Repository;
-using SC2Statistics.SC2Domain.Service;
+using SC2Statistics.StatisticDomain.Database.Repository;
+using SC2Statistics.StatisticDomain.Service;
 
 namespace SC2LiquipediaStatistics.DesktopClient.Configuration
 {

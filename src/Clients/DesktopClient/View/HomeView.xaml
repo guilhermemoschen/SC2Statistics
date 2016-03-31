@@ -17,7 +17,7 @@ This application intend to generate SC2 Player statistics based on [b]Liquipedia
                 </mui:BBCodeBlock>
                 <TextBlock Text="Version 0.3.0-beta" Style="{StaticResource Heading2}" />
                 <mui:BBCodeBlock Margin="0,0,0,32" xml:space="preserve">
-This version brings the first release of SC Statistics. The main features are:
+- Removed Liquipedia integration and start o use Aligulac
 - Removed Liquipedia integration and start o use Aligulac
 - Removed Tournaments management
 - Added statistics by Koreans and by Foreigners

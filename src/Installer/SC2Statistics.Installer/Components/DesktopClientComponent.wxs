@@ -18,6 +18,10 @@
     </Fragment>
     <Fragment>
         <ComponentGroup Id="DesktopClientComponent">
+            <Component Id="cmp41FFBB5719B6A0C3D15A10608E519227" Directory="INSTALLFOLDER" Guid="*">
+                <File Id="filB1A7F163DA8FD34E4061423778D7990E" KeyPath="yes" Source="$(var.DesktopClientSourcePath)\AligulacProxy.dll" />
+            </Component>
+            
             <Component Id="cmpFD65F52CD5EC0B46A750F8EEFC3D4422" Directory="INSTALLFOLDER" Guid="*">
                 <File Id="fil1F7E777B326B02F60B86F747002F8605" KeyPath="yes" Source="$(var.DesktopClientSourcePath)\AutoMapper.dll" />
             </Component>
@@ -28,6 +32,7 @@
             <Component Id="cmpC217BC1AB76BAADB34FE0D395DCBDA42" Directory="INSTALLFOLDER" Guid="*">
                 <File Id="filB160F77880152951BCC99325A623975E" KeyPath="yes" Source="$(var.DesktopClientSourcePath)\DesktopClient.exe.config" />
             </Component>
+            
             
             
             
@@ -95,12 +100,24 @@
             </Component>
             
             
+            <Component Id="cmpBC4FC00A26E7D32479D42D3411317FC5" Directory="INSTALLFOLDER" Guid="*">
+                <File Id="fil90A8AAD9FC612906D405476D61CEA3F4" KeyPath="yes" Source="$(var.DesktopClientSourcePath)\Newtonsoft.Json.dll" />
+            </Component>
+            
             <Component Id="cmpA1ECE8DB012BBA16B976018E9D98B56D" Directory="INSTALLFOLDER" Guid="*">
                 <File Id="filC55FB4457A2C6CA4AE46C6FCC459FDE1" KeyPath="yes" Source="$(var.DesktopClientSourcePath)\NHibernate.dll" />
             </Component>
             
-            <Component Id="cmpA93DFA2C74738232CBDE205AB0672FAE" Directory="INSTALLFOLDER" Guid="*">
-                <File Id="fil3359C57F27323E3677A01B92CE94FD46" KeyPath="yes" Source="$(var.DesktopClientSourcePath)\SC2Domain.dll" />
+            <Component Id="cmp8EE387F6FCA1282DD2A3AF2C2BEABBF0" Directory="INSTALLFOLDER" Guid="*">
+                <File Id="filB28DEA8F8A8F3D6DA5930BA45D90732D" KeyPath="yes" Source="$(var.DesktopClientSourcePath)\StatisticDomain.Database.dll" />
+            </Component>
+            
+            <Component Id="cmp0BB87B5D1C758B9F446A02227AE1BBBD" Directory="INSTALLFOLDER" Guid="*">
+                <File Id="filD6EA27420F1CFB6BBAA83E28722258E2" KeyPath="yes" Source="$(var.DesktopClientSourcePath)\StatisticDomain.Model.dll" />
+            </Component>
+            
+            <Component Id="cmp15BA9C1D0F2AF8570576C06EBF8AA163" Directory="INSTALLFOLDER" Guid="*">
+                <File Id="fil5473C09B705AC5FBFC96B6C30E6A7167" KeyPath="yes" Source="$(var.DesktopClientSourcePath)\StatisticDomain.Service.dll" />
             </Component>
             
             <Component Id="cmp6B7CE49F5F3A518047B74FB6AC2251C5" Directory="INSTALLFOLDER" Guid="*">
@@ -120,6 +137,9 @@
                 <File Id="fil80B49A0B6E7C97C71B89FD33C21BC9B8" KeyPath="yes" Source="$(var.DesktopClientSourcePath)\Utilities.dll" />
             </Component>
             
+            <Component Id="cmp195E5CB0B3AEC76AE0FC5E67E9AE378A" Directory="INSTALLFOLDER" Guid="*">
+                <File Id="fil6CD403C28A3FA1C675CAA179D974B175" KeyPath="yes" Source="$(var.DesktopClientSourcePath)\WpfControls.dll" />
+            </Component>
             <Component Id="cmp4A52AE4E8DFF44FDFE34B767EAD5FDCA" Directory="dir242DC17B8DFC53C13CAF172FC08B730A" Guid="*">
                 <File Id="fil3CF06E23E11DB87DF5063C98D9515A21" KeyPath="yes" Source="$(var.DesktopClientSourcePath)\de\Microsoft.Expression.Interactions.resources.dll" />
             </Component>

@@ -1,5 +1,5 @@
 #Overview
-Starcraft 2 Statistics is an application that intend to demonstrate how good a SC2 Player is in Tournaments. It access the Aligulac API, analyses the data and generates statistics.
+Starcraft 2 Statistics is an application that intend to demonstrate how good a SC2 Player is in Tournaments. It access the [Aligulac API](http://aligulac.com/about/api/), analyses the data and generates statistics.
 
 #Download
 Click [here](https://github.com/guilhermemoschen/SC2Statistics/releases/tag/v0.3.0-beta) to get the latest release.

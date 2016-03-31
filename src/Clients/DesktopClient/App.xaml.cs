@@ -15,8 +15,6 @@ using SC2LiquipediaStatistics.DesktopClient.Service;
 using SC2LiquipediaStatistics.DesktopClient.ViewModel;
 using SC2LiquipediaStatistics.Utilities.Unity;
 
-using SC2Statistics.SC2Domain.Model;
-
 namespace SC2LiquipediaStatistics.DesktopClient
 {
     /// <summary>

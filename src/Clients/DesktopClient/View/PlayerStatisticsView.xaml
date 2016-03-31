@@ -5,6 +5,9 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:SC2LiquipediaStatistics.DesktopClient.View"
              xmlns:Common="clr-namespace:SC2LiquipediaStatistics.DesktopClient.Common"
+             xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+             xmlns:WpfControls="http://wpfcontrols.com/"
              DataContext="{Binding PlayerStatisticsViewModel, Source={StaticResource Locator}}"
              Common:Behaviors.LoadedMethodName="View_OnLoad"
              mc:Ignorable="d" 
@@ -33,6 +36,12 @@
             <Setter Property="FontWeight" Value="Bold" />
         </Style>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+        <DataTemplate x:Key="AutoCompleteTemplate">
+            <Border Padding="5">
+                <TextBlock Text="{Binding Path=Tag}" FontWeight="Bold" VerticalAlignment="Bottom"/>
+            </Border>
+        </DataTemplate>
+        <Common:AutoCompleteDataTemplate x:Key="AutoCompleteDataTemplate" AutoCompleteTemplate="{StaticResource AutoCompleteTemplate}" />
     </Common:ModernUserControl.Resources>
     <ScrollViewer>
         <Grid Style="{StaticResource ContentRoot}">
@@ -45,7 +54,15 @@
                 <TextBlock Text="SC2 Player Statistics Generator" Style="{StaticResource Heading1}" Margin="0,0,0,8" />
                 <StackPanel>
                     <Label Content="Select a Player"/>
-                    <ComboBox DisplayMemberPath="Name" IsEditable="True" SelectedItem="{Binding SelectedPlayer}" ItemsSource="{Binding Players}" Width="200" Height="30" HorizontalAlignment="Left" VerticalAlignment="Top" /></StackPanel>
+                    <WpfControls:AutoCompleteTextBox DisplayMember="Tag" Provider="{Binding SuggestionProvider}" ItemTemplateSelector="{StaticResource AutoCompleteDataTemplate}" Width="200" Height="30" IconPlacement="Right" IconVisibility="Visible">
+                        <WpfControls:AutoCompleteTextBox.LoadingContent>
+                            <TextBlock Text="Loading..." Margin="5" FontSize="14" />
+                        </WpfControls:AutoCompleteTextBox.LoadingContent>
+                        <WpfControls:AutoCompleteTextBox.SelectedItem>
+                            <Binding Path="SelectedPlayer" Mode="TwoWay" />
+                        </WpfControls:AutoCompleteTextBox.SelectedItem>
+                    </WpfControls:AutoCompleteTextBox>
+                </StackPanel>
                 <StackPanel>
                     <Label Content="Select Starcraft 2 Expansion" />
                     <ComboBox SelectedItem="{Binding SelectedExpansion}" ItemsSource="{Binding Expansions}" DisplayMemberPath="Key" Width="200" Height="30" HorizontalAlignment="Left" VerticalAlignment="Top" />
@@ -56,34 +73,51 @@
             </StackPanel>
             <StackPanel Grid.Row="1" Visibility="{Binding HasPlayerStatistics, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <StackPanel Margin="0,0,0,10" Width="{Binding ActualWidth, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type StackPanel}}}">
-                    <TextBlock Text="{Binding PlayerStatistics.Player.Name}" HorizontalAlignment="Center" Style="{StaticResource Heading2}" />
+                    <TextBlock Text="{Binding PlayerStatistics.Player.Tag}" HorizontalAlignment="Center" Style="{StaticResource Heading2}" />
                 </StackPanel>
                 <WrapPanel>
                     <StackPanel Style="{StaticResource Box}">
                         <Border>
                             <TextBlock>
                             <TextBlock Style="{StaticResource Heading2}" Text="Overall" /><LineBreak/>
-                            Total Events/Tournaments participated <TextBlock Text="{Binding PlayerStatistics.TotalEventsParticipated}" Style="{StaticResource Inline}" /><LineBreak />
-                            Total Matches Played <TextBlock Text="{Binding PlayerStatistics.TotalMatchesPlayed}" Style="{StaticResource Inline}" /><LineBreak />
-                            Win Rate <TextBlock Text="{Binding PlayerStatistics.WinRate,  StringFormat=0.00%}" Style="{StaticResource Inline}" />
+                            Total Matches <TextBlock Text="{Binding PlayerStatistics.TotalMatches}" Style="{StaticResource Inline}" /><LineBreak />
+                            Win Rate <TextBlock Text="{Binding PlayerStatistics.WinRate,  StringFormat=0.00%}" Style="{StaticResource Inline}" /> (<TextBlock Text="{Binding PlayerStatistics.TotalWins}" Style="{StaticResource Inline}" />/<TextBlock Text="{Binding PlayerStatistics.TotalMatches}" Style="{StaticResource Inline}" />)
                         </TextBlock>
                         </Border>
                     </StackPanel>
                     <StackPanel Style="{StaticResource Box}">
                         <Border>
                             <TextBlock>
-                            <TextBlock Style="{StaticResource Heading2}" Text="VS Terran"/><LineBreak/>
-                            Total Matches Played Against Terran <TextBlock Text="{Binding PlayerStatistics.TotalMatchesPlayedAgainstTerran}" Style="{StaticResource Inline}" /><LineBreak/>
-                            Win Rate Against Terran <TextBlock Text="{Binding PlayerStatistics.WinRateXTerran,  StringFormat=0.00%}" Style="{StaticResource Inline}" />
+                            <TextBlock Style="{StaticResource Heading2}" Text="VS Koreans" /><LineBreak/>
+                            Matches against Koreans <TextBlock Text="{Binding PlayerStatistics.TotalMatchesAgainstKoreans}" Style="{StaticResource Inline}" /><LineBreak />
+                            Win Rate against Koreans <TextBlock Text="{Binding PlayerStatistics.WinRateXKoreans,  StringFormat=0.00%}" Style="{StaticResource Inline}" /> (<TextBlock Text="{Binding PlayerStatistics.TotalWinsAgainstKoreans}" Style="{StaticResource Inline}" />/<TextBlock Text="{Binding PlayerStatistics.TotalMatchesAgainstKoreans}" Style="{StaticResource Inline}" />)
                         </TextBlock>
                         </Border>
                     </StackPanel>
                     <StackPanel Style="{StaticResource Box}">
                         <Border>
                             <TextBlock>
-                            <TextBlock Style="{StaticResource Heading2}" Text="VS Zerg"/><LineBreak/>
-                            Total Matches Played Against Zerg <TextBlock Text="{Binding PlayerStatistics.TotalMatchesPlayedAgainstZerg}" Style="{StaticResource Inline}" /><LineBreak/>
-                            Win Rate Against Zerg <TextBlock Text="{Binding PlayerStatistics.WinRateXZerg,  StringFormat=0.00%}" Style="{StaticResource Inline}" />
+                            <TextBlock Style="{StaticResource Heading2}" Text="VS Foreigners" /><LineBreak/>
+                            Matches against Foreigners <TextBlock Text="{Binding PlayerStatistics.TotalMatchesAgainstForeigners}" Style="{StaticResource Inline}" /><LineBreak />
+                            Win Rate against Foreigners <TextBlock Text="{Binding PlayerStatistics.WinRateXForeigners,  StringFormat=0.00%}" Style="{StaticResource Inline}" /> (<TextBlock Text="{Binding PlayerStatistics.TotalWinsAgainstForeigners}" Style="{StaticResource Inline}" />/<TextBlock Text="{Binding PlayerStatistics.TotalMatchesAgainstForeigners}" Style="{StaticResource Inline}" />)
+                        </TextBlock>
+                        </Border>
+                    </StackPanel>
+                    <StackPanel Style="{StaticResource Box}">
+                        <Border>
+                            <TextBlock>
+                            <TextBlock Style="{StaticResource Heading2}" Text="VS Terrans"/><LineBreak/>
+                            Total matches against Terrans <TextBlock Text="{Binding PlayerStatistics.TotalMatchesAgainstTerran}" Style="{StaticResource Inline}" /><LineBreak/>
+                            Win Rate against Terrans <TextBlock Text="{Binding PlayerStatistics.WinRateXTerran,  StringFormat=0.00%}" Style="{StaticResource Inline}" /> (<TextBlock Text="{Binding PlayerStatistics.TotalWinsAgainstTerran}" Style="{StaticResource Inline}" />/<TextBlock Text="{Binding PlayerStatistics.TotalMatchesAgainstTerran}" Style="{StaticResource Inline}" />)
+                        </TextBlock>
+                        </Border>
+                    </StackPanel>
+                    <StackPanel Style="{StaticResource Box}">
+                        <Border>
+                            <TextBlock>
+                            <TextBlock Style="{StaticResource Heading2}" Text="VS Zergs"/><LineBreak/>
+                            Total matches against Zerg <TextBlock Text="{Binding PlayerStatistics.TotalMatchesAgainstZerg}" Style="{StaticResource Inline}" /><LineBreak/>
+                            Win Rate against Zerg <TextBlock Text="{Binding PlayerStatistics.WinRateXZerg,  StringFormat=0.00%}" Style="{StaticResource Inline}" /> (<TextBlock Text="{Binding PlayerStatistics.TotalWinsAgainstZerg}" Style="{StaticResource Inline}" />/<TextBlock Text="{Binding PlayerStatistics.TotalMatchesAgainstZerg}" Style="{StaticResource Inline}" />)
                         </TextBlock>
                         </Border>
                     </StackPanel>
@@ -91,38 +125,12 @@
                         <Border>
                             <TextBlock>
                             <TextBlock Style="{StaticResource Heading2}" Text="VS Protoss"/><LineBreak/>
-                            Total Matches Played Against Protoss <TextBlock Text="{Binding PlayerStatistics.TotalMatchesPlayedAgainstProtoss}" Style="{StaticResource Inline}" /><LineBreak/>
-                            Win Rate Against Protoss <TextBlock Text="{Binding PlayerStatistics.WinRateXProtoss,  StringFormat=0.00%}" Style="{StaticResource Inline}" />
+                            Total matches against Protoss <TextBlock Text="{Binding PlayerStatistics.TotalMatchesAgainstProtoss}" Style="{StaticResource Inline}" /><LineBreak/>
+                            Win Rate against Protoss <TextBlock Text="{Binding PlayerStatistics.WinRateXProtoss,  StringFormat=0.00%}" Style="{StaticResource Inline}" /> (<TextBlock Text="{Binding PlayerStatistics.TotalWinsAgainstProtoss}" Style="{StaticResource Inline}" />/<TextBlock Text="{Binding PlayerStatistics.TotalMatchesAgainstProtoss}" Style="{StaticResource Inline}" />)
                         </TextBlock>
                         </Border>
                     </StackPanel>
                 </WrapPanel>
-            </StackPanel>
-            <StackPanel Grid.Row="2" Margin="0,20,0,0" Visibility="{Binding HasPlayerStatistics, Converter={StaticResource BooleanToVisibilityConverter}}">
-                <StackPanel Margin="0,0,0,10" Width="{Binding ActualWidth, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type StackPanel}}}">
-                    <TextBlock Text="Events/Tournaments Participated" HorizontalAlignment="Center" Style="{StaticResource Heading2}" />
-                </StackPanel>
-                <DataGrid ItemsSource="{Binding EventsParticipated}" SelectedItem="{Binding SelectedEvent}" IsReadOnly="true" HorizontalAlignment="Left" VerticalAlignment="Top" SelectionMode="Single" AutoGenerateColumns="False">
-                    <DataGrid.Columns>
-                        <DataGridTextColumn Width="*" Binding="{Binding Name}" Header="Name"/>
-                        <DataGridTemplateColumn Width="Auto" Header="Actions">
-                            <DataGridTemplateColumn.CellTemplate>
-                                <DataTemplate>
-                                    <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
-                                        <Button Margin="0" Padding="0" BorderThickness="0" Width="24" Height="24" Cursor="Hand" Command="{Binding DataContext.PlayerEventSelected, RelativeSource = {RelativeSource FindAncestor, AncestorType={x:Type DataGrid}}}">
-                                            <Button.Background>
-                                                <ImageBrush ImageSource="/DesktopClient;component/Assets/ic_search_black_24dp_1x.png"/>
-                                            </Button.Background>
-                                        </Button>
-                                    </StackPanel>
-                                </DataTemplate>
-                            </DataGridTemplateColumn.CellTemplate>
-                        </DataGridTemplateColumn>
-                    </DataGrid.Columns>
-                    <DataGrid.InputBindings>
-                        <MouseBinding MouseAction="LeftDoubleClick" Command="{Binding PlayerEventSelected}" />
-                    </DataGrid.InputBindings>
-                </DataGrid>
             </StackPanel>
         </Grid>
     </ScrollViewer>

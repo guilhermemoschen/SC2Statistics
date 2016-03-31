@@ -82,22 +82,7 @@ namespace SC2LiquipediaStatistics.DesktopClient.ViewModel
             Mapper = mapper;
 
             EditEventCommand = new RelayCommand(NavigateToEditEvent);
-            DeleteEventCommand = new RelayCommand(DeleteSelectedEvent);
             NavigatedToCommand = new RelayCommand<object>(LoadGrid);
-        }
-
-        private void DeleteSelectedEvent()
-        {
-            var result = ModernDialog.ShowMessage("Do you really want to delete this Event?", "Attention", MessageBoxButton.YesNo);
-            if (result != MessageBoxResult.Yes)
-                return;
-
-            using (new NHibernateSessionContext())
-            {
-                SC2Service.DeleteEvent(SelectedEvent.Id);
-            }
-
-            LoadGrid(null);
         }
 
         private void NavigateToEditEvent()
@@ -107,20 +92,17 @@ namespace SC2LiquipediaStatistics.DesktopClient.ViewModel
 
         public void LoadGrid(object parameter)
         {
-            if (IsInDesignMode)
-                return;
+            //IList<Event> events;
 
-            IList<Event> events;
+            //using (new NHibernateSessionContext())
+            //{
+            //    var domainEvents = SC2Service.FindMainEvents()
+            //        .OrderByDescending(x => x.EndDate)
+            //        .ToList();
+            //    events = Mapper.Map<IList<DomainEntities.Event>, IList<Event>>(domainEvents);
+            //}
 
-            using (new NHibernateSessionContext())
-            {
-                var domainEvents = SC2Service.FindMainEvents()
-                    .OrderByDescending(x => x.EndDate)
-                    .ToList();
-                events = Mapper.Map<IList<DomainEntities.Event>, IList<Event>>(domainEvents);
-            }
-
-            Events = new ObservableCollection<Event>(events);
+            //Events = new ObservableCollection<Event>(events);
         }
     }
 }

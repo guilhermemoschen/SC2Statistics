@@ -30,6 +30,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DataBase", "DataBase", "{66
 		DataBase\SC2Statistics.db = DataBase\SC2Statistics.db
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ProxyComponents", "ProxyComponents", "{0359E4FA-FB0D-4983-B727-D7AC01910071}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AligulacProxy", "ProxyComponents\AligulacProxy\AligulacProxy.csproj", "{BE2ECDAA-641C-4039-AD6F-1D7FA19A220A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SC2Domain.Model", "Domains\StatisticDomain\SC2Domain.Model\SC2Domain.Model.csproj", "{33FE332A-21EF-43EF-94E9-73B1D7121A54}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -76,6 +82,22 @@ Global
 		{49DD5A1A-EC1C-4A9C-B079-F5CB716B1D85}.Release|Any CPU.ActiveCfg = Release|x86
 		{49DD5A1A-EC1C-4A9C-B079-F5CB716B1D85}.Release|x86.ActiveCfg = Release|x86
 		{49DD5A1A-EC1C-4A9C-B079-F5CB716B1D85}.Release|x86.Build.0 = Release|x86
+		{BE2ECDAA-641C-4039-AD6F-1D7FA19A220A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BE2ECDAA-641C-4039-AD6F-1D7FA19A220A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BE2ECDAA-641C-4039-AD6F-1D7FA19A220A}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{BE2ECDAA-641C-4039-AD6F-1D7FA19A220A}.Debug|x86.Build.0 = Debug|Any CPU
+		{BE2ECDAA-641C-4039-AD6F-1D7FA19A220A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BE2ECDAA-641C-4039-AD6F-1D7FA19A220A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BE2ECDAA-641C-4039-AD6F-1D7FA19A220A}.Release|x86.ActiveCfg = Release|Any CPU
+		{BE2ECDAA-641C-4039-AD6F-1D7FA19A220A}.Release|x86.Build.0 = Release|Any CPU
+		{33FE332A-21EF-43EF-94E9-73B1D7121A54}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{33FE332A-21EF-43EF-94E9-73B1D7121A54}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{33FE332A-21EF-43EF-94E9-73B1D7121A54}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{33FE332A-21EF-43EF-94E9-73B1D7121A54}.Debug|x86.Build.0 = Debug|Any CPU
+		{33FE332A-21EF-43EF-94E9-73B1D7121A54}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{33FE332A-21EF-43EF-94E9-73B1D7121A54}.Release|Any CPU.Build.0 = Release|Any CPU
+		{33FE332A-21EF-43EF-94E9-73B1D7121A54}.Release|x86.ActiveCfg = Release|Any CPU
+		{33FE332A-21EF-43EF-94E9-73B1D7121A54}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -87,6 +109,8 @@ Global
 		{EF62F47F-EC42-4335-A944-9591E84FBD65} = {5FC22C8C-934B-4307-B443-3EC9D2A5D149}
 		{CDD99D97-1123-4D32-AC76-CD2D5E332658} = {EF62F47F-EC42-4335-A944-9591E84FBD65}
 		{49DD5A1A-EC1C-4A9C-B079-F5CB716B1D85} = {AF07FA42-29A0-4303-B303-0ACF25A566E5}
+		{BE2ECDAA-641C-4039-AD6F-1D7FA19A220A} = {0359E4FA-FB0D-4983-B727-D7AC01910071}
+		{33FE332A-21EF-43EF-94E9-73B1D7121A54} = {DA538065-9356-4F8C-88AB-63588FC14F7B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		EnterpriseLibraryConfigurationToolBinariesPathV6 = packages\EnterpriseLibrary.Common.6.0.1304.0\lib\NET45;packages\EnterpriseLibrary.Validation.6.0.1304.0\lib\NET45

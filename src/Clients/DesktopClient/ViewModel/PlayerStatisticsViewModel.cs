@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,12 +14,17 @@ using FirstFloor.ModernUI.Windows.Controls;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.CommandWpf;
 
+using SC2LiquipediaStatistics.DesktopClient.Common;
 using SC2LiquipediaStatistics.DesktopClient.Model;
 using SC2LiquipediaStatistics.DesktopClient.Service;
 using SC2LiquipediaStatistics.DesktopClient.View;
 using SC2LiquipediaStatistics.Utilities.DataBase;
+using SC2LiquipediaStatistics.Utilities.Domain;
+using SC2LiquipediaStatistics.Utilities.Unity;
 
 using SC2Statistics.SC2Domain.Service;
+
+using WpfControls.Editors;
 
 using SC2DomainEntities = SC2Statistics.SC2Domain.Model;
 
@@ -28,22 +32,6 @@ namespace SC2LiquipediaStatistics.DesktopClient.ViewModel
 {
     public class PlayerStatisticsViewModel : ModernViewModelBase
     {
-        protected ObservableCollection<Player> players;
-        public ObservableCollection<Player> Players
-        {
-            get
-            {
-                return players;
-            }
-            set
-            {
-                if (value == null || value == players)
-                    return;
-
-                Set(() => Players, ref players, value, true);
-            }
-        }
-
         protected Player selectedPlayer;
         public Player SelectedPlayer
         {
@@ -140,6 +128,8 @@ namespace SC2LiquipediaStatistics.DesktopClient.ViewModel
             }
         }
 
+        public ISuggestionProvider SuggestionProvider { get; set; }
+
         public IList<KeyValuePair<string, SC2DomainEntities.Expansion>> Expansions { get; set; }
 
         public ISC2Service SC2Service { get; protected set; }
@@ -148,20 +138,20 @@ namespace SC2LiquipediaStatistics.DesktopClient.ViewModel
 
         public IModernNavigationService NavigationService { get; protected set; }
 
+        public ILoadingService LoadingService { get; protected set; }
+
         public IMapper Mapper { get; protected set; }
 
         public ICommand GenerateStatisticsCommand { get; private set; }
 
-        public ICommand PlayerEventSelected { get; private set; }
-
-        public PlayerStatisticsViewModel(ISC2Service sc2Service, IModernNavigationService navigationService, IStatisticsService statisticsService, IMapper mapper)
+        public PlayerStatisticsViewModel(ISC2Service sc2Service, IModernNavigationService navigationService, IStatisticsService statisticsService, ILoadingService loadingService, IMapper mapper)
         {
             SC2Service = sc2Service;
             StatisticsService = statisticsService;
             NavigationService = navigationService;
+            LoadingService = loadingService;
             Mapper = mapper;
 
-            PlayerEventSelected = new RelayCommand(NavigateToPlayerByEvent);
             GenerateStatisticsCommand = new RelayCommand(GenerateStatistics);
             NavigatedToCommand = new RelayCommand<object>(LoadView);
             Expansions = new List<KeyValuePair<string, SC2DomainEntities.Expansion>>();
@@ -169,16 +159,9 @@ namespace SC2LiquipediaStatistics.DesktopClient.ViewModel
             Expansions.Add(new KeyValuePair<string, SC2DomainEntities.Expansion>("Legacy of the Void", SC2DomainEntities.Expansion.LegacyOfTheVoid));
             Expansions.Add(new KeyValuePair<string, SC2DomainEntities.Expansion>("Wings of Liberty", SC2DomainEntities.Expansion.WingsOfLiberty));
             SelectedExpansion = Expansions[1];
-        }
 
-        private void NavigateToPlayerByEvent()
-        {
-            var parameter = new PlayerByEventStatisticsParameter()
-            {
-                Player = SelectedPlayer,
-                Event = SelectedEvent,
-            };
-            NavigationService.NavigateTo(ViewLocator.PlayerByEventStatisticsView, parameter);
+            SuggestionProvider = Container.Resolve<PlayerSuggestionProvider>();
+            SelectedPlayer = new Player();
         }
 
         private void GenerateStatistics()
@@ -189,33 +172,46 @@ namespace SC2LiquipediaStatistics.DesktopClient.ViewModel
                 return;
             }
 
-            IList<Event> events;
+            ValidationException validationException = null;
 
-            using (new NHibernateSessionContext())
+            LoadingService.ShowAndExecuteAction(delegate
             {
-                var domainPlayer = Mapper.Map<Player, SC2DomainEntities.Player>(SelectedPlayer);
-                var domainStatistics = StatisticsService.GeneratePlayerStatistics(domainPlayer, SelectedExpansion.Value);
-                PlayerStatistics = Mapper.Map<SC2DomainEntities.PlayerStatistics, PlayerStatistics>(domainStatistics);
-                var domainEvents = SC2Service.FindEventsByPlayer(SelectedPlayer.Id);
-                events = Mapper.Map<IList<SC2DomainEntities.Event>, IList<Event>>(domainEvents);
-            }
+                using (new NHibernateSessionContext())
+                {
+                    try
+                    {
+                        SC2Service.LoadLatestPlayerMatches(SelectedPlayer.AligulacId, SC2DomainEntities.Expansion.LegacyOfTheVoid);
+                        var domainStatistics = StatisticsService.GeneratePlayerStatistics(SelectedPlayer.Id, SelectedExpansion.Value);
+                        PlayerStatistics = Mapper.Map<SC2DomainEntities.PlayerStatistics, PlayerStatistics>(domainStatistics);
+                        PlayerStatistics.Player = SelectedPlayer;
+                    }
+                    catch (ValidationException ex)
+                    {
+                        validationException = ex;
+                    }
+                }
+            });
 
-            HasPlayerStatistics = true;
-            EventsParticipated = new ObservableCollection<Event>(events);
+            if (validationException != null)
+            {
+                ModernDialog.ShowMessage(validationException.GetFormatedMessage(), "Validation Message", MessageBoxButton.OK);
+            }
+            else
+            {
+                HasPlayerStatistics = true;
+            }
         }
 
         public void LoadView(object parameter)
         {
-            var domainPlayers = SC2Service.FindAllPlayers();
-            var players = Mapper.Map<IList<SC2DomainEntities.Player>, IList<Player>>(domainPlayers);
-            Players = new ObservableCollection<Player>(players);
             HasPlayerStatistics = false;
+            
 
-            if (SelectedPlayer != null)
-            {
-                SelectedPlayer = players.First(x => x.Id == SelectedPlayer.Id);
-                GenerateStatistics();
-            }
+            //if (SelectedPlayer != null)
+            //{
+            //    SelectedPlayer = players.First(x => x.AligulacId == SelectedPlayer.AligulacId);
+            //    GenerateStatistics();
+            //}
         }
     }
 }

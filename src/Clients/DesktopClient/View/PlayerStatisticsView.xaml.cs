@@ -13,6 +13,8 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
+using SC2LiquipediaStatistics.DesktopClient.ViewModel;
+
 namespace SC2LiquipediaStatistics.DesktopClient.View
 {
     /// <summary>

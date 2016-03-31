@@ -1,6 +1,8 @@
-﻿namespace SC2Statistics.SC2Domain.Model
+﻿using SC2LiquipediaStatistics.Utilities.Domain;
+
+namespace SC2Statistics.SC2Domain.Model
 {
-    public class Game
+    public class Game : EntityBase
     {
         public virtual long Id { get; set; }
         public virtual string Map { get; set; }

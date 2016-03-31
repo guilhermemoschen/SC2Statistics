@@ -52,7 +52,7 @@ namespace SC2LiquipediaStatistics.DesktopClient.Model
                 if (Match == null || TargetPlayer == null)
                     return false;
 
-                return Match.Winner.Id == TargetPlayer.Id;
+                return Match.Winner.AligulacId == TargetPlayer.AligulacId;
             }
         }
 

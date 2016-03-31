@@ -31,8 +31,6 @@ namespace SC2LiquipediaStatistics.DesktopClient.ViewModel
     {
         public ISC2Service SC2Service { get; private set; }
 
-        public IParseService ParseService { get; private set; }
-
         public IModernNavigationService NavigationService { get; private set; }
 
         public IMapper Mapper { get; protected set; }
@@ -105,26 +103,21 @@ namespace SC2LiquipediaStatistics.DesktopClient.ViewModel
             }
         }
 
-        public IEnumerable<SC2DomainEntities.LiquipediaTier> LiquipediaTiers
+        public IEnumerable<SC2DomainEntities.Tier> LiquipediaTiers
         {
             get
             {
-                return Enum.GetValues(typeof(SC2DomainEntities.LiquipediaTier))
-                    .Cast<SC2DomainEntities.LiquipediaTier>();
+                return Enum.GetValues(typeof(SC2DomainEntities.Tier))
+                    .Cast<SC2DomainEntities.Tier>();
             }
         }
 
         public ICommand SaveCommand { get; private set; }
-        public ICommand ReloadAllEvenDataCommand { get; private set; }
-        public ICommand ReloadMainEvenDataCommand { get; private set; }
         public ICommand EditSubEventCommand { get; private set; }
-        public ICommand DeleteSubEventCommand { get; private set; }
-        public ICommand AddNewSubEventCommand { get; private set; }
 
-        public EditEventViewModel(ISC2Service sc2Service, IParseService parseService, IModernNavigationService navigationService, ILoadingService loadingService, IMapper mapper)
+        public EditEventViewModel(ISC2Service sc2Service, IModernNavigationService navigationService, ILoadingService loadingService, IMapper mapper)
         {
             SC2Service = sc2Service;
-            ParseService = parseService;
             NavigationService = navigationService;
             LoadingService = loadingService;
             Mapper = mapper;
@@ -137,78 +130,12 @@ namespace SC2LiquipediaStatistics.DesktopClient.ViewModel
 
             SaveCommand = new RelayCommand(SaveEvent, CanSaveEvent);
             NavigatedToCommand = new RelayCommand<object>(SelectEvent);
-            ReloadAllEvenDataCommand = new RelayCommand(ReloadAllEvent);
-            ReloadMainEvenDataCommand = new RelayCommand(ReloadMainEvent);
             EditSubEventCommand = new RelayCommand(EditSubEvent);
-            DeleteSubEventCommand = new RelayCommand(DeleteSelectedSubEvent);
-            AddNewSubEventCommand = new RelayCommand(AddNewSubEvent);
         }
 
         private bool CanSaveEvent()
         {
             return SelectedEvent != null && !SelectedEvent.HasErrors;
-        }
-
-        private void ReloadMainEvent()
-        {
-            ValidationException validationException = null;
-
-            LoadingService.ShowAndExecuteAction(delegate
-            {
-                try
-                {
-                    using (new NHibernateSessionContext())
-                    {
-                        var updatedEvent = ParseService.GetSC2Event(SelectedEvent.LiquipediaReference);
-                        var domainEvent = SC2Service.LoadEvent(SelectedEvent.Id);
-                        domainEvent.Merge(updatedEvent, true, false);
-                        SC2Service.UpdateEvent(domainEvent);
-                        SelectedEvent = Mapper.Map<SC2DomainEntities.Event, Event>(domainEvent);
-                    }
-                }
-                catch (ValidationException ex)
-                {
-                    validationException = ex;
-                }
-            });
-
-            if (validationException != null)
-                ModernDialog.ShowMessage(validationException.GetFormatedMessage(), "Validation Message", MessageBoxButton.OK);
-        }
-
-        private void AddNewSubEvent()
-        {
-            if (!SubEventInput.IsValid)
-                return;
-
-            ValidationException validationException = null;
-
-            LoadingService.ShowAndExecuteAction(delegate
-            {
-                using (new NHibernateSessionContext())
-                {
-                    try
-                    {
-                        var subEvent = ParseService.GetSC2EventWithSubEvents(SubEventInput.LiquipediaUrl);
-                        var mainEvent = SC2Service.LoadEvent(SelectedEvent.Id);
-                        mainEvent.AddSubEvent(subEvent);
-                        SC2Service.UpdateEvent(mainEvent);
-                    }
-                    catch (ValidationException ex)
-                    {
-                        validationException = ex;
-                    }
-                }
-            });
-
-            if (validationException != null)
-            {
-                ModernDialog.ShowMessage(validationException.GetFormatedMessage(), "Validation Message", MessageBoxButton.OK);
-                return;
-            }
-
-            SubEventInput = new EventInput();
-            ReloadSelectedEvent(SelectedEvent.Id);
         }
 
         private void EditSubEvent()
@@ -218,34 +145,6 @@ namespace SC2LiquipediaStatistics.DesktopClient.ViewModel
                 var domainSubEvent = SC2Service.LoadEvent(SelectedSubEvent.Id);
                 SelectedEvent = Mapper.Map<SC2DomainEntities.Event, Event>(domainSubEvent);
             }
-        }
-
-        private void ReloadAllEvent()
-        {
-            ValidationException validationException = null;
-
-            LoadingService.ShowAndExecuteAction(delegate
-            {
-                try
-                {
-                    using (new NHibernateSessionContext())
-                    {
-                        
-                        var updatedEvent = ParseService.GetSC2EventWithSubEvents(SelectedEvent.LiquipediaReference);
-                        var domainEvent = SC2Service.LoadEvent(SelectedEvent.Id);
-                        domainEvent.Merge(updatedEvent, true, true);
-                        SC2Service.UpdateEvent(domainEvent);
-                        SelectedEvent = Mapper.Map<SC2DomainEntities.Event, Event>(domainEvent);
-                    }
-                }
-                catch (ValidationException ex)
-                {
-                    validationException = ex;
-                }
-            });
-
-            if (validationException != null)
-                ModernDialog.ShowMessage(validationException.GetFormatedMessage(), "Validation Message", MessageBoxButton.OK);
         }
 
         private void SelectEvent(object parameter)
@@ -278,7 +177,6 @@ namespace SC2LiquipediaStatistics.DesktopClient.ViewModel
                 //    .Where(x => !x.IsActive)
                 //    .Select(x => x.Id);
 
-                SC2Service.UpdateEvent(domainEvent);
             }
 
             if (SelectedEvent.MainEvent != null)
@@ -287,20 +185,6 @@ namespace SC2LiquipediaStatistics.DesktopClient.ViewModel
             }
             else
                 NavigationService.GoBack();
-        }
-
-        private void DeleteSelectedSubEvent()
-        {
-            var result = ModernDialog.ShowMessage("Do you really want to delete this Sub Event?", "Attention", MessageBoxButton.YesNo);
-            if (result != MessageBoxResult.Yes)
-                return;
-
-            using (new NHibernateSessionContext())
-            {
-                SC2Service.DeleteSubEvent(SelectedEvent.Id, SelectedSubEvent.Id);
-            }
-
-            ReloadSelectedEvent(SelectedEvent.Id);
         }
 
         private void ReloadSelectedEvent(long selectedEventId)

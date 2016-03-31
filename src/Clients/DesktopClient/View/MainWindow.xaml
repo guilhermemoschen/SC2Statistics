@@ -20,7 +20,11 @@
         <mui:LinkGroup DisplayName="Tournaments">
             <mui:LinkGroup.Links>
                 <mui:Link DisplayName="Events" Source="/View/ListEventsView.xaml" />
-                <mui:Link DisplayName="Add New" Source="/View/AddEventView.xaml" />
+            </mui:LinkGroup.Links>
+        </mui:LinkGroup>
+        <mui:LinkGroup DisplayName="Players">
+            <mui:LinkGroup.Links>
+                <mui:Link DisplayName="All Players" Source="/View/ListPlayersView.xaml" />
             </mui:LinkGroup.Links>
         </mui:LinkGroup>
         <mui:LinkGroup DisplayName="Statistics">

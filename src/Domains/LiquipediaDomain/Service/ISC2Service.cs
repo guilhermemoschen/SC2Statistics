@@ -7,24 +7,20 @@ namespace SC2Statistics.SC2Domain.Service
 {
     public interface ISC2Service
     {
-        IList<Event> FindMainEvents();
-
         Event CreateEvent(Event sc2Event);
 
-        IList<Player> FindAllPlayers();
+        IEnumerable<Player> FindPlayers(string tag, int pageIndex = 0, int pageSize = 20);
 
-        void UpdateEvent(Event sc2Event, IEnumerable<long>  eventsIdToActive = null, IEnumerable<long> eventsIdToDeactive = null);
+        IEnumerable<Player> FindAllPlayers(int pageIndex, int pageSize);
+
+        IEnumerable<Player> FindAllPlayers();
 
         Event LoadEvent(long eventId);
 
         IList<Event> FindEventsByPlayer(long playerId);
 
-        void ActiveEvent(long eventId);
+        void UpdateAllPlayers();
 
-        void InactiveEvent(long eventId);
-
-        void DeleteEvent(long eventId);
-
-        void DeleteSubEvent(long eventId, long subEventId);
+        void LoadLatestPlayerMatches(int aligulacPlayerId, Expansion expansion);
     }
 }

@@ -12,7 +12,6 @@ namespace SC2LiquipediaStatistics.DesktopClient.Model
     public class EventInput : ValidatableObject
     {
         private string liquipediaUrl;
-        [RegularExpression(ParseService.ValidateLiquipediaUrl, ErrorMessage = "The provided address is invalid.")]
         [Required(ErrorMessage = "The Liquipedia Url is mandatory.")]
         public string LiquipediaUrl
         {

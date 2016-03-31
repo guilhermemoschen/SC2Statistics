@@ -30,6 +30,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="AutoMapper, Version=4.2.1.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\AutoMapper.4.2.1\lib\net45\AutoMapper.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="HtmlAgilityPack, Version=1.4.9.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
       <HintPath>..\..\packages\HtmlAgilityPack.1.4.9\lib\Net45\HtmlAgilityPack.dll</HintPath>
       <Private>True</Private>
@@ -74,22 +78,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Model\MatchFormat.cs" />
-    <Compile Include="Model\BracketRound.cs" />
-    <Compile Include="Model\PlayerStatistics.cs" />
     <Compile Include="Repository\IMatchRepository.cs" />
     <Compile Include="Repository\MatchRepository.cs" />
     <Compile Include="Service\IStatisticsService.cs" />
     <Compile Include="Service\StatisticsService.cs" />
-    <Compile Include="UnityConfiguration.cs" />
-    <Compile Include="Model\Event.cs" />
-    <Compile Include="Model\Expansion.cs" />
-    <Compile Include="Model\Game.cs" />
-    <Compile Include="Model\LiquipediaTier.cs" />
-    <Compile Include="Model\Match.cs" />
-    <Compile Include="Model\MatchType.cs" />
-    <Compile Include="Model\Player.cs" />
-    <Compile Include="Model\Race.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repository\EventRepository.cs" />
     <Compile Include="Repository\IEventRepository.cs" />
@@ -100,14 +92,20 @@
     <Compile Include="Repository\Maps\PlayerMap.cs" />
     <Compile Include="Repository\PlayerRespository.cs" />
     <Compile Include="Service\ISC2Service.cs" />
-    <Compile Include="Service\IParseService.cs" />
     <Compile Include="Service\SC2Service.cs" />
-    <Compile Include="Service\ParseService.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\ProxyComponents\AligulacProxy\AligulacProxy.csproj">
+      <Project>{BE2ECDAA-641C-4039-AD6F-1D7FA19A220A}</Project>
+      <Name>AligulacProxy</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Utilities\Utilities\Utilities.csproj">
       <Project>{C2B7E39D-3F74-42EE-9294-BC686D367CB3}</Project>
       <Name>Utilities</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\StatisticDomain\SC2Domain.Model\SC2Domain.Model.csproj">
+      <Project>{33FE332A-21EF-43EF-94E9-73B1D7121A54}</Project>
+      <Name>SC2Domain.Model</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

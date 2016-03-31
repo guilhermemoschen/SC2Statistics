@@ -45,12 +45,9 @@ namespace SC2LiquipediaStatistics.DesktopClient.Model.Translator
                 .ConvertUsing(ConvertToPlayerMatches);
 
             // UI -> Domain
-            CreateMap<Player, SC2DomainEntities.Player>()
-                .ForMember(x => x.EventsParticipaed, opt => opt.Ignore());
-
             CreateMap<Event, SC2DomainEntities.Event>()
                 .ForMember(x => x.Matches, opt => opt.Ignore())
-                .ForMember(x => x.SubEvents, opt => opt.Ignore());
+                .ForMember(x => x.ValidationResults, opt => opt.Ignore());
         }
 
         private IEnumerable<PlayerMatches> ConvertToPlayerMatches(IEnumerable<List<SC2DomainEntities.Match>> allMatches)

@@ -7,6 +7,8 @@ using System.Text;
 using System.Threading.Tasks;
 
 using SC2Statistics.SC2Domain.Model;
+using SC2Statistics.SC2Domain.Repository.Maps;
+using SC2Statistics.Utilities.DataBase;
 
 namespace SC2LiquipediaStatistics.DesktopClient.Configuration
 {
@@ -15,7 +17,7 @@ namespace SC2LiquipediaStatistics.DesktopClient.Configuration
         public static void Configure()
         {
             var dbFilePath = GetDatabaseFilePath();
-            Utilities.DataBase.NHibernateAndSQLiteConfiguration.SetupDatabase(typeof(Player).Assembly, dbFilePath);
+            NHibernateAndSQLiteConfiguration.SetupDatabase(typeof(PlayerMap).Assembly, dbFilePath);
         }
 
         private static string GetDatabaseFilePath()

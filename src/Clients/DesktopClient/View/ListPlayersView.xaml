@@ -1,0 +1,45 @@
+﻿<Common:ModernUserControl x:Class="SC2LiquipediaStatistics.DesktopClient.View.ListPlayersView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:SC2LiquipediaStatistics.DesktopClient.View"
+             xmlns:Common="clr-namespace:SC2LiquipediaStatistics.DesktopClient.Common"
+             xmlns:mui="http://firstfloorsoftware.com/ModernUI"
+             DataContext="{Binding ListPlayersViewModel, Source={StaticResource Locator}}"
+             mc:Ignorable="d" 
+             d:DesignHeight="600" d:DesignWidth="800">
+    <ScrollViewer Style="{StaticResource ContentRoot}" VerticalScrollBarVisibility="Auto">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="auto" />
+            </Grid.RowDefinitions>
+            <Border Grid.Row="0" Padding="10" CornerRadius="2" BorderThickness="1" BorderBrush="Black" Margin="0,0,0,20">
+                <StackPanel  Orientation="Horizontal" >
+                    <TextBlock Text="Filter By Tag:  "/><TextBox Text="{Binding FilterCriteria}" Width="200"/>
+                    <Button Command="{Binding FilterPlayersCommand}" Width="150" Content="Filter" Margin="20,0,0,0" />
+                </StackPanel>
+            </Border>
+            <StackPanel Grid.Row="1">
+                <DataGrid ItemsSource="{Binding Players}" IsReadOnly="True" AutoGenerateColumns="False">
+                    <DataGrid.Columns>
+                        <mui:DataGridTextColumn Width="Auto" Binding="{Binding AligulacId}" Header="Id"/>
+                        <mui:DataGridTextColumn Width="*" Binding="{Binding Tag}" Header="Tag"/>
+                        <mui:DataGridTextColumn Width="*" Binding="{Binding Name}" Header="Name"/>
+                        <mui:DataGridTextColumn Width="70" Binding="{Binding Race}" Header="Race"/>
+                        <mui:DataGridTextColumn Width="90" Binding="{Binding Country}" Header="Country"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </StackPanel>
+            <Border Grid.Row="2" Padding="10" CornerRadius="2" BorderThickness="1" BorderBrush="Black" Margin="0,20,0,0">
+                <StackPanel  Orientation="Horizontal" >
+                    <Button Command="{Binding PreviousPageCommand}" Width="150" Content="Previous Page" />
+                    <Button Command="{Binding NextPageCommand}" Width="150" Content="Next Page" Margin="20,0,0,0" />
+                    <Button Command="{Binding UpdatePlayersCommand}" Width="150" Content="Load New Players" Margin="20,0,0,0" />
+                </StackPanel>
+            </Border>
+        </Grid>
+    </ScrollViewer>
+</Common:ModernUserControl>

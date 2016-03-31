@@ -6,8 +6,6 @@ namespace SC2Statistics.SC2Domain.Service
 {
     public interface IStatisticsService
     {
-        PlayerStatistics GeneratePlayerStatistics(Player player, Expansion expansion);
-
-        List<List<Match>> GeneratePlayerPathbyEvent(long playerId, long eventId);
+        PlayerStatistics GeneratePlayerStatistics(long playerId, Expansion expansion);
     }
 }

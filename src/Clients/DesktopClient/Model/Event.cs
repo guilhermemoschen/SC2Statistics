@@ -104,8 +104,8 @@ namespace SC2LiquipediaStatistics.DesktopClient.Model
             }
         }
 
-        private LiquipediaTier liquipediaTier;
-        public LiquipediaTier LiquipediaTier
+        private Tier liquipediaTier;
+        public Tier LiquipediaTier
         {
             get
             {

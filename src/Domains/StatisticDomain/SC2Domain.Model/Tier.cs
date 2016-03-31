@@ -1,6 +1,6 @@
 ﻿namespace SC2Statistics.SC2Domain.Model
 {
-    public enum LiquipediaTier
+    public enum Tier
     {
         Premier,
         Major,

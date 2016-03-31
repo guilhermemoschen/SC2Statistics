@@ -9,18 +9,18 @@ using NHibernate.Linq;
 using SC2LiquipediaStatistics.Utilities.DataBase;
 
 using SC2Statistics.SC2Domain.Model;
+using SC2Statistics.Utilities.DataBase;
 
 namespace SC2Statistics.SC2Domain.Repository
 {
     public class MatchRepository : RepositoryBase<Match>, IMatchRepository
     {
-        public IList<Match> FindMatchesByPlayerAndExpansion(Player player, Expansion expansion)
+        public IList<Match> FindMatchesByPlayerAndExpansion(long playerId, Expansion expansion)
         {
             return Session.Query<Match>()
                 .Where(x => 
-                    (x.Event.IsActive) &&
-                    (x.Player1.Id == player.Id || x.Player2.Id == player.Id) && 
-                    (x.Event.Expansion == expansion)
+                    (x.Player1.Id == playerId || x.Player2.Id == playerId) && 
+                    (x.Expansion == expansion)
                 )
                 .ToList();
         }
@@ -33,6 +33,14 @@ namespace SC2Statistics.SC2Domain.Repository
                     (x.Player1.Id == playerId || x.Player2.Id == playerId)
                 )
                 .ToList();
+        }
+
+        public Match GetLatestMatchFromPlayer(int aligulacPlayerId)
+        {
+            return Session.Query<Match>()
+                .Where(x => x.Player1.AligulacId == aligulacPlayerId || x.Player2.AligulacId == aligulacPlayerId)
+                .OrderByDescending(x => x.Date)
+                .FirstOrDefault();
         }
     }
 }

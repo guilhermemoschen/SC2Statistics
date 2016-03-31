@@ -7,7 +7,7 @@
     <ProjectGuid>{C2B7E39D-3F74-42EE-9294-BC686D367CB3}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>SC2LiquipediaStatistics.Utilities</RootNamespace>
+    <RootNamespace>SC2Statistics.Utilities</RootNamespace>
     <AssemblyName>Utilities</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>

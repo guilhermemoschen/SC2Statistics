@@ -12,15 +12,22 @@ namespace SC2Statistics.SC2Domain.Service
     public class StatisticsService : IStatisticsService
     {
         public IMatchRepository MatchRepository { get; protected set; }
+        public IPlayerRespository PlayerRespository { get; protected set; }
 
-        public StatisticsService(IMatchRepository matchRepository)
+        public StatisticsService(IMatchRepository matchRepository, IPlayerRespository playerRespository)
         {
             MatchRepository = matchRepository;
+            PlayerRespository = playerRespository;
         }
 
-        public PlayerStatistics GeneratePlayerStatistics(Player player, Expansion expansion)
+        public PlayerStatistics GeneratePlayerStatistics(long playerId, Expansion expansion)
         {
-            var allMatches = MatchRepository.FindMatchesByPlayerAndExpansion(player, expansion);
+            var player = PlayerRespository.Load(playerId);
+
+            if (player == null)
+                throw new ArgumentNullException(nameof(playerId));
+
+            var allMatches = MatchRepository.FindMatchesByPlayerAndExpansion(player.Id, expansion);
 
             if (!allMatches.Any())
                 return null;
@@ -31,9 +38,8 @@ namespace SC2Statistics.SC2Domain.Service
             {
                 Player = player,
                 WinRate = (decimal)matchesWon.Count / (decimal)allMatches.Count,
-                TotalMatchesPlayed = allMatches.Count,
-                TotalEventsParticipated = allMatches.GroupBy(x => x.Event).Count(),
-                EventsParticipated = allMatches.GroupBy(x => x.Event).Select(x => x.Key).ToList(),
+                TotalWins = matchesWon.Count,
+                TotalMatches = allMatches.Count,
             };
 
             var matchesXZerg = allMatches
@@ -47,7 +53,8 @@ namespace SC2Statistics.SC2Domain.Service
             {
                 var matchesWonXZerg = matchesXZerg.Where(x => x.Winner.Id == player.Id).ToList();
                 statistics.WinRateXZerg = (decimal)matchesWonXZerg.Count / (decimal)matchesXZerg.Count;
-                statistics.TotalMatchesPlayedAgainstZerg = matchesXZerg.Count;
+                statistics.TotalMatchesAgainstZerg = matchesXZerg.Count;
+                statistics.TotalWinsAgainstZerg = matchesWonXZerg.Count;
             }
 
             var matchesXProtoss = allMatches
@@ -61,7 +68,8 @@ namespace SC2Statistics.SC2Domain.Service
             {
                 var matchesWonXProtoss = matchesXProtoss.Where(x => x.Winner.Id == player.Id).ToList();
                 statistics.WinRateXProtoss = (decimal)matchesWonXProtoss.Count / (decimal)matchesXProtoss.Count;
-                statistics.TotalMatchesPlayedAgainstProtoss = matchesXProtoss.Count;
+                statistics.TotalMatchesAgainstProtoss = matchesXProtoss.Count;
+                statistics.TotalWinsAgainstProtoss = matchesWonXProtoss.Count;
             }
 
             var matchesXTerran = allMatches
@@ -75,60 +83,41 @@ namespace SC2Statistics.SC2Domain.Service
             {
                 var matchesWonXTerran = matchesXTerran.Where(x => x.Winner.Id == player.Id).ToList();
                 statistics.WinRateXTerran = (decimal)matchesWonXTerran.Count / (decimal)matchesXTerran.Count;
-                statistics.TotalMatchesPlayedAgainstTerran = matchesXTerran.Count;
+                statistics.TotalMatchesAgainstTerran = matchesXTerran.Count;
+                statistics.TotalWinsAgainstTerran = matchesWonXTerran.Count;
+            }
+
+            var matchesXKoreans = allMatches
+                .Where(x =>
+                    (x.Player1.Id == player.Id && x.Player2.Country == "KR") ||
+                    (x.Player2.Id == player.Id && x.Player1.Country == "KR")
+                )
+                .ToList();
+
+            if (matchesXKoreans.Any())
+            {
+                var matchesWonXKoreans = matchesXKoreans.Where(x => x.Winner.Id == player.Id).ToList();
+                statistics.WinRateXKoreans = (decimal)matchesWonXKoreans.Count / (decimal)matchesXKoreans.Count;
+                statistics.TotalMatchesAgainstKoreans = matchesXKoreans.Count;
+                statistics.TotalWinsAgainstKoreans = matchesWonXKoreans.Count;
+            }
+
+            var matchesXForeigners = allMatches
+                .Where(x =>
+                    (x.Player1.Id == player.Id && x.Player2.Country != "KR") ||
+                    (x.Player2.Id == player.Id && x.Player1.Country != "KR")
+                )
+                .ToList();
+
+            if (matchesXForeigners.Any())
+            {
+                var matchesWonXForeigners = matchesXForeigners.Where(x => x.Winner.Id == player.Id).ToList();
+                statistics.WinRateXForeigners = (decimal)matchesWonXForeigners.Count / (decimal)matchesXForeigners.Count;
+                statistics.TotalMatchesAgainstForeigners = matchesXForeigners.Count;
+                statistics.TotalWinsAgainstForeigners = matchesWonXForeigners.Count;
             }
 
             return statistics;
-        }
-
-        public List<List<Match>> GeneratePlayerPathbyEvent(long playerId, long eventId)
-        {
-            var allMatches = new List<List<Match>>();
-
-            var matches = MatchRepository.FindMatchesByPlayerAndEvent(playerId, eventId);
-            if (!matches.Any())
-                return allMatches;
-
-            var allBracketMatches = matches.Where(x => x.Format == MatchFormat.Bracket).ToList();
-            
-
-            while (allBracketMatches.Any())
-            {
-                var currentMatch = allBracketMatches.First();
-                var bracketMatches = new List<Match>();
-
-                bracketMatches.Add(currentMatch);
-                allBracketMatches.Remove(currentMatch);
-
-                if (currentMatch.Winner.Id != playerId)
-                {
-                    allMatches.Add(bracketMatches);
-                    continue;
-                }
-
-                Match nextMatch;
-                while ((nextMatch = allBracketMatches.FirstOrDefault()) != null)
-                {
-                    bracketMatches.Add(nextMatch);
-                    allBracketMatches.Remove(nextMatch);
-
-                    if (nextMatch.Winner.Id != playerId)
-                    {
-                        break;
-                    }
-                }
-
-                allMatches.Add(bracketMatches);
-            }
-
-            var allGroupMatches = matches.Where(x => x.Format == MatchFormat.Group).ToList();
-
-            foreach (var groupMatches in allGroupMatches.GroupBy(x => x.GroupName))
-            {
-                allMatches.Add(groupMatches.ToList());
-            }
-
-            return allMatches;
         }
     }
 }

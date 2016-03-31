@@ -1,18 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using System.Transactions;
 
-using Microsoft.Practices.EnterpriseLibrary.Validation;
+using AutoMapper;
 
-using NHibernate.Linq;
+using Microsoft.Practices.EnterpriseLibrary.Validation;
 
 using SC2LiquipediaStatistics.Utilities.Domain;
 using SC2LiquipediaStatistics.Utilities.Log;
 using SC2LiquipediaStatistics.Utilities.Web;
 
+using SC2Statistics.Proxy.Aligulac;
 using SC2Statistics.SC2Domain.Model;
 using SC2Statistics.SC2Domain.Repository;
 
@@ -20,27 +22,28 @@ namespace SC2Statistics.SC2Domain.Service
 {
     public class SC2Service : ISC2Service
     {
-        public IParseService ParseService { get; protected set; }
+        public IAligulacService AligulacService { get; protected set; }
 
         public IEventRepository EventRepository { get; protected set; }
 
         public IPlayerRespository PlayerRepository { get; protected set; }
 
+        public IMatchRepository MatchRepository { get; protected set; }
+
+        public IMapper Mapper { get; protected set; }
+
         public ILogger Logger { get; protected set; }
 
-        public SC2Service(IParseService parseService, IEventRepository eventRepository, IPlayerRespository playerRespository, ILogger logger)
+        public SC2Service(IAligulacService aligulacService, IEventRepository eventRepository, IPlayerRespository playerRespository, IMatchRepository matchRepository, IMapper mapper, ILogger logger)
         {
-            ParseService = parseService;
+            AligulacService = aligulacService;
             EventRepository = eventRepository;
             PlayerRepository = playerRespository;
+            MatchRepository = matchRepository;
+            Mapper = mapper;
             Logger = logger;
         }
 
-        public IList<Event> FindMainEvents()
-        {
-            return EventRepository
-                .FindMainEvents();
-        }
 
         public Event CreateEvent(Event sc2Event)
         {
@@ -50,7 +53,7 @@ namespace SC2Statistics.SC2Domain.Service
             if (!sc2Event.IsValid)
                 throw new ValidationException(sc2Event.ValidationResults);
 
-            var existentEvent = EventRepository.FindByReference(sc2Event.LiquipediaReference);
+            var existentEvent = EventRepository.FindByReference(sc2Event.AligulacReference);
             if (existentEvent == null)
             {
                 using (var scope = new TransactionScope())
@@ -59,24 +62,26 @@ namespace SC2Statistics.SC2Domain.Service
                     scope.Complete();
                 }
             }
-            else
-            {
-                existentEvent.Merge(sc2Event, true, true);
-                UpdateEvent(existentEvent);
-            }
 
             return existentEvent ?? sc2Event;
         }
 
-        public IList<Player> FindAllPlayers()
+        public IEnumerable<Player> FindPlayers(string tag, int pageIndex = 0, int pageSize = 20)
         {
-            return PlayerRepository
-                .FindAll()
-                .OrderBy(x => x.Name)
-                .ToList();
+            return PlayerRepository.FindByTag(tag, pageIndex, pageSize);
         }
 
-        public void UpdateEvent(Event sc2Event, IEnumerable<long> eventsIdToActive = null, IEnumerable<long> eventsIdToDeactive = null)
+        public IEnumerable<Player> FindAllPlayers()
+        {
+            return PlayerRepository.FindAll();
+        }
+
+        public IEnumerable<Player> FindAllPlayers(int pageIndex, int pageSize)
+        {
+            return PlayerRepository.FindAllAndOrderBy(x => x.AligulacId, pageIndex, pageSize);
+        }
+
+        public void UpdateEvent(Event sc2Event)
         {
             if (sc2Event == null)
                 throw new ArgumentNullException("sc2Event");
@@ -85,26 +90,6 @@ namespace SC2Statistics.SC2Domain.Service
             {
                 EventRepository.Merge(sc2Event);
                 scope.Complete();
-
-                if (eventsIdToActive != null)
-                {
-                    foreach (var subEventId in eventsIdToActive)
-                    {
-                        var subEvent = EventRepository.Load(subEventId);
-                        subEvent.IsActive = true;
-                        EventRepository.Merge(subEvent);
-                    }
-                }
-
-                if (eventsIdToDeactive != null)
-                {
-                    foreach (var subEventId in eventsIdToDeactive)
-                    {
-                        var subEvent = EventRepository.Load(subEventId);
-                        subEvent.IsActive = false;
-                        EventRepository.Merge(subEvent);
-                    }
-                }
             }
         }
 
@@ -118,26 +103,6 @@ namespace SC2Statistics.SC2Domain.Service
             return EventRepository.FindEventsByPlayer(playerId);
         }
 
-        public void ActiveEvent(long eventId)
-        {
-            using (new TransactionScope())
-            {
-                var existentEvent = EventRepository.Load(eventId);
-                existentEvent.IsActive = true;
-                EventRepository.Merge(existentEvent);
-            }
-        }
-
-        public void InactiveEvent(long eventId)
-        {
-            using (new TransactionScope())
-            {
-                var existentEvent = EventRepository.Load(eventId);
-                existentEvent.IsActive = false;
-                EventRepository.Merge(existentEvent);
-            }
-        }
-
         public void DeleteEvent(long eventId)
         {
             using (var scope = new TransactionScope())
@@ -148,14 +113,101 @@ namespace SC2Statistics.SC2Domain.Service
             }
         }
 
-        public void DeleteSubEvent(long eventId, long subEventId)
+        public void UpdateAllPlayers()
         {
+            var bigestPlayerAligulacId = PlayerRepository.GetBigestPlayerAligulacId();
+            var players = AligulacService.FindAllPlayers(bigestPlayerAligulacId);
+
             using (var scope = new TransactionScope())
             {
-                var existentEvent = EventRepository.Load(eventId);
-                existentEvent.RemoveSubEvent(subEventId);
-                EventRepository.Merge(existentEvent);
+                foreach (var player in players)
+                {
+                    if (!player.IsValid)
+                        throw new ValidationException(player.ValidationResults);
+
+                    PlayerRepository.Save(player);
+                }
                 scope.Complete();
+            }
+        }
+
+        public void LoadLatestPlayerMatches(int aligulacPlayerId, Expansion expansion)
+        {
+            var player = PlayerRepository.FindByAligulacId(aligulacPlayerId);
+
+            if (player == null)
+                throw new ValidationException("Invalid Player.");
+
+            var lastestMatch = MatchRepository.GetLatestMatchFromPlayer(player.AligulacId);
+            var newMatches = AligulacService.FindMatches(player.AligulacId, expansion, (lastestMatch != null)?lastestMatch.Date:null);
+            UpdatePlayersReference(player, newMatches);
+            UpdateEventsReference(newMatches);
+
+            foreach (var match in newMatches)
+            {
+                CreateMatch(match);
+            }
+        }
+
+        private void CreateMatch(Match match)
+        {
+            if (match == null)
+                throw new ArgumentNullException("match");
+
+            if (!match.IsValid)
+                throw new ValidationException("The Match is invalid");
+
+            using (var scope = new TransactionScope())
+            {
+                MatchRepository.Save(match);
+                scope.Complete();
+            }
+        }
+
+        private void UpdateEventsReference(IEnumerable<Match> matches)
+        {
+            var cachedEvents = new Collection<Event>();
+
+            foreach (var match in matches)
+            {
+                var cachedEvent = cachedEvents.FirstOrDefault(x => x.AligulacId == match.Event.AligulacId);
+                if (cachedEvent != null)
+                {
+                    match.Event = cachedEvent;
+                    continue;
+                }
+
+                var existentEvent = EventRepository.FindByAligulacId(match.Event.AligulacId);
+                if (existentEvent != null)
+                {
+                    match.Event = existentEvent;
+                    continue;
+                }
+
+                var newEvent = CreateEvent(match.Event);
+                match.Event = newEvent;
+                cachedEvents.Add(newEvent);
+            }
+        }
+
+        private void UpdatePlayersReference(Player mainPlayer, IEnumerable<Match> matches)
+        {
+            foreach (var match in matches)
+            {
+                if (match.Player1.AligulacId == mainPlayer.AligulacId)
+                {
+                    match.Player1 = mainPlayer;
+                    match.Player2 = PlayerRepository.FindByAligulacId(match.Player2.AligulacId);
+                }
+                else if (match.Player2.AligulacId == mainPlayer.AligulacId)
+                {
+                    match.Player1 = PlayerRepository.FindByAligulacId(match.Player1.AligulacId);
+                    match.Player2 = mainPlayer;
+                }
+                else
+                {
+                    throw new ValidationException("Invalid Match");
+                }
             }
         }
     }

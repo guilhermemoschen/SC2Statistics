@@ -16,7 +16,7 @@ using NHibernate.Tool.hbm2ddl;
 
 using Environment = NHibernate.Cfg.Environment;
 
-namespace SC2LiquipediaStatistics.Utilities.DataBase
+namespace SC2Statistics.Utilities.DataBase
 {
     public static class NHibernateAndSQLiteConfiguration
     {

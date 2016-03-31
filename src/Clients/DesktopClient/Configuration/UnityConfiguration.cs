@@ -7,6 +7,10 @@ using SC2LiquipediaStatistics.Utilities.Log;
 using SC2LiquipediaStatistics.Utilities.Unity;
 using SC2LiquipediaStatistics.Utilities.Web;
 
+using SC2Statistics.Proxy.Aligulac;
+using SC2Statistics.SC2Domain.Repository;
+using SC2Statistics.SC2Domain.Service;
+
 namespace SC2LiquipediaStatistics.DesktopClient.Configuration
 {
     public static class UnityConfiguration
@@ -17,12 +21,11 @@ namespace SC2LiquipediaStatistics.DesktopClient.Configuration
 
             // ViewModels
             Container.Instance.RegisterType<ListEventsViewModel>();
-            Container.Instance.RegisterType<AddEventViewModel>();
+            Container.Instance.RegisterType<ListPlayersViewModel>();
             Container.Instance.RegisterType<EditEventViewModel>();
             Container.Instance.RegisterType<PlayerStatisticsViewModel>();
             Container.Instance.RegisterType<MainViewModel>();
             Container.Instance.RegisterType<LoadingViewModel>();
-            Container.Instance.RegisterType<PlayerByEventStatisticsViewModel>();
 
             // Services
             Container.Instance.RegisterType<IEventsListService, EventsListService>();
@@ -34,8 +37,26 @@ namespace SC2LiquipediaStatistics.DesktopClient.Configuration
             Container.Instance.RegisterType<IDownloader, Downloader>();
             Container.Instance.RegisterType<ILogger, MessageLogger>();
 
-            // SC2Domain
-            SC2Statistics.SC2Domain.UnityConfiguration.RegisterTypes(Container.Instance);
+            ConfigureSC2Domain(Container.Instance);
+            ConfigureAligulacProxy(Container.Instance);
+        }
+
+        public static void ConfigureSC2Domain(IUnityContainer container)
+        {
+            // Repositories
+            container.RegisterType<IPlayerRespository, PlayerRespository>();
+            container.RegisterType<IEventRepository, EventRepository>();
+            container.RegisterType<IMatchRepository, MatchRepository>();
+
+            // Services
+            container.RegisterType<ISC2Service, SC2Service>();
+            container.RegisterType<IStatisticsService, StatisticsService>();
+        }
+
+        public static void ConfigureAligulacProxy(IUnityContainer container)
+        {
+            // Services
+            container.RegisterType<IAligulacService, AligulacService>();
         }
     }
 }

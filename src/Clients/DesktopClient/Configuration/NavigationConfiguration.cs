@@ -24,9 +24,9 @@ namespace SC2LiquipediaStatistics.DesktopClient.Configuration
             var navigationService = new NavigationService();
             navigationService.Configure(ViewLocator.HomeView, new Uri("View/HomeView.xaml", UriKind.Relative));
             navigationService.Configure(ViewLocator.ListEventsView, new Uri("View/ListEventsView.xaml", UriKind.Relative));
+            navigationService.Configure(ViewLocator.ListPlayersView, new Uri("View/ListPlayersView.xaml", UriKind.Relative));
             navigationService.Configure(ViewLocator.EditEventView, new Uri("View/EditEventView.xaml", UriKind.Relative));
             navigationService.Configure(ViewLocator.PlayerStatisticsView, new Uri("View/PlayerStatisticsView.xaml", UriKind.Relative));
-            navigationService.Configure(ViewLocator.PlayerByEventStatisticsView, new Uri("View/PlayerByEventStatisticsView.xaml", UriKind.Relative));
             return navigationService;
         }
     }

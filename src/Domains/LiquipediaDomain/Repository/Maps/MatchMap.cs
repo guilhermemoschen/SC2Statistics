@@ -20,20 +20,8 @@ namespace SC2Statistics.SC2Domain.Repository.Maps
             Property(x => x.Player2Race, mapper => { mapper.NotNullable(true); mapper.Type<EnumStringType<Race>>(); });
             Property(x => x.Player1Score, mapper => mapper.NotNullable(true));
             Property(x => x.Player2Score, mapper => mapper.NotNullable(true));
-            Property(x => x.Type, mapper => { mapper.NotNullable(true); mapper.Type<EnumStringType<MatchType>>(); });
-            Property(x => x.BracketRound, mapper => { mapper.NotNullable(false); mapper.Type<EnumStringType<BracketRound>>(); });
-            Property(x => x.Format, mapper => { mapper.NotNullable(true); mapper.Type<EnumStringType<MatchFormat>>(); });
-            Property(x => x.GroupName, mapper => { mapper.NotNullable(false); });
-
-            ManyToOne(
-                x => x.NextMatch,
-                mapper =>
-                {
-                    mapper.Column("FK_NextMatch");
-                    mapper.NotNullable(false);
-                    mapper.Cascade(Cascade.None);
-                }
-            );
+            Property(x => x.AligulacReference, mapper => mapper.NotNullable(true));
+            Property(x => x.Expansion, mapper => { mapper.NotNullable(true); mapper.Type<EnumStringType<Expansion>>(); });
 
             ManyToOne(
                 x => x.Player1,
@@ -56,16 +44,6 @@ namespace SC2Statistics.SC2Domain.Repository.Maps
             );
 
             ManyToOne(
-                x => x.Winner,
-                mapper =>
-                {
-                    mapper.Column("FK_Winner");
-                    mapper.NotNullable(true);
-                    mapper.Cascade(Cascade.None);
-                }
-            );
-
-            ManyToOne(
                 x => x.Event,
                 mapper =>
                 {
@@ -73,17 +51,6 @@ namespace SC2Statistics.SC2Domain.Repository.Maps
                     mapper.NotNullable(false);
                     mapper.Cascade(Cascade.None);
                 }
-            );
-
-            Bag(
-                x => x.Games,
-                mapper =>
-                {
-                    mapper.Key(keyMapper => keyMapper.Column("FK_Match"));
-                    mapper.Inverse(false);
-                    mapper.Cascade(Cascade.All | Cascade.DeleteOrphans);
-                }, 
-                relation => relation.OneToMany()
             );
         }
     }

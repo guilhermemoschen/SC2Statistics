@@ -6,18 +6,12 @@ using NHibernate.Linq;
 using SC2LiquipediaStatistics.Utilities.DataBase;
 
 using SC2Statistics.SC2Domain.Model;
+using SC2Statistics.Utilities.DataBase;
 
 namespace SC2Statistics.SC2Domain.Repository
 {
     public class EventRepository : RepositoryBase<Event>, IEventRepository
     {
-        public IList<Event> FindMainEvents()
-        {
-            return Session.Query<Event>()
-                .Where(x => x.MainEvent == null)
-                .ToList();
-        }
-
         public IList<Event> FindEventsByPlayer(long playerId)
         {
             return Session.Query<Event>()
@@ -28,7 +22,13 @@ namespace SC2Statistics.SC2Domain.Repository
         public Event FindByReference(string url)
         {
             return Session.Query<Event>()
-                .FirstOrDefault(x => x.LiquipediaReference.ToUpper() == url.ToUpper());
+                .FirstOrDefault(x => x.AligulacReference == url);
+        }
+
+        public Event FindByAligulacId(int aligulacId)
+        {
+            return Session.Query<Event>()
+                .FirstOrDefault(x => x.AligulacId == aligulacId);
         }
     }
 }

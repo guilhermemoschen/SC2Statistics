@@ -69,6 +69,14 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.Expression.Interactions, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+    <Reference Include="Microsoft.Practices.EnterpriseLibrary.Common, Version=6.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\EnterpriseLibrary.Common.6.0.1304.0\lib\NET45\Microsoft.Practices.EnterpriseLibrary.Common.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.Practices.EnterpriseLibrary.Validation, Version=6.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\EnterpriseLibrary.Validation.6.0.1304.0\lib\NET45\Microsoft.Practices.EnterpriseLibrary.Validation.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Microsoft.Practices.ServiceLocation, Version=1.3.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\..\packages\CommonServiceLocator.1.3\lib\portable-net4+sl5+netcore45+wpa81+wp8\Microsoft.Practices.ServiceLocation.dll</HintPath>
       <Private>True</Private>
@@ -122,13 +130,43 @@
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
+    <Reference Include="WpfControls, Version=1.0.0.7, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\WpfControls.dll</HintPath>
+    </Reference>
+    <Reference Include="Xceed.Wpf.AvalonDock, Version=2.6.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Extended.Wpf.Toolkit.2.6\lib\net40\Xceed.Wpf.AvalonDock.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Xceed.Wpf.AvalonDock.Themes.Aero, Version=2.6.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Extended.Wpf.Toolkit.2.6\lib\net40\Xceed.Wpf.AvalonDock.Themes.Aero.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Xceed.Wpf.AvalonDock.Themes.Metro, Version=2.6.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Extended.Wpf.Toolkit.2.6\lib\net40\Xceed.Wpf.AvalonDock.Themes.Metro.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Xceed.Wpf.AvalonDock.Themes.VS2010, Version=2.6.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Extended.Wpf.Toolkit.2.6\lib\net40\Xceed.Wpf.AvalonDock.Themes.VS2010.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Xceed.Wpf.DataGrid, Version=2.6.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Extended.Wpf.Toolkit.2.6\lib\net40\Xceed.Wpf.DataGrid.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Xceed.Wpf.Toolkit, Version=2.6.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Extended.Wpf.Toolkit.2.6\lib\net40\Xceed.Wpf.Toolkit.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Common\AutoCompleteDataTemplate.cs" />
     <Compile Include="Common\BooleanToFontWeightConverter.cs" />
+    <Compile Include="Common\PlayerSuggestionProvider.cs" />
     <Compile Include="Common\RaceToColorConverter.cs" />
     <Compile Include="Common\WinnerColorConverter.cs" />
     <Compile Include="Configuration\AutoMapperConfiguration.cs" />
@@ -157,18 +195,14 @@
     <Compile Include="Model\Game.cs" />
     <Compile Include="Model\Match.cs" />
     <Compile Include="Model\Player.cs" />
-    <Compile Include="ViewModel\AddEventViewModel.cs" />
     <Compile Include="ViewModel\EditEventViewModel.cs" />
     <Compile Include="ViewModel\ListEventsViewModel.cs" />
+    <Compile Include="ViewModel\ListPlayersViewModel.cs" />
     <Compile Include="ViewModel\LoadingViewModel.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
     <Compile Include="ViewModel\ModernViewModelBase.cs" />
-    <Compile Include="ViewModel\PlayerByEventStatisticsViewModel.cs" />
     <Compile Include="ViewModel\PlayerStatisticsViewModel.cs" />
     <Compile Include="ViewModel\ViewModelLocator.cs" />
-    <Compile Include="View\AddEventView.xaml.cs">
-      <DependentUpon>AddEventView.xaml</DependentUpon>
-    </Compile>
     <Compile Include="View\EditEventView.xaml.cs">
       <DependentUpon>EditEventView.xaml</DependentUpon>
     </Compile>
@@ -178,21 +212,17 @@
     <Compile Include="View\ListEventsView.xaml.cs">
       <DependentUpon>ListEventsView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\ListPlayersView.xaml.cs">
+      <DependentUpon>ListPlayersView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\LoadingView.xaml.cs">
       <DependentUpon>LoadingView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="View\PlayerByEventStatisticsView.xaml.cs">
-      <DependentUpon>PlayerByEventStatisticsView.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\PlayerStatisticsView.xaml.cs">
       <DependentUpon>PlayerStatisticsView.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\ViewLocator.cs" />
     <Page Include="Content\ResourceDictionary\Main.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="View\AddEventView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -205,6 +235,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\ListEventsView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\ListPlayersView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -224,10 +258,6 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="View\PlayerByEventStatisticsView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="View\PlayerStatisticsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -265,6 +295,14 @@
     <ProjectReference Include="..\..\Domains\LiquipediaDomain\SC2Domain.csproj">
       <Project>{1BC74F48-67F5-487F-886F-F901100803BB}</Project>
       <Name>SC2Domain</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Domains\StatisticDomain\SC2Domain.Model\SC2Domain.Model.csproj">
+      <Project>{33FE332A-21EF-43EF-94E9-73B1D7121A54}</Project>
+      <Name>SC2Domain.Model</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\ProxyComponents\AligulacProxy\AligulacProxy.csproj">
+      <Project>{BE2ECDAA-641C-4039-AD6F-1D7FA19A220A}</Project>
+      <Name>AligulacProxy</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Utilities\Utilities\Utilities.csproj">
       <Project>{C2B7E39D-3F74-42EE-9294-BC686D367CB3}</Project>

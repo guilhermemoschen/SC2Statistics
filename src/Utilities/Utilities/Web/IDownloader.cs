@@ -1,10 +1,11 @@
 ﻿using System;
-using System.Threading.Tasks;
 
-namespace SC2LiquipediaStatistics.Utilities.Web
+namespace SC2Statistics.Utilities.Web
 {
     public interface IDownloader
     {
         string GetContent(Uri url);
+
+        byte[] GetContentAsBytes(Uri url);
     }
 }

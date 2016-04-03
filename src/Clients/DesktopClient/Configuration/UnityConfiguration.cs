@@ -5,11 +5,12 @@ using SC2LiquipediaStatistics.DesktopClient.Service;
 using SC2LiquipediaStatistics.DesktopClient.ViewModel;
 using SC2LiquipediaStatistics.Utilities.Log;
 using SC2LiquipediaStatistics.Utilities.Unity;
-using SC2LiquipediaStatistics.Utilities.Web;
 
 using SC2Statistics.Proxy.Aligulac;
+using SC2Statistics.Proxy.TeamLiquied;
 using SC2Statistics.StatisticDomain.Database.Repository;
 using SC2Statistics.StatisticDomain.Service;
+using SC2Statistics.Utilities.Web;
 
 namespace SC2LiquipediaStatistics.DesktopClient.Configuration
 {
@@ -29,6 +30,7 @@ namespace SC2LiquipediaStatistics.DesktopClient.Configuration
 
             // Services
             Container.Instance.RegisterType<IEventsListService, EventsListService>();
+            Container.Instance.RegisterType<ITeamLiquidService, TeamLiquidService>();
 
             // Loading
             Container.Instance.RegisterType<ILoadingService, LoadingService>();

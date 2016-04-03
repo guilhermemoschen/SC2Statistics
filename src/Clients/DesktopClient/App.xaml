@@ -10,7 +10,7 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/ModernUI.xaml" />
                 <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/ModernUI.Light.xaml" />
-                <ResourceDictionary Source="Content/ResourceDictionary/Main.xaml" />
+                <ResourceDictionary Source="Assets/Theme.xaml" />
             </ResourceDictionary.MergedDictionaries>
             <vm:ViewModelLocator x:Key="Locator" d:IsDataSource="True" xmlns:vm="clr-namespace:SC2LiquipediaStatistics.DesktopClient.ViewModel" />
         </ResourceDictionary>

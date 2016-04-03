@@ -10,6 +10,7 @@ using FirstFloor.ModernUI.Windows.Controls;
 
 using NHibernate.Linq;
 
+using SC2LiquipediaStatistics.DesktopClient.Common;
 using SC2LiquipediaStatistics.DesktopClient.Configuration;
 using SC2LiquipediaStatistics.DesktopClient.Service;
 using SC2LiquipediaStatistics.DesktopClient.ViewModel;
@@ -34,7 +35,7 @@ namespace SC2LiquipediaStatistics.DesktopClient
 
         private void OnDispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs dispatcherUnhandledExceptionEventArgs)
         {
-            ModernDialog.ShowMessage("Something wrong happend :o", "Oh, no!", MessageBoxButton.OK);
+            Dialog.ShowMessage("Something wrong happend :o", "Oh, no!", MessageBoxButton.OK);
             dispatcherUnhandledExceptionEventArgs.Handled = true;
         }
     }

@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Text;
-using System.Threading.Tasks;
 
-namespace SC2LiquipediaStatistics.Utilities.Web
+namespace SC2Statistics.Utilities.Web
 {
     public class Downloader : IDownloader
     {
@@ -15,6 +12,14 @@ namespace SC2LiquipediaStatistics.Utilities.Web
             {
                 client.Encoding = Encoding.UTF8;
                 return client.DownloadString(url);
+            }
+        }
+
+        public byte[] GetContentAsBytes(Uri url)
+        {
+            using (var client = new WebClient())
+            {
+                return client.DownloadData(url);
             }
         }
     }

@@ -40,6 +40,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StatisticDomain.Database", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StatisticDomain.Service", "Domains\StatisticDomain\StatisticDomain.Service\StatisticDomain.Service.csproj", "{46FDCCF6-5D79-40E0-88EF-C64E3EDA0454}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TeamLiquidProxy", "ProxyComponents\TeamLiquidProxy\TeamLiquidProxy.csproj", "{5016E428-00EB-4BAF-BB7A-3791FA9D56F2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -110,6 +112,14 @@ Global
 		{46FDCCF6-5D79-40E0-88EF-C64E3EDA0454}.Release|Any CPU.Build.0 = Release|Any CPU
 		{46FDCCF6-5D79-40E0-88EF-C64E3EDA0454}.Release|x86.ActiveCfg = Release|Any CPU
 		{46FDCCF6-5D79-40E0-88EF-C64E3EDA0454}.Release|x86.Build.0 = Release|Any CPU
+		{5016E428-00EB-4BAF-BB7A-3791FA9D56F2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5016E428-00EB-4BAF-BB7A-3791FA9D56F2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5016E428-00EB-4BAF-BB7A-3791FA9D56F2}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{5016E428-00EB-4BAF-BB7A-3791FA9D56F2}.Debug|x86.Build.0 = Debug|Any CPU
+		{5016E428-00EB-4BAF-BB7A-3791FA9D56F2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5016E428-00EB-4BAF-BB7A-3791FA9D56F2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5016E428-00EB-4BAF-BB7A-3791FA9D56F2}.Release|x86.ActiveCfg = Release|Any CPU
+		{5016E428-00EB-4BAF-BB7A-3791FA9D56F2}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -125,6 +135,7 @@ Global
 		{33FE332A-21EF-43EF-94E9-73B1D7121A54} = {E9719737-ABAC-4EF9-A0E1-2766EEB508D5}
 		{B3D8F8E2-73DE-41A4-BD25-8070F0AD2D75} = {E9719737-ABAC-4EF9-A0E1-2766EEB508D5}
 		{46FDCCF6-5D79-40E0-88EF-C64E3EDA0454} = {E9719737-ABAC-4EF9-A0E1-2766EEB508D5}
+		{5016E428-00EB-4BAF-BB7A-3791FA9D56F2} = {0359E4FA-FB0D-4983-B727-D7AC01910071}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		EnterpriseLibraryConfigurationToolBinariesPathV6 = packages\EnterpriseLibrary.Common.6.0.1304.0\lib\NET45;packages\EnterpriseLibrary.Validation.6.0.1304.0\lib\NET45

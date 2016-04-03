@@ -51,7 +51,7 @@ namespace SC2Statistics.StatisticDomain.Service
             if (!allMatches.Any())
                 return null;
 
-            var matchesWon = allMatches.Where(x => x.Winner.Id == player.Id).ToList();
+            var matchesWon = allMatches.Where(x => x.Winner != null && x.Winner.Id == player.Id).ToList();
 
             var statistics = new PlayerStatistics()
             {
@@ -70,7 +70,7 @@ namespace SC2Statistics.StatisticDomain.Service
 
             if (matchesXZerg.Any())
             {
-                var matchesWonXZerg = matchesXZerg.Where(x => x.Winner.Id == player.Id).ToList();
+                var matchesWonXZerg = matchesXZerg.Where(x => x.Winner != null && x.Winner.Id == player.Id).ToList();
                 statistics.WinRateXZerg = (decimal)matchesWonXZerg.Count / (decimal)matchesXZerg.Count;
                 statistics.TotalMatchesAgainstZerg = matchesXZerg.Count;
                 statistics.TotalWinsAgainstZerg = matchesWonXZerg.Count;
@@ -85,7 +85,7 @@ namespace SC2Statistics.StatisticDomain.Service
 
             if (matchesXProtoss.Any())
             {
-                var matchesWonXProtoss = matchesXProtoss.Where(x => x.Winner.Id == player.Id).ToList();
+                var matchesWonXProtoss = matchesXProtoss.Where(x => x.Winner != null && x.Winner.Id == player.Id).ToList();
                 statistics.WinRateXProtoss = (decimal)matchesWonXProtoss.Count / (decimal)matchesXProtoss.Count;
                 statistics.TotalMatchesAgainstProtoss = matchesXProtoss.Count;
                 statistics.TotalWinsAgainstProtoss = matchesWonXProtoss.Count;
@@ -100,7 +100,7 @@ namespace SC2Statistics.StatisticDomain.Service
 
             if (matchesXTerran.Any())
             {
-                var matchesWonXTerran = matchesXTerran.Where(x => x.Winner.Id == player.Id).ToList();
+                var matchesWonXTerran = matchesXTerran.Where(x => x.Winner != null && x.Winner.Id == player.Id).ToList();
                 statistics.WinRateXTerran = (decimal)matchesWonXTerran.Count / (decimal)matchesXTerran.Count;
                 statistics.TotalMatchesAgainstTerran = matchesXTerran.Count;
                 statistics.TotalWinsAgainstTerran = matchesWonXTerran.Count;
@@ -115,7 +115,7 @@ namespace SC2Statistics.StatisticDomain.Service
 
             if (matchesXKoreans.Any())
             {
-                var matchesWonXKoreans = matchesXKoreans.Where(x => x.Winner.Id == player.Id).ToList();
+                var matchesWonXKoreans = matchesXKoreans.Where(x => x.Winner != null && x.Winner.Id == player.Id).ToList();
                 statistics.WinRateXKoreans = (decimal)matchesWonXKoreans.Count / (decimal)matchesXKoreans.Count;
                 statistics.TotalMatchesAgainstKoreans = matchesXKoreans.Count;
                 statistics.TotalWinsAgainstKoreans = matchesWonXKoreans.Count;
@@ -130,7 +130,7 @@ namespace SC2Statistics.StatisticDomain.Service
 
             if (matchesXForeigners.Any())
             {
-                var matchesWonXForeigners = matchesXForeigners.Where(x => x.Winner.Id == player.Id).ToList();
+                var matchesWonXForeigners = matchesXForeigners.Where(x => x.Winner != null && x.Winner.Id == player.Id).ToList();
                 statistics.WinRateXForeigners = (decimal)matchesWonXForeigners.Count / (decimal)matchesXForeigners.Count;
                 statistics.TotalMatchesAgainstForeigners = matchesXForeigners.Count;
                 statistics.TotalWinsAgainstForeigners = matchesWonXForeigners.Count;

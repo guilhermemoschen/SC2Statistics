@@ -9,8 +9,6 @@ using System.Windows.Controls;
 
 using FirstFloor.ModernUI.Windows.Controls;
 
-using NHibernate.Transform;
-
 using SC2LiquipediaStatistics.DesktopClient.View;
 
 namespace SC2LiquipediaStatistics.DesktopClient.Service
@@ -39,6 +37,7 @@ namespace SC2LiquipediaStatistics.DesktopClient.Service
                 MaxHeight = 400,
                 MinWidth = 400,
                 MaxWidth = 400,
+                BackgroundContent = null,
                 Owner = Application.Current.MainWindow
             };
         }

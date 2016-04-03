@@ -14,6 +14,7 @@ using FirstFloor.ModernUI.Windows.Controls;
 
 using GalaSoft.MvvmLight.CommandWpf;
 
+using SC2LiquipediaStatistics.DesktopClient.Common;
 using SC2LiquipediaStatistics.DesktopClient.Model;
 using SC2LiquipediaStatistics.DesktopClient.Service;
 using SC2LiquipediaStatistics.Utilities.DataBase;
@@ -154,7 +155,7 @@ namespace SC2LiquipediaStatistics.DesktopClient.ViewModel
 
             if (validationException != null)
             {
-                ModernDialog.ShowMessage(validationException.GetFormatedMessage(), "Validation Message", MessageBoxButton.OK);
+                Dialog.ShowMessage(validationException.GetFormatedMessage(), "Validation Message", MessageBoxButton.OK);
             }
 
             FindPlayers();

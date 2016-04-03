@@ -1,17 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
 
 using AutoMapper;
 
-using FirstFloor.ModernUI.Windows.Controls;
-
-using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.CommandWpf;
 
 using SC2LiquipediaStatistics.DesktopClient.Common;
@@ -22,7 +23,9 @@ using SC2LiquipediaStatistics.Utilities.DataBase;
 using SC2LiquipediaStatistics.Utilities.Domain;
 using SC2LiquipediaStatistics.Utilities.Unity;
 
+using SC2Statistics.Proxy.TeamLiquied;
 using SC2Statistics.StatisticDomain.Service;
+using SC2Statistics.Utilities.Web;
 
 using WpfControls.Editors;
 
@@ -32,6 +35,8 @@ namespace SC2LiquipediaStatistics.DesktopClient.ViewModel
 {
     public class PlayerStatisticsViewModel : ModernViewModelBase
     {
+        public static readonly Uri MissingPlayerImageUri = new Uri("http://wiki.teamliquid.net/commons/images/a/a4/PlayerImagePlaceholder.png");
+
         protected Player selectedPlayer;
         public Player SelectedPlayer
         {
@@ -112,6 +117,24 @@ namespace SC2LiquipediaStatistics.DesktopClient.ViewModel
             }
         }
 
+        protected ImageSource missingPlayerImageSource;
+
+        protected ImageSource playerImageSource;
+        public ImageSource PlayerImageSource
+        {
+            get
+            {
+                return playerImageSource;
+            }
+            set
+            {
+                if (value == null)
+                    return;
+
+                Set(() => PlayerImageSource, ref playerImageSource, value, true);
+            }
+        }
+
         protected KeyValuePair<string, SC2DomainEntities.Expansion> selectedExpansion;
         public KeyValuePair<string, SC2DomainEntities.Expansion> SelectedExpansion
         {
@@ -133,23 +156,29 @@ namespace SC2LiquipediaStatistics.DesktopClient.ViewModel
         public IList<KeyValuePair<string, SC2DomainEntities.Expansion>> Expansions { get; set; }
 
         public IStatisticService StatisticService { get; protected set; }
+        public ITeamLiquidService TeamLiquidService { get; protected set; }
 
         public IModernNavigationService NavigationService { get; protected set; }
 
         public ILoadingService LoadingService { get; protected set; }
 
+        public IDownloader Downloader { get; protected set; }
+
         public IMapper Mapper { get; protected set; }
 
         public ICommand GenerateStatisticsCommand { get; private set; }
 
-        public PlayerStatisticsViewModel(IStatisticService statisticService, IModernNavigationService navigationService, ILoadingService loadingService, IMapper mapper)
+        public PlayerStatisticsViewModel(IStatisticService statisticService, ITeamLiquidService teamLiquidService, IModernNavigationService navigationService, ILoadingService loadingService, IDownloader downloader, IMapper mapper)
         {
             StatisticService = statisticService;
+            TeamLiquidService = teamLiquidService;
             NavigationService = navigationService;
             LoadingService = loadingService;
+            Downloader = downloader;
             Mapper = mapper;
 
             GenerateStatisticsCommand = new RelayCommand(GenerateStatistics);
+            NavigatedToCommand = new RelayCommand<object>(Load);
             Expansions = new List<KeyValuePair<string, SC2DomainEntities.Expansion>>();
             Expansions.Add(new KeyValuePair<string, SC2DomainEntities.Expansion>("Hearth of the Swarm", SC2DomainEntities.Expansion.HeartOfTheSwarm));
             Expansions.Add(new KeyValuePair<string, SC2DomainEntities.Expansion>("Legacy of the Void", SC2DomainEntities.Expansion.LegacyOfTheVoid));
@@ -157,22 +186,30 @@ namespace SC2LiquipediaStatistics.DesktopClient.ViewModel
             SelectedExpansion = Expansions[1];
 
             SuggestionProvider = Container.Resolve<PlayerSuggestionProvider>();
+
+            missingPlayerImageSource = LoadImage(MissingPlayerImageUri);
+        }
+
+        private void Load(object obj)
+        {
+            HasPlayerStatistics = false;
         }
 
         private void GenerateStatistics()
         {
             if (SelectedExpansion.Value != SC2DomainEntities.Expansion.LegacyOfTheVoid)
             {
-                ModernDialog.ShowMessage("Only Legacy of the Void is available.", "Sorry", MessageBoxButton.OK);
+                Dialog.ShowMessage("Only Legacy of the Void is available.", "Sorry", MessageBoxButton.OK);
                 return;
             }
 
             if (SelectedPlayer == null)
             {
-                ModernDialog.ShowMessage("Please, select a player.\nYou have to click in the search results.", "Attention", MessageBoxButton.OK);
+                Dialog.ShowMessage("Please, select a player.\nYou have to click in the search results.", "Attention", MessageBoxButton.OK);
                 return;
             }
 
+            HasPlayerStatistics = false;
             ValidationException validationException = null;
 
             LoadingService.ShowAndExecuteAction(delegate
@@ -185,6 +222,12 @@ namespace SC2LiquipediaStatistics.DesktopClient.ViewModel
                         var domainStatistics = StatisticService.GeneratePlayerStatistics(SelectedPlayer.Id, SelectedExpansion.Value);
                         PlayerStatistics = Mapper.Map<SC2DomainEntities.PlayerStatistics, PlayerStatistics>(domainStatistics);
                         PlayerStatistics.Player = SelectedPlayer;
+                        var playerImageUri = TeamLiquidService.GetPlayerImage(domainStatistics.Player);
+
+                        if (playerImageUri != null && playerImageUri != MissingPlayerImageUri)
+                            PlayerImageSource = LoadImage(playerImageUri);
+                        else
+                            PlayerImageSource = missingPlayerImageSource;
                     }
                     catch (ValidationException ex)
                     {
@@ -195,12 +238,29 @@ namespace SC2LiquipediaStatistics.DesktopClient.ViewModel
 
             if (validationException != null)
             {
-                ModernDialog.ShowMessage(validationException.GetFormatedMessage(), "Validation Message", MessageBoxButton.OK);
+                Dialog.ShowMessage(validationException.GetFormatedMessage(), "Validation Message", MessageBoxButton.OK);
             }
             else
             {
                 HasPlayerStatistics = true;
             }
+        }
+
+        private ImageSource LoadImage(Uri playerImageUri)
+        {
+            var imageData = Downloader.GetContentAsBytes(playerImageUri);
+            var bitmapImage = new BitmapImage();
+
+            using (var stream = new MemoryStream(imageData))
+            {
+                bitmapImage.BeginInit();
+                bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
+                bitmapImage.StreamSource = stream;
+                bitmapImage.EndInit();
+                bitmapImage.Freeze();
+            }
+
+            return bitmapImage;
         }
     }
 }

@@ -8,32 +8,29 @@
              xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              xmlns:WpfControls="http://wpfcontrols.com/"
+             xmlns:ei="http://schemas.microsoft.com/expression/2010/interactions"
              DataContext="{Binding PlayerStatisticsViewModel, Source={StaticResource Locator}}"
              Common:Behaviors.LoadedMethodName="View_OnLoad"
              mc:Ignorable="d" 
              d:DesignHeight="600" d:DesignWidth="800">
     <Common:ModernUserControl.Resources>
-        <Style x:Key="Box" TargetType="StackPanel">
+        <Style x:Key="SoloPlayerStatistics" TargetType="WrapPanel">
             <Style.Resources>
-                <Style TargetType="TextBlock">
-                    <Setter Property="TextWrapping" Value="Wrap" />
-                    <Setter Property="Margin" Value="5,5,5,5" />
-                </Style>
-                <Style TargetType="Border">
-                    <Setter Property="CornerRadius" Value="8,8,8,8"/>
-                    <Setter Property="BorderThickness" Value="1,1,1,1" />
-                    <Setter Property="Background" Value="{DynamicResource Accent}" />
-                    <Setter Property="Width" Value="300" />
-                    <Setter Property="Height" Value="100" />
+                <Style TargetType="StackPanel">
+                    <Setter Property="Margin" Value="10" />
+                    <Setter Property="Width" Value="150" />
+                    <Setter Property="MinHeight" Value="230" />
+                    <Style.Resources>
+                        <Style TargetType="Image">
+                            <Setter Property="Height" Value="150" />
+                        </Style>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="TextAlignment" Value="Center" />
+                            <Setter Property="FontFamily" Value="Arial" />
+                        </Style>
+                    </Style.Resources>
                 </Style>
             </Style.Resources>
-            <Setter Property="Orientation" Value="Horizontal" />
-            <Setter Property="Width" Value="300" />
-            <Setter Property="Height" Value="100" />
-        </Style>
-        <Style x:Key="Inline" TargetType="TextBlock">
-            <Setter Property="Margin" Value="5,0,0,0"/>
-            <Setter Property="FontWeight" Value="Bold" />
         </Style>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
         <DataTemplate x:Key="AutoCompleteTemplate">
@@ -71,67 +68,100 @@
                     <Button Command="{Binding GenerateStatisticsCommand}" Content="Generate"/>
                 </StackPanel>
             </StackPanel>
-            <StackPanel Grid.Row="1" Visibility="{Binding HasPlayerStatistics, Converter={StaticResource BooleanToVisibilityConverter}}">
-                <StackPanel Margin="0,0,0,10" Width="{Binding ActualWidth, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type StackPanel}}}">
-                    <TextBlock Text="{Binding PlayerStatistics.Player.Tag}" HorizontalAlignment="Center" Style="{StaticResource Heading2}" />
-                </StackPanel>
-                <WrapPanel>
-                    <StackPanel Style="{StaticResource Box}">
-                        <Border>
-                            <TextBlock>
-                            <TextBlock Style="{StaticResource Heading2}" Text="Overall" /><LineBreak/>
-                            Total Matches <TextBlock Text="{Binding PlayerStatistics.TotalMatches}" Style="{StaticResource Inline}" /><LineBreak />
-                            Win Rate <TextBlock Text="{Binding PlayerStatistics.WinRate,  StringFormat=0.00%}" Style="{StaticResource Inline}" /> (<TextBlock Text="{Binding PlayerStatistics.TotalWins}" Style="{StaticResource Inline}" />/<TextBlock Text="{Binding PlayerStatistics.TotalMatches}" Style="{StaticResource Inline}" />)
+            <Grid Grid.Row="1" Visibility="{Binding HasPlayerStatistics, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <WrapPanel Grid.Column="0" Style="{StaticResource SoloPlayerStatistics}">
+                    <i:Interaction.Behaviors>
+                        <ei:FluidMoveBehavior AppliesTo="Children" Duration="0:0:0.5">
+                            <ei:FluidMoveBehavior.EaseY>
+                                <QuarticEase EasingMode="EaseInOut"/>
+                            </ei:FluidMoveBehavior.EaseY>
+                            <ei:FluidMoveBehavior.EaseX>
+                                <QuarticEase EasingMode="EaseInOut"/>
+                            </ei:FluidMoveBehavior.EaseX>
+                        </ei:FluidMoveBehavior>
+                    </i:Interaction.Behaviors>
+                    <StackPanel Orientation="Vertical">
+                        <Image Source="/DesktopClient;component/Assets/ZergIcon.png" />
+                        <TextBlock FontSize="25">
+                            <TextBlock.Text>
+                                <MultiBinding StringFormat="({0}/{1})">
+                                    <Binding Path="PlayerStatistics.TotalWinsAgainstZerg" />
+                                    <Binding Path="PlayerStatistics.TotalMatchesAgainstZerg" />
+                                </MultiBinding>
+                            </TextBlock.Text>
                         </TextBlock>
-                        </Border>
+                        <TextBlock Text="{Binding PlayerStatistics.WinRateXZerg, StringFormat=\{0:P\}}" FontSize="40" FontWeight="Bold" />
                     </StackPanel>
-                    <StackPanel Style="{StaticResource Box}">
-                        <Border>
-                            <TextBlock>
-                            <TextBlock Style="{StaticResource Heading2}" Text="VS Koreans" /><LineBreak/>
-                            Matches against Koreans <TextBlock Text="{Binding PlayerStatistics.TotalMatchesAgainstKoreans}" Style="{StaticResource Inline}" /><LineBreak />
-                            Win Rate against Koreans <TextBlock Text="{Binding PlayerStatistics.WinRateXKoreans,  StringFormat=0.00%}" Style="{StaticResource Inline}" /> (<TextBlock Text="{Binding PlayerStatistics.TotalWinsAgainstKoreans}" Style="{StaticResource Inline}" />/<TextBlock Text="{Binding PlayerStatistics.TotalMatchesAgainstKoreans}" Style="{StaticResource Inline}" />)
+                    <StackPanel Orientation="Vertical">
+                        <Image Source="/DesktopClient;component/Assets/ProtossIcon.png" />
+                        <TextBlock FontSize="25" TextAlignment="Center" FontFamily="Arial">
+                            <TextBlock.Text>
+                                <MultiBinding StringFormat="({0}/{1})">
+                                    <Binding Path="PlayerStatistics.TotalWinsAgainstProtoss" />
+                                    <Binding Path="PlayerStatistics.TotalMatchesAgainstProtoss" />
+                                </MultiBinding>
+                            </TextBlock.Text>
                         </TextBlock>
-                        </Border>
+                        <TextBlock Text="{Binding PlayerStatistics.WinRateXProtoss, StringFormat=\{0:P\}}" FontSize="40" TextAlignment="Center" FontWeight="Bold" />
                     </StackPanel>
-                    <StackPanel Style="{StaticResource Box}">
-                        <Border>
-                            <TextBlock>
-                            <TextBlock Style="{StaticResource Heading2}" Text="VS Foreigners" /><LineBreak/>
-                            Matches against Foreigners <TextBlock Text="{Binding PlayerStatistics.TotalMatchesAgainstForeigners}" Style="{StaticResource Inline}" /><LineBreak />
-                            Win Rate against Foreigners <TextBlock Text="{Binding PlayerStatistics.WinRateXForeigners,  StringFormat=0.00%}" Style="{StaticResource Inline}" /> (<TextBlock Text="{Binding PlayerStatistics.TotalWinsAgainstForeigners}" Style="{StaticResource Inline}" />/<TextBlock Text="{Binding PlayerStatistics.TotalMatchesAgainstForeigners}" Style="{StaticResource Inline}" />)
+                    <StackPanel Orientation="Vertical">
+                        <Image Source="/DesktopClient;component/Assets/TerranIcon.png" />
+                        <TextBlock FontSize="25" TextAlignment="Center" FontFamily="Arial">
+                            <TextBlock.Text>
+                                <MultiBinding StringFormat="({0}/{1})">
+                                    <Binding Path="PlayerStatistics.TotalWinsAgainstTerran" />
+                                    <Binding Path="PlayerStatistics.TotalMatchesAgainstTerran" />
+                                </MultiBinding>
+                            </TextBlock.Text>
                         </TextBlock>
-                        </Border>
+                        <TextBlock Text="{Binding PlayerStatistics.WinRateXTerran, StringFormat=\{0:P\}}" FontSize="40" TextAlignment="Center" FontWeight="Bold" />
                     </StackPanel>
-                    <StackPanel Style="{StaticResource Box}">
-                        <Border>
-                            <TextBlock>
-                            <TextBlock Style="{StaticResource Heading2}" Text="VS Terrans"/><LineBreak/>
-                            Total matches against Terrans <TextBlock Text="{Binding PlayerStatistics.TotalMatchesAgainstTerran}" Style="{StaticResource Inline}" /><LineBreak/>
-                            Win Rate against Terrans <TextBlock Text="{Binding PlayerStatistics.WinRateXTerran,  StringFormat=0.00%}" Style="{StaticResource Inline}" /> (<TextBlock Text="{Binding PlayerStatistics.TotalWinsAgainstTerran}" Style="{StaticResource Inline}" />/<TextBlock Text="{Binding PlayerStatistics.TotalMatchesAgainstTerran}" Style="{StaticResource Inline}" />)
+                    <StackPanel Orientation="Vertical">
+                        <Image Source="/DesktopClient;component/Assets/world.png" />
+                        <TextBlock FontSize="25" TextAlignment="Center" FontFamily="Arial">
+                            <TextBlock.Text>
+                                <MultiBinding StringFormat="({0}/{1})">
+                                    <Binding Path="PlayerStatistics.TotalWins" />
+                                    <Binding Path="PlayerStatistics.TotalMatches" />
+                                </MultiBinding>
+                            </TextBlock.Text>
                         </TextBlock>
-                        </Border>
+                        <TextBlock Text="{Binding PlayerStatistics.WinRate, StringFormat=\{0:P\}}" FontSize="40" TextAlignment="Center" FontWeight="Bold" />
                     </StackPanel>
-                    <StackPanel Style="{StaticResource Box}">
-                        <Border>
-                            <TextBlock>
-                            <TextBlock Style="{StaticResource Heading2}" Text="VS Zergs"/><LineBreak/>
-                            Total matches against Zerg <TextBlock Text="{Binding PlayerStatistics.TotalMatchesAgainstZerg}" Style="{StaticResource Inline}" /><LineBreak/>
-                            Win Rate against Zerg <TextBlock Text="{Binding PlayerStatistics.WinRateXZerg,  StringFormat=0.00%}" Style="{StaticResource Inline}" /> (<TextBlock Text="{Binding PlayerStatistics.TotalWinsAgainstZerg}" Style="{StaticResource Inline}" />/<TextBlock Text="{Binding PlayerStatistics.TotalMatchesAgainstZerg}" Style="{StaticResource Inline}" />)
+                    <StackPanel Orientation="Vertical">
+                        <Image Source="/DesktopClient;component/Assets/korea2.png" />
+                        <TextBlock FontSize="25" TextAlignment="Center" FontFamily="Arial">
+                            <TextBlock.Text>
+                                <MultiBinding StringFormat="({0}/{1})">
+                                    <Binding Path="PlayerStatistics.TotalWinsAgainstKoreans" />
+                                    <Binding Path="PlayerStatistics.TotalMatchesAgainstKoreans" />
+                                </MultiBinding>
+                            </TextBlock.Text>
                         </TextBlock>
-                        </Border>
+                        <TextBlock Text="{Binding PlayerStatistics.WinRateXKoreans, StringFormat=\{0:P\}}" FontSize="40" TextAlignment="Center" FontWeight="Bold" />
                     </StackPanel>
-                    <StackPanel Style="{StaticResource Box}">
-                        <Border>
-                            <TextBlock>
-                            <TextBlock Style="{StaticResource Heading2}" Text="VS Protoss"/><LineBreak/>
-                            Total matches against Protoss <TextBlock Text="{Binding PlayerStatistics.TotalMatchesAgainstProtoss}" Style="{StaticResource Inline}" /><LineBreak/>
-                            Win Rate against Protoss <TextBlock Text="{Binding PlayerStatistics.WinRateXProtoss,  StringFormat=0.00%}" Style="{StaticResource Inline}" /> (<TextBlock Text="{Binding PlayerStatistics.TotalWinsAgainstProtoss}" Style="{StaticResource Inline}" />/<TextBlock Text="{Binding PlayerStatistics.TotalMatchesAgainstProtoss}" Style="{StaticResource Inline}" />)
+                    <StackPanel Orientation="Vertical" Width="300">
+                        <Image Source="/DesktopClient;component/Assets/foreigner2.png" />
+                        <TextBlock FontSize="25">
+                            <TextBlock.Text>
+                                <MultiBinding StringFormat="({0}/{1})">
+                                    <Binding Path="PlayerStatistics.TotalWinsAgainstForeigners" />
+                                    <Binding Path="PlayerStatistics.TotalMatchesAgainstForeigners" />
+                                </MultiBinding>
+                            </TextBlock.Text>
                         </TextBlock>
-                        </Border>
+                        <TextBlock Text="{Binding PlayerStatistics.WinRateXForeigners, StringFormat=\{0:P\}}" FontSize="40" TextAlignment="Center" FontWeight="Bold" />
                     </StackPanel>
                 </WrapPanel>
-            </StackPanel>
+                <StackPanel Grid.Column="1">
+                    <Image x:Name="playerImage" Source="{Binding PlayerImageSource}" VerticalAlignment="Top" Stretch="None" Width="300" />
+                    <TextBlock Text="{Binding PlayerStatistics.Player.Tag}" HorizontalAlignment="Center" Style="{StaticResource Heading1}" />
+                </StackPanel>
+            </Grid>
         </Grid>
     </ScrollViewer>
 </Common:ModernUserControl>

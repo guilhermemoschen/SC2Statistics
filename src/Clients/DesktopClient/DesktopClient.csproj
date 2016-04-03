@@ -326,7 +326,6 @@
     <Resource Include="Assets\winrate.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Assets\foreigner.png" />
     <Resource Include="Assets\foreigner2.png" />
     <Resource Include="Assets\korea.png" />
     <Resource Include="Assets\korea2.png" />

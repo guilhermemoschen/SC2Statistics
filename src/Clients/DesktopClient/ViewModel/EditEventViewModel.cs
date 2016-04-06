@@ -27,16 +27,8 @@ using SC2DomainEntities = SC2Statistics.StatisticDomain.Model;
 
 namespace SC2LiquipediaStatistics.DesktopClient.ViewModel
 {
-    public class EditEventViewModel : ModernViewModelBase
+    public class EditEventViewModel : ViewModelBase
     {
-        public IStatisticService StatisticService { get; private set; }
-
-        public IModernNavigationService NavigationService { get; private set; }
-
-        public IMapper Mapper { get; protected set; }
-
-        public ILoadingService LoadingService { get; protected set; }
-
         private Event selectedEvent;
         public Event SelectedEvent
         {
@@ -115,13 +107,8 @@ namespace SC2LiquipediaStatistics.DesktopClient.ViewModel
         public ICommand SaveCommand { get; private set; }
         public ICommand EditSubEventCommand { get; private set; }
 
-        public EditEventViewModel(IStatisticService statisticService, IModernNavigationService navigationService, ILoadingService loadingService, IMapper mapper)
+        public EditEventViewModel()
         {
-            StatisticService = statisticService;
-            NavigationService = navigationService;
-            LoadingService = loadingService;
-            Mapper = mapper;
-
             Expansions = new List<KeyValuePair<string, SC2DomainEntities.Expansion>>();
             Expansions.Add(new KeyValuePair<string, SC2DomainEntities.Expansion>("Hearth of the Swarm", SC2DomainEntities.Expansion.HeartOfTheSwarm));
             Expansions.Add(new KeyValuePair<string, SC2DomainEntities.Expansion>("Legacy of the Void", SC2DomainEntities.Expansion.LegacyOfTheVoid));

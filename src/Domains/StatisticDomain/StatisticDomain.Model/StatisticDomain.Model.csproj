@@ -54,10 +54,11 @@
     <Compile Include="Event.cs" />
     <Compile Include="Expansion.cs" />
     <Compile Include="Game.cs" />
+    <Compile Include="PlayerXPlayerStatistics.cs" />
     <Compile Include="Tier.cs" />
     <Compile Include="Match.cs" />
     <Compile Include="Player.cs" />
-    <Compile Include="PlayerStatistics.cs" />
+    <Compile Include="SoloPlayerStatistics.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Race.cs" />
   </ItemGroup>

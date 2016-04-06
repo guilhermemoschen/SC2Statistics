@@ -39,13 +39,8 @@ namespace SC2Statistics.StatisticDomain.Service
             Logger = logger;
         }
 
-        public PlayerStatistics GeneratePlayerStatistics(long playerId, Expansion expansion)
+        public SoloPlayerStatistics GenerateSoloPlayerStatistics(Player player, Expansion expansion)
         {
-            var player = PlayerRepository.Load(playerId);
-
-            if (player == null)
-                throw new ArgumentNullException(nameof(playerId));
-
             var allMatches = MatchRepository.FindMatchesByPlayerAndExpansion(player.Id, expansion);
 
             if (!allMatches.Any())
@@ -53,12 +48,12 @@ namespace SC2Statistics.StatisticDomain.Service
 
             var matchesWon = allMatches.Where(x => x.Winner != null && x.Winner.Id == player.Id).ToList();
 
-            var statistics = new PlayerStatistics()
+            var statistics = new SoloPlayerStatistics()
             {
                 Player = player,
                 WinRate = (decimal)matchesWon.Count / (decimal)allMatches.Count,
-                TotalWins = matchesWon.Count,
-                TotalMatches = allMatches.Count,
+                Wins = matchesWon.Count,
+                Matches = allMatches,
             };
 
             var matchesXZerg = allMatches
@@ -72,8 +67,8 @@ namespace SC2Statistics.StatisticDomain.Service
             {
                 var matchesWonXZerg = matchesXZerg.Where(x => x.Winner != null && x.Winner.Id == player.Id).ToList();
                 statistics.WinRateXZerg = (decimal)matchesWonXZerg.Count / (decimal)matchesXZerg.Count;
-                statistics.TotalMatchesAgainstZerg = matchesXZerg.Count;
-                statistics.TotalWinsAgainstZerg = matchesWonXZerg.Count;
+                statistics.MatchesXZerg = matchesXZerg.Count;
+                statistics.WinsXZerg = matchesWonXZerg.Count;
             }
 
             var matchesXProtoss = allMatches
@@ -87,8 +82,8 @@ namespace SC2Statistics.StatisticDomain.Service
             {
                 var matchesWonXProtoss = matchesXProtoss.Where(x => x.Winner != null && x.Winner.Id == player.Id).ToList();
                 statistics.WinRateXProtoss = (decimal)matchesWonXProtoss.Count / (decimal)matchesXProtoss.Count;
-                statistics.TotalMatchesAgainstProtoss = matchesXProtoss.Count;
-                statistics.TotalWinsAgainstProtoss = matchesWonXProtoss.Count;
+                statistics.MatchesXProtoss = matchesXProtoss.Count;
+                statistics.WinsXProtoss = matchesWonXProtoss.Count;
             }
 
             var matchesXTerran = allMatches
@@ -102,8 +97,8 @@ namespace SC2Statistics.StatisticDomain.Service
             {
                 var matchesWonXTerran = matchesXTerran.Where(x => x.Winner != null && x.Winner.Id == player.Id).ToList();
                 statistics.WinRateXTerran = (decimal)matchesWonXTerran.Count / (decimal)matchesXTerran.Count;
-                statistics.TotalMatchesAgainstTerran = matchesXTerran.Count;
-                statistics.TotalWinsAgainstTerran = matchesWonXTerran.Count;
+                statistics.MatchesXTerran = matchesXTerran.Count;
+                statistics.WinsXTerran = matchesWonXTerran.Count;
             }
 
             var matchesXKoreans = allMatches
@@ -117,8 +112,8 @@ namespace SC2Statistics.StatisticDomain.Service
             {
                 var matchesWonXKoreans = matchesXKoreans.Where(x => x.Winner != null && x.Winner.Id == player.Id).ToList();
                 statistics.WinRateXKoreans = (decimal)matchesWonXKoreans.Count / (decimal)matchesXKoreans.Count;
-                statistics.TotalMatchesAgainstKoreans = matchesXKoreans.Count;
-                statistics.TotalWinsAgainstKoreans = matchesWonXKoreans.Count;
+                statistics.MatchesXKoreans = matchesXKoreans.Count;
+                statistics.WinsXKoreans = matchesWonXKoreans.Count;
             }
 
             var matchesXForeigners = allMatches
@@ -132,8 +127,74 @@ namespace SC2Statistics.StatisticDomain.Service
             {
                 var matchesWonXForeigners = matchesXForeigners.Where(x => x.Winner != null && x.Winner.Id == player.Id).ToList();
                 statistics.WinRateXForeigners = (decimal)matchesWonXForeigners.Count / (decimal)matchesXForeigners.Count;
-                statistics.TotalMatchesAgainstForeigners = matchesXForeigners.Count;
-                statistics.TotalWinsAgainstForeigners = matchesWonXForeigners.Count;
+                statistics.MatchesXForeigners = matchesXForeigners.Count;
+                statistics.WinsXForeigners = matchesWonXForeigners.Count;
+            }
+
+            return statistics;
+        }
+
+        public SoloPlayerStatistics UpdateDataAndGenerateSoloPlayerStatistics(int aligulacPlayerId, Expansion expansion)
+        {
+            var player = PlayerRepository.FindByAligulacId(aligulacPlayerId);
+
+            if (player == null)
+                throw new ValidationException("Invalid Player.");
+
+            UpdateMatchesByPlayer(player, expansion);
+
+            return GenerateSoloPlayerStatistics(player, expansion);
+        }
+
+        public PlayerXPlayerStatistics UpdateDataAndGeneratePlayerXPlayerStatistics(int aligulacPlayer1Id, int aligulacPlayer2Id, Expansion expansion)
+        {
+            var player1 = PlayerRepository.FindByAligulacId(aligulacPlayer1Id);
+
+            if (player1 == null)
+                throw new ValidationException("Invalid Player 1.");
+
+            var player2 = PlayerRepository.FindByAligulacId(aligulacPlayer2Id);
+
+            if (player2 == null)
+                throw new ValidationException("Invalid Player 2.");
+
+            UpdateAllPlayers();
+            UpdateMatchesByPlayer(player1, expansion);
+            UpdateMatchesByPlayer(player2, expansion);
+
+            return GeneratePlayerXPlayerStatistics(player1, player2, expansion);
+        }
+
+        public PlayerXPlayerStatistics GeneratePlayerXPlayerStatistics(Player player1, Player player2, Expansion expansion)
+        {
+            if (player1 == null)
+                throw new ArgumentNullException(nameof(player1));
+
+            if (player2 == null)
+                throw new ArgumentNullException(nameof(player2));
+
+            var statistics = new PlayerXPlayerStatistics()
+            {
+                Player1Statistics = GenerateSoloPlayerStatistics(player1, expansion),
+                Player2Statistics = GenerateSoloPlayerStatistics(player2, expansion),
+            };
+
+            if (statistics.Player1Statistics == null || statistics.Player2Statistics == null)
+                return null;
+
+            var commonMatches = statistics.Player1Statistics.Matches.Where(x =>
+                (x.Player1.Id == player1.Id && x.Player2.AligulacId == player2.Id) ||
+                (x.Player1.Id == player2.Id && x.Player2.AligulacId == player1.Id)
+            ).ToList();
+
+            statistics.MatchesBetweenPlayers = commonMatches;
+            statistics.Player1WinsXPlayer2 = commonMatches.Count(x => x.Winner != null && x.Winner.Id == player1.Id);
+            statistics.Player2WinsXPlayer1 = commonMatches.Count(x => x.Winner != null && x.Winner.Id == player2.Id);
+
+            if (commonMatches.Any())
+            {
+                statistics.Player1WinRateXPlayer2 = (decimal)statistics.Player1WinsXPlayer2 / (decimal)commonMatches.Count();
+                statistics.Player2WinRateXPlayer1 = (decimal)statistics.Player2WinsXPlayer1 / (decimal)commonMatches.Count();
             }
 
             return statistics;
@@ -209,6 +270,7 @@ namespace SC2Statistics.StatisticDomain.Service
 
         public void UpdateAllPlayers()
         {
+            Logger.Info("Updating Players");
             var bigestPlayerAligulacId = PlayerRepository.GetBigestPlayerAligulacId();
             var players = AligulacService.FindAllPlayers(bigestPlayerAligulacId);
 
@@ -231,18 +293,39 @@ namespace SC2Statistics.StatisticDomain.Service
             Logger.Info("Finished");
         }
 
-        public void LoadLatestPlayerMatches(int aligulacPlayerId, Expansion expansion)
+        public void UpdateDateAndMatchesByPlayer(int aligulacPlayerId, Expansion expansion)
         {
             var player = PlayerRepository.FindByAligulacId(aligulacPlayerId);
 
             if (player == null)
                 throw new ValidationException("Invalid Player.");
 
+            UpdateAllPlayers();
+            UpdateMatchesByPlayer(player, expansion);
+        }
+
+        public void UpdateMatchesByPlayer(Player player, Expansion expansion)
+        {
+            if (player == null)
+                throw new ArgumentNullException(nameof(player));
+            
+            LoadLatestPlayerMatches(player, expansion);
+        }
+
+        public void LoadLatestPlayerMatches(Player player, Expansion expansion)
+        {
+            if (player == null)
+                throw new ArgumentNullException(nameof(player));
+
+            Logger.Info($"Getting matches for {player.Tag}");
+
             var lastUpdate = AligulacSynchronizationRepository.GetLastUpdate(AligulacSynchronization.MatchEntityName, player.AligulacId);
             var newMatches = AligulacService.FindMatches(player.AligulacId, expansion, lastUpdate);
 
-            if (!newMatches.Any())
+            if (newMatches == null || !newMatches.Any())
                 return;
+
+            Logger.Info($"Saving {newMatches.Count()} match(es)");
 
             UpdatePlayersReference(player, newMatches);
             UpdateEventsReference(newMatches);

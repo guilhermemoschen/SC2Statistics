@@ -10,7 +10,7 @@ using SC2LiquipediaStatistics.DesktopClient.View;
 
 namespace SC2LiquipediaStatistics.DesktopClient.ViewModel
 {
-    public class MainViewModel : ModernViewModelBase
+    public class MainViewModel : ViewModelBase
     {
         public MainViewModel()
         {

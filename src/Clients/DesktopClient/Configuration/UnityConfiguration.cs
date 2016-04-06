@@ -24,16 +24,15 @@ namespace SC2LiquipediaStatistics.DesktopClient.Configuration
             Container.Instance.RegisterType<ListEventsViewModel>();
             Container.Instance.RegisterType<ListPlayersViewModel>();
             Container.Instance.RegisterType<EditEventViewModel>();
-            Container.Instance.RegisterType<PlayerStatisticsViewModel>();
+            Container.Instance.RegisterType<SoloPlayerStatisticsViewModel>();
+            Container.Instance.RegisterType<PlayerXPlayerStatisticsViewModel>();
             Container.Instance.RegisterType<MainViewModel>();
             Container.Instance.RegisterType<LoadingViewModel>();
 
             // Services
-            Container.Instance.RegisterType<IEventsListService, EventsListService>();
             Container.Instance.RegisterType<ITeamLiquidService, TeamLiquidService>();
-
-            // Loading
             Container.Instance.RegisterType<ILoadingService, LoadingService>();
+            Container.Instance.RegisterType<IImageService, ImageService>();
 
             // Utilities
             Container.Instance.RegisterType<IDownloader, Downloader>();

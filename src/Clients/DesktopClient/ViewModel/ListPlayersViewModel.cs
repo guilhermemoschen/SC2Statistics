@@ -26,15 +26,9 @@ using DomainEntities = SC2Statistics.StatisticDomain.Model;
 
 namespace SC2LiquipediaStatistics.DesktopClient.ViewModel
 {
-    public class ListPlayersViewModel : ModernViewModelBase
+    public class ListPlayersViewModel : ViewModelBase
     {
         public ICommand UpdatePlayersCommand { get; private set; }
-
-        public IStatisticService StatisticService { get; private set; }
-
-        public ILoadingService LoadingService { get; private set; }
-
-        public IMapper Mapper { get; private set; }
 
         private ObservableCollection<Player> players;
         public ObservableCollection<Player> Players
@@ -74,12 +68,8 @@ namespace SC2LiquipediaStatistics.DesktopClient.ViewModel
 
         private int currentPageIndex = 0;
 
-        public ListPlayersViewModel(IStatisticService statisticService, IMapper mapper, ILoadingService loadingService)
+        public ListPlayersViewModel()
         {
-            StatisticService = statisticService;
-            Mapper = mapper;
-            LoadingService = loadingService;
-
             UpdatePlayersCommand = new RelayCommand(UpdatePlayers);
             NextPageCommand = new RelayCommand(FindNextPage);
             PreviousPageCommand = new RelayCommand(FindPreviousPage);

@@ -144,6 +144,8 @@
     <Compile Include="Common\AutoCompleteDataTemplate.cs" />
     <Compile Include="Common\BooleanToFontWeightConverter.cs" />
     <Compile Include="Common\Dialog.cs" />
+    <Compile Include="Service\IImageService.cs" />
+    <Compile Include="Service\ImageService.cs" />
     <Compile Include="Common\PlayerSuggestionProvider.cs" />
     <Compile Include="Common\RaceToColorConverter.cs" />
     <Compile Include="Common\WinnerColorConverter.cs" />
@@ -157,13 +159,11 @@
     <Compile Include="Model\EventInput.cs" />
     <Compile Include="Model\EventItem.cs" />
     <Compile Include="Model\GroupMatches.cs" />
+    <Compile Include="Model\PlayerXPlayerStatistics.cs" />
     <Compile Include="Model\ValidatableObject.cs" />
-    <Compile Include="Model\PlayerMatches.cs" />
-    <Compile Include="Model\PlayerStatistics.cs" />
+    <Compile Include="Model\SoloPlayerStatistics.cs" />
     <Compile Include="Model\SubEvent.cs" />
     <Compile Include="Model\Translator\SC2DomainProfile.cs" />
-    <Compile Include="Service\EventsListService.cs" />
-    <Compile Include="Service\IEventsListService.cs" />
     <Compile Include="Service\ILoadingService.cs" />
     <Compile Include="Service\IModernNavigationService.cs" />
     <Compile Include="Service\LoadingService.cs" />
@@ -179,7 +179,9 @@
     <Compile Include="ViewModel\LoadingViewModel.cs" />
     <Compile Include="ViewModel\MainViewModel.cs" />
     <Compile Include="ViewModel\ModernViewModelBase.cs" />
-    <Compile Include="ViewModel\PlayerStatisticsViewModel.cs" />
+    <Compile Include="ViewModel\PlayerXPlayerStatisticsViewModel.cs" />
+    <Compile Include="ViewModel\SoloPlayerStatisticsViewModel.cs" />
+    <Compile Include="ViewModel\ViewModelBase.cs" />
     <Compile Include="ViewModel\ViewModelLocator.cs" />
     <Compile Include="View\EditEventView.xaml.cs">
       <DependentUpon>EditEventView.xaml</DependentUpon>
@@ -196,11 +198,18 @@
     <Compile Include="View\LoadingView.xaml.cs">
       <DependentUpon>LoadingView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\PlayerStatisticsView.xaml.cs">
-      <DependentUpon>PlayerStatisticsView.xaml</DependentUpon>
+    <Compile Include="View\PlayerXPlayerStatisticsView.xaml.cs">
+      <DependentUpon>PlayerXPlayerStatisticsView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\SoloPlayerStatisticsView.xaml.cs">
+      <DependentUpon>SoloPlayerStatisticsView.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\ViewLocator.cs" />
     <Page Include="Assets\Theme.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Common\ViewObjects.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -236,7 +245,11 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="View\PlayerStatisticsView.xaml">
+    <Page Include="View\PlayerXPlayerStatisticsView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\SoloPlayerStatisticsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

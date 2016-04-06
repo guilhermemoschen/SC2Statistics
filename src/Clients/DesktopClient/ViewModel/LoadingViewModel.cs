@@ -11,7 +11,7 @@ using SC2LiquipediaStatistics.DesktopClient.Common;
 
 namespace SC2LiquipediaStatistics.DesktopClient.ViewModel
 {
-    public class LoadingViewModel : ModernViewModelBase
+    public class LoadingViewModel : ViewModelBase
     {
         private string messages;
         public string Messages

@@ -15,7 +15,7 @@ namespace SC2LiquipediaStatistics.DesktopClient.ViewModel
     /// <summary>
     /// The modern view model base.
     /// </summary>
-    public abstract class ModernViewModelBase : ViewModelBase
+    public abstract class ModernViewModelBase : GalaSoft.MvvmLight.ViewModelBase
     {
         /// <summary>
         /// Gets or sets the navigating from command.

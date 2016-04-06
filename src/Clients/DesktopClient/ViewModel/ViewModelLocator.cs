@@ -10,7 +10,9 @@ namespace SC2LiquipediaStatistics.DesktopClient.ViewModel
 
         public ListPlayersViewModel ListPlayersViewModel => Container.Resolve<ListPlayersViewModel>();
 
-        public PlayerStatisticsViewModel PlayerStatisticsViewModel => Container.Resolve<PlayerStatisticsViewModel>();
+        public SoloPlayerStatisticsViewModel SoloPlayerStatisticsViewModel => Container.Resolve<SoloPlayerStatisticsViewModel>();
+
+        public PlayerXPlayerStatisticsViewModel PlayerXPlayerStatisticsViewModel => Container.Resolve<PlayerXPlayerStatisticsViewModel>();
 
         public LoadingViewModel LoadingViewModel => Container.Resolve<LoadingViewModel>();
 

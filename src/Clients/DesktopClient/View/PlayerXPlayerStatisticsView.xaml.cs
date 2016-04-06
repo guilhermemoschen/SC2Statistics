@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
@@ -14,24 +14,28 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-using SC2LiquipediaStatistics.DesktopClient.Common;
-using SC2LiquipediaStatistics.DesktopClient.ViewModel;
-
-using Image = System.Windows.Controls.Image;
-
 namespace SC2LiquipediaStatistics.DesktopClient.View
 {
     /// <summary>
-    /// Interaction logic for PlayerSelection.xaml
+    /// Interaction logic for PlayerXPlayerStatisticsView.xaml
     /// </summary>
-    public partial class PlayerStatisticsView
+    public partial class PlayerXPlayerStatisticsView
     {
-        public PlayerStatisticsView()
+        private readonly double playersImageHeight;
+        private readonly double playersImageWidth;
+
+        public PlayerXPlayerStatisticsView()
         {
             InitializeComponent();
 
-            var prop = DependencyPropertyDescriptor.FromProperty(Image.SourceProperty, typeof(Image));
-            prop.AddValueChanged(playerImage, Image_SourceUpdated);
+            playersImageWidth = Math.Floor(player1Image.Width);
+            playersImageHeight = Math.Floor(player1Image.Height);
+
+            var imagePlayer1Property = DependencyPropertyDescriptor.FromProperty(Image.SourceProperty, typeof(Image));
+            imagePlayer1Property.AddValueChanged(player1Image, Image_SourceUpdated);
+
+            var imagePlayer2Property = DependencyPropertyDescriptor.FromProperty(Image.SourceProperty, typeof(Image));
+            imagePlayer2Property.AddValueChanged(player2Image, Image_SourceUpdated);
         }
 
         private void Image_SourceUpdated(object sender, EventArgs eventArgs)
@@ -44,16 +48,16 @@ namespace SC2LiquipediaStatistics.DesktopClient.View
             if (!(image.Source is BitmapSource))
                 return;
 
-            if (image.Source.Width > 300)
+            if (Math.Floor(image.Source.Width) > playersImageWidth)
             {
-                var percentage = 300.0 / image.Source.Width;
+                var percentage = playersImageWidth / image.Source.Width;
                 var newImageSouce = new TransformedBitmap((BitmapSource)image.Source, new ScaleTransform(percentage, percentage));
                 image.SetCurrentValue(Image.SourceProperty, newImageSouce);
             }
 
-            if (image.Height > 450)
+            if (Math.Floor(image.Height) > playersImageHeight)
             {
-                var percentage = 450.0 / image.Height;
+                var percentage = playersImageHeight / image.Height;
                 var newImageSouce = new TransformedBitmap((BitmapSource)image.Source, new ScaleTransform(percentage, percentage));
                 image.SetCurrentValue(Image.SourceProperty, newImageSouce);
             }

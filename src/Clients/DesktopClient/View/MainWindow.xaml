@@ -24,7 +24,8 @@
         </mui:LinkGroup>
         <mui:LinkGroup DisplayName="Statistics">
             <mui:LinkGroup.Links>
-                <mui:Link DisplayName="Player" Source="/View/PlayerStatisticsView.xaml" />
+                <mui:Link DisplayName="Solo Player" Source="/View/SoloPlayerStatisticsView.xaml" />
+                <mui:Link DisplayName="Player X Player" Source="/View/PlayerXPlayerStatisticsView.xaml" />
             </mui:LinkGroup.Links>
         </mui:LinkGroup>
     </mui:ModernWindow.MenuLinkGroups>

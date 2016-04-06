@@ -35,7 +35,6 @@
             
             
             
-            
             <Component Id="cmp0BFABD100B4065787B40AA6B05938DF7" Directory="INSTALLFOLDER" Guid="*">
                 <File Id="fil1D38723F4A034EDE78B6A3B94EFB99F2" KeyPath="yes" Source="$(var.DesktopClientSourcePath)\EntityFramework.dll" />
             </Component>
@@ -133,6 +132,10 @@
             <Component Id="cmp017BFB3832A5B110A2B3A350E13F2A5C" Directory="INSTALLFOLDER" Guid="*">
                 <File Id="fil17E34524E8398461D615894C92558FE9" KeyPath="yes" Source="$(var.DesktopClientSourcePath)\System.Windows.Interactivity.dll" />
             </Component>
+            <Component Id="cmp95388E9E26CAA0A8A2A778FD7B4D1A45" Directory="INSTALLFOLDER" Guid="*">
+                <File Id="filEB380A03A17791DEB28DC771844C381B" KeyPath="yes" Source="$(var.DesktopClientSourcePath)\TeamLiquiedProxy.dll" />
+            </Component>
+            
             <Component Id="cmpE01A067AFE41AAF5863517AC52B7E399" Directory="INSTALLFOLDER" Guid="*">
                 <File Id="fil80B49A0B6E7C97C71B89FD33C21BC9B8" KeyPath="yes" Source="$(var.DesktopClientSourcePath)\Utilities.dll" />
             </Component>

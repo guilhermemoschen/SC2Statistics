@@ -46,7 +46,6 @@ namespace SC2Statistics.Proxy.Aligulac
         {
             var players = new List<Player>();
 
-            Logger.Info("Finding new players");
             var json = JObject.Parse(GetJson(
                 PlayerObjectName,
                 null,
@@ -57,8 +56,6 @@ namespace SC2Statistics.Proxy.Aligulac
             ));
 
             players.AddRange(GetAllNextObjects<Player>(json));
-
-            Logger.Info("Finished");
 
             return Mapper.Map<IEnumerable<Player>, IEnumerable<DomainEntities.Player>>(players);
         }
@@ -72,7 +69,6 @@ namespace SC2Statistics.Proxy.Aligulac
 
         public IEnumerable<DomainEntities.Match> FindMatches(int aligulacPlayerId, DomainEntities.Expansion expansion, DateTime? lastestedSync = null)
         {
-            Logger.Info("Getting matches...");
             var matches = new List<Match>();
 
             var game = Converter.ExpansionToString(expansion);

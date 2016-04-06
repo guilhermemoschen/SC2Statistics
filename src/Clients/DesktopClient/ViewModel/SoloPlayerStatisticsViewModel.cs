@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Configuration;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -33,10 +34,8 @@ using SC2DomainEntities = SC2Statistics.StatisticDomain.Model;
 
 namespace SC2LiquipediaStatistics.DesktopClient.ViewModel
 {
-    public class PlayerStatisticsViewModel : ModernViewModelBase
+    public class SoloPlayerStatisticsViewModel : ViewModelBase
     {
-        public static readonly Uri MissingPlayerImageUri = new Uri("http://wiki.teamliquid.net/commons/images/a/a4/PlayerImagePlaceholder.png");
-
         protected Player selectedPlayer;
         public Player SelectedPlayer
         {
@@ -69,8 +68,8 @@ namespace SC2LiquipediaStatistics.DesktopClient.ViewModel
             }
         }
 
-        protected PlayerStatistics playerStatistics;
-        public PlayerStatistics PlayerStatistics
+        protected SoloPlayerStatistics playerStatistics;
+        public SoloPlayerStatistics PlayerStatistics
         {
             get
             {
@@ -155,27 +154,15 @@ namespace SC2LiquipediaStatistics.DesktopClient.ViewModel
 
         public IList<KeyValuePair<string, SC2DomainEntities.Expansion>> Expansions { get; set; }
 
-        public IStatisticService StatisticService { get; protected set; }
         public ITeamLiquidService TeamLiquidService { get; protected set; }
-
-        public IModernNavigationService NavigationService { get; protected set; }
-
-        public ILoadingService LoadingService { get; protected set; }
-
-        public IDownloader Downloader { get; protected set; }
-
-        public IMapper Mapper { get; protected set; }
+        public IImageService ImageService { get; protected set; }
 
         public ICommand GenerateStatisticsCommand { get; private set; }
 
-        public PlayerStatisticsViewModel(IStatisticService statisticService, ITeamLiquidService teamLiquidService, IModernNavigationService navigationService, ILoadingService loadingService, IDownloader downloader, IMapper mapper)
+        public SoloPlayerStatisticsViewModel(ITeamLiquidService teamLiquidService, IImageService imageService)
         {
-            StatisticService = statisticService;
             TeamLiquidService = teamLiquidService;
-            NavigationService = navigationService;
-            LoadingService = loadingService;
-            Downloader = downloader;
-            Mapper = mapper;
+            ImageService = imageService;
 
             GenerateStatisticsCommand = new RelayCommand(GenerateStatistics);
             NavigatedToCommand = new RelayCommand<object>(Load);
@@ -187,7 +174,8 @@ namespace SC2LiquipediaStatistics.DesktopClient.ViewModel
 
             SuggestionProvider = Container.Resolve<PlayerSuggestionProvider>();
 
-            missingPlayerImageSource = LoadImage(MissingPlayerImageUri);
+            var missingPlayerImageUri = new Uri(ConfigurationManager.AppSettings["MissingPlayerImageUri"]);
+            missingPlayerImageSource = ImageService.LoadImage(missingPlayerImageUri);
         }
 
         private void Load(object obj)
@@ -218,16 +206,10 @@ namespace SC2LiquipediaStatistics.DesktopClient.ViewModel
                 {
                     try
                     {
-                        StatisticService.LoadLatestPlayerMatches(SelectedPlayer.AligulacId, SC2DomainEntities.Expansion.LegacyOfTheVoid);
-                        var domainStatistics = StatisticService.GeneratePlayerStatistics(SelectedPlayer.Id, SelectedExpansion.Value);
-                        PlayerStatistics = Mapper.Map<SC2DomainEntities.PlayerStatistics, PlayerStatistics>(domainStatistics);
+                        var domainStatistics = StatisticService.UpdateDataAndGenerateSoloPlayerStatistics(SelectedPlayer.AligulacId, SelectedExpansion.Value);
+                        PlayerStatistics = Mapper.Map<SC2DomainEntities.SoloPlayerStatistics, SoloPlayerStatistics>(domainStatistics);
                         PlayerStatistics.Player = SelectedPlayer;
-                        var playerImageUri = TeamLiquidService.GetPlayerImage(domainStatistics.Player);
-
-                        if (playerImageUri != null && playerImageUri != MissingPlayerImageUri)
-                            PlayerImageSource = LoadImage(playerImageUri);
-                        else
-                            PlayerImageSource = missingPlayerImageSource;
+                        LoadPlayerImage(domainStatistics.Player);
                     }
                     catch (ValidationException ex)
                     {
@@ -246,21 +228,26 @@ namespace SC2LiquipediaStatistics.DesktopClient.ViewModel
             }
         }
 
-        private ImageSource LoadImage(Uri playerImageUri)
+        public void LoadPlayerImage(SC2DomainEntities.Player player)
         {
-            var imageData = Downloader.GetContentAsBytes(playerImageUri);
-            var bitmapImage = new BitmapImage();
+            var playerImageUri = TeamLiquidService.GetPlayerImage(player);
 
-            using (var stream = new MemoryStream(imageData))
+            if (playerImageUri != null && playerImageUri.OriginalString != ConfigurationManager.AppSettings["MissingPlayerImageUri"])
             {
-                bitmapImage.BeginInit();
-                bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
-                bitmapImage.StreamSource = stream;
-                bitmapImage.EndInit();
-                bitmapImage.Freeze();
+                var imageSource = ImageService.LoadImage(playerImageUri);
+                if (imageSource.Width > 1024 || imageSource.Height > 1024)
+                {
+                    PlayerImageSource = missingPlayerImageSource;
+                }
+                else
+                {
+                    PlayerImageSource = imageSource;
+                }
             }
-
-            return bitmapImage;
+            else
+            {
+                PlayerImageSource = missingPlayerImageSource;
+            }
         }
     }
 }

@@ -38,4 +38,10 @@
             </MultiTrigger>
         </Style.Triggers>
     </Style>
+
+    <DataTemplate x:Key="AutoCompleteTemplate">
+        <Border Padding="5">
+            <TextBlock Text="{Binding Path=Tag}" FontWeight="Bold" VerticalAlignment="Bottom"/>
+        </Border>
+    </DataTemplate>
 </ResourceDictionary>

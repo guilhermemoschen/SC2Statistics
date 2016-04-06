@@ -31,7 +31,7 @@ using DomainEntities = SC2Statistics.StatisticDomain.Model;
 
 namespace SC2LiquipediaStatistics.DesktopClient.ViewModel
 {
-    public class ListEventsViewModel : ModernViewModelBase
+    public class ListEventsViewModel : ViewModelBase
     {
         private ObservableCollection<Event> events;
         public ObservableCollection<Event> Events
@@ -69,18 +69,8 @@ namespace SC2LiquipediaStatistics.DesktopClient.ViewModel
         public ICommand EditEventCommand { get; private set; }
         public ICommand DeleteEventCommand { get; private set; }
 
-        public IStatisticService StatisticService { get; private set; }
-
-        public IModernNavigationService NavigationService { get; private set; }
-
-        public IMapper Mapper { get; protected set; }
-
-        public ListEventsViewModel(IStatisticService statisticService, IModernNavigationService navigationService, IMapper mapper)
+        public ListEventsViewModel()
         {
-            StatisticService = statisticService;
-            NavigationService = navigationService;
-            Mapper = mapper;
-
             EditEventCommand = new RelayCommand(NavigateToEditEvent);
             NavigatedToCommand = new RelayCommand<object>(LoadGrid);
         }
@@ -92,16 +82,6 @@ namespace SC2LiquipediaStatistics.DesktopClient.ViewModel
 
         public void LoadGrid(object parameter)
         {
-            //IList<Event> events;
-
-            //using (new NHibernateSessionContext())
-            //{
-            //    var domainEvents = SC2Service.FindMainEvents()
-            //        .OrderByDescending(x => x.EndDate)
-            //        .ToList();
-            //    events = Mapper.Map<IList<DomainEntities.Event>, IList<Event>>(domainEvents);
-            //}
-
             //Events = new ObservableCollection<Event>(events);
         }
     }

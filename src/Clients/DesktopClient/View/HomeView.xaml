@@ -9,7 +9,7 @@
              mc:Ignorable="d" 
              d:DesignHeight="600" d:DesignWidth="800">
     <Grid Style="{StaticResource ContentRoot}">
-        <ScrollViewer>
+        <ScrollViewer> 
             <StackPanel>
                 <TextBlock Text="Welcome to Starcraft 2 Statistics" Style="{StaticResource Heading1}" Margin="0,0,0,8"/>
                 <mui:BBCodeBlock Margin="0,0,0,32" xml:space="preserve">
